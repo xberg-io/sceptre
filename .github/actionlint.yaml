@@ -1,10 +1,4 @@
 self-hosted-runner:
   labels:
-    - runner-small
     - runner-medium
-    - runner-medium-arm64
-    - runner-large
-    - runner-large-arm64
-    - runner-large-spot
-    - runner-medium-arm64-spot
     - runner-gpu-l4
