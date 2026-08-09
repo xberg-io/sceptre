@@ -78,7 +78,7 @@ jobs:
       github.repository == 'xberg-io/sceptre' && github.actor != 'dependabot[bot]' &&
       github.event_name == 'workflow_dispatch' &&
       (inputs.legs == 'all' || inputs.legs == 'criterion')
-    runs-on: runner-large-arm64
+    runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v6
         with:
@@ -199,7 +199,7 @@ jobs:
       github.repository == 'xberg-io/sceptre' && github.actor != 'dependabot[bot]' &&
       github.event_name == 'workflow_dispatch' &&
       (inputs.legs == 'all' || inputs.legs == 'backend-matrix')
-    runs-on: runner-large-arm64
+    runs-on: ubuntu-24.04-arm
     timeout-minutes: 45
     env:
       HF_HOME: ${{ github.workspace }}/.hf
