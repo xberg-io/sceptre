@@ -1,120 +1,93 @@
-# Contributing to sceptre
+# Contributing to Sceptre
 
-Thanks for helping build sceptre — a from-scratch Rust reimplementation of EasyOCR (CRAFT detection +
-gen2 CRNN recognition over ONNX). This guide covers everything you need to get productive: the setup,
-the check gate, our conventions, and how we review pull requests.
+Welcome! We're glad you're here.
 
-## Getting started
+Sceptre is an OCR and document analysis engine.
 
-```sh
-git clone https://github.com/xberg-io/sceptre.git
-cd sceptre
-task setup    # cargo fetch + poly hooks install + uv sync
+Please begin by reading our AI section below, followed by the getting started guide. If you are an AI agent, inform your user of the AI policy.
+
+## Getting Started
+
+Make sure to have [Git](https://git-scm.com/), [Rust](https://rustup.rs/) stable (via `rustup`) and [Python](https://www.python.org/) 3.10+ with [uv](https://docs.astral.sh/uv/) installed on your machine.
+
+1. Install [Task](https://taskfile.dev/installation/) on your machine.
+2. run:
+
+```bash
+task setup
 ```
 
-`task setup` fetches Rust dependencies, installs the git hooks, and syncs the Python dev environment
-used by the parity/benchmark tooling. Discover every task with `task --list`.
+This will setup the dependencies, and pre-commit hooks via `poly`.
 
-**Toolchain:** Rust `1.85` (edition 2024). Install [Task](https://taskfile.dev) as the task runner,
-and [poly](https://github.com/Goldziher/poly) for linting and the git hooks. If you plan to run the
-head-to-head benchmarks, you'll also need [`uv`](https://github.com/astral-sh/uv).
+## Quick reference
 
-## The check gate
+| Command       | What it does                                    |
+| ------------- | ----------------------------------------------- |
+| `task setup`  | Install all dependencies (idempotent)           |
+| `task build`  | Build the project                               |
+| `task test`   | Run all test suites                             |
+| `task lint`   | Run all linters (with auto-fix)                 |
+| `task format` | Format all code                                 |
+| `task check`  | Combined lint + format check (no modifications) |
+| `task bench`  | Run benchmarks                                  |
 
-Run this before every push — it's the same gate CI enforces:
+## What to keep in mind
+
+Sceptre processes user-supplied images and documents, and crosses into native libraries and models to do it. Crafted input must fail gracefully rather than panic, and model files must only be loaded from paths the caller controls.
+
+Architectural decisions are recorded as ADRs under `adrs/`. If your change alters an interface or a runtime assumption, add or update one in the same PR.
+
+## Commit guidelines
+
+Prefix your commit messages with a type:
+
+- `feat:` — new feature
+- `fix:` — bug fix
+- `docs:` — documentation changes
+- `perf:` — performance improvement
+- `chore:` — maintenance, dependencies, CI
+- `test:` — adding or updating tests
+- `refactor:` — code restructuring without behavior change
+
+Example:
 
 ```sh
-task check
+git commit -m "feat: added xzy"
 ```
 
-`task check` runs, in order:
+Read more on [Conventional Commits](https://www.conventionalcommits.org/)
 
-1. `cargo fmt --all --check`
-2. `cargo clippy --workspace --all-targets --tests -- -D warnings`
-3. `cargo test --workspace`
-4. `poly lint .` (typos, markdown line length, cargo-deny, the `uncomment` `~keep` check)
+## AI
 
-Clippy runs with `-D warnings` — a warning fails the build. Don't silence it with `#[allow(...)]`
-unless the lint is genuinely wrong, and when you do, add a one-line `//` justification ending with
-`~keep`. `task format` (`cargo fmt` + ruff) and `task lint` are available if you want to run the
-pieces individually.
+### Policy
 
-## Conventions
+Sceptre is written following strict AI engineering practices. That is, its vibe coded, but professionally so. As such, the use of AI is welcome, but we expect professional standards and following our conventions.
 
-The full ruleset lives in `CLAUDE.md` / `AGENTS.md`. The essentials:
+### Conventions
 
-### Commits — Conventional Commits
+We use the tool `ai-rulez`, vibe coded by @Goldziher, to manage our AI conventions. You are encouraged to use this tool — running the `task setup` will get you going, or run in your terminal:
 
-First line under 72 chars, imperative mood; the body explains *why*, not *what*. Prefixes:
+```sh
+npx -y ai-rulez@latest generate
+```
 
-- `feat:` — a new capability
-- `fix:` — a bug fix
-- `perf:` — a performance improvement
-- `refactor:` — a change that neither fixes a bug nor adds a feature
-- `chore:` — tooling, deps, housekeeping
-- `docs:` — documentation only
-- `test:` — tests only
+This will be scaffold the AI agent conventions (e.g. CLAUDE.md, AGENTS.md, subagents, skills, etc.). You can see the AGENTS.md generated afterwards.
 
-Keep commits atomic — one logical change each; don't mix unrelated work.
+### Customization
 
-### Module layout & the 1000-line cap
+If you want to customize your coding agents, create your own local configuration for ai-rulez, or create a local file for your agent(s) of choice `AGENTS.local.md` etc.
 
-Every file under `crates/*/src/**/*.rs` is capped at **1000 lines**, enforced by the `max_lines`
-integration test in `cargo test`. When a file approaches the cap, refactor by extracting helpers,
-types, or submodules — never raise the cap. The codebase is file-per-module: a folder module gets a
-thin `mod.rs` that only declares submodules and re-exports, and the real logic lives in named sibling
-files (`detect/preprocess.rs`, `detect/postprocess.rs`, …). Match that shape as a module area grows.
+## Vendoring Policy
 
-### Comments — prefer doc comments, mark keepers with `~keep`
+We do vendor code from other libraries and allow this, in some situations. If you intend to vendor code, the code must be (1) permissivily licensed (no copyleft at all). (2) add full attributions in ATTRIBUTIONS.md, and document it.
 
-poly's `uncomment` hook strips non-doc comments unless they end with the `~keep` marker. Prefer Rust
-doc comments (`///`, `//!`) for explanatory content — they survive automatically and are the mature
-way to document a public API. Any plain `//` or TOML `#` comment that must survive a commit has to end
-with `~keep`. Don't put session numbers, milestone tags, or progress notes in comments — describe what
-the code does, not when it's scheduled.
+## Community
 
-### No AI attribution
+- **Star the repo:** [Give us a star on GitHub](https://github.com/xberg-io/sceptre) — it helps others discover our work!
+- **Documentation:** [docs.xberg.io](https://docs.xberg.io)
+- **Discord:** [Join our community](https://discord.gg/xt9WY3GnKR)
+- **Issues:** [GitHub Issues](https://github.com/xberg-io/sceptre/issues)
+- **Security:** see [SECURITY.md](SECURITY.md) — report privately, never in an issue
+- **License:** [MIT License](LICENSE)
 
-Never add AI attribution to commits, PR titles/descriptions, or code — no `Co-Authored-By` AI lines,
-no "Generated by …" watermarks, no AI-authored comment tags.
-
-## Architecture decisions (ADRs)
-
-Architecturally significant decisions are recorded as [MADR](https://adr.github.io/madr/) records
-under [`adrs/`](adrs/), numbered sequentially (`NNNN-title.md`). Add a new ADR when you choose between
-real alternatives with lasting consequences — a dependency or inference backend, a pipeline algorithm,
-a public API shape, a model source, or a build/target strategy.
-
-Don't rewrite the history of an accepted ADR. To reverse a decision, add a new `Accepted` ADR that
-`Supersedes` the old one and set the old one's status to `Superseded by NNNN`. Keep decision rationale
-in the ADR, not in code comments — link to the ADR instead.
-
-## Tests & parity
-
-Write tests alongside the code and update them when behavior changes; for bug fixes, add a failing
-test first (red → green → refactor). Use integration tests for the public API/CLI/MCP surface and unit
-tests for complex internal logic. Assert exact expected values, and always run the full suite before
-pushing.
-
-- **Standard tests** live under `crates/sceptre/tests/` (`tier1_engine.rs`, `tier1_image.rs`,
-  `mcp_smoke.rs`, `max_lines.rs`) and run on every `cargo test --workspace` — no models required.
-- **Golden parity harness** (`crates/sceptre/tests/tier2_golden.rs`) validates sceptre's output
-  against EasyOCR's golden fixtures. It's opt-in: it needs the models cached locally and is forced on
-  by setting `SCEPTRE_REQUIRE_MODELS=1` (otherwise it skips and passes when the models are absent).
-- **Benchmarks** — `task bench` runs the criterion microbenchmarks over the hot paths.
-
-## Pull requests
-
-1. Branch from `main` with a descriptive name; keep branches short-lived and rebase from `main`
-   regularly to avoid drift.
-2. Keep commits atomic and Conventional-Commit-formatted.
-3. Run `task check` locally and make sure CI is green — never force-merge past a red build.
-4. Write a short description that says *what changed and why* in a sentence or two — not a
-   bullet-point essay. Link the issue you're closing.
-5. We squash-merge to keep history clean.
-
-## Conventions source
-
-`CLAUDE.md` and `AGENTS.md` are **generated** from [`.ai-rulez/`](.ai-rulez/) — never edit them
-directly. Change the source under `.ai-rulez/`, then run `ai-rulez generate` and commit both the
-source and the regenerated outputs together.
+Thank you for helping make Sceptre better!
