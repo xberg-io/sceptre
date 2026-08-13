@@ -2,27 +2,62 @@
 
 ## Reporting a Vulnerability
 
-**Do not open a public issue for security reports.**
+**Do not open a public GitHub issue for a security vulnerability.** A public issue
+tells everyone about the problem before there is a fix.
 
-Preferred channel: open a private advisory at
-<https://github.com/xberg-io/sceptre/security/advisories/new>.
+Email both maintainers directly:
 
-Alternative: email **<security@xberg.io>**.
+- **Na'aman Hirschfeld** — <naaman@xberg.io>
+- **Tobias Silva** — <tobias@xberg.io>
 
-Please include a description of the issue, steps to reproduce, affected versions, and your
-preferred credit (or none). We acknowledge reports within **2 business days** and aim to
-publish a fix within **14 days** for critical issues and **30 days** for others.
+You may also use GitHub's [private vulnerability reporting](https://docs.github.com/en/code-security/security-advisories/guidance-on-reporting-and-writing-information-about-vulnerabilities/privately-reporting-a-security-vulnerability) on this repository, which opens a private channel with the maintainers.
 
-## Supported Versions
+### What to include
 
-Security fixes target the latest release on `main` — currently the `0.5.x` line. Older
-minor versions are not back-ported.
+1. A description of the vulnerability and the versions affected.
+2. A minimal reproducer — ideally a file, request, or short script that triggers it.
+3. Your assessment of impact and severity.
+4. Whether you want public credit when the advisory is published.
+
+A reproducer is the single most useful thing you can send. It turns triage from
+guesswork into verification.
+
+## Response targets
+
+| Stage | Target |
+|-------|--------|
+| Acknowledgement of your report | 2 business days |
+| Initial assessment and severity | 5 business days |
+| Fix released — Critical / High | 14 calendar days |
+| Fix released — Medium / Low | 30 calendar days |
+
+If a fix will take longer than the target, we will tell you why and give a revised
+date rather than let the report go quiet.
 
 ## Scope
 
-In scope: the `sceptre` library, the `sceptre-cli` binary, and the MCP server surface.
+Sceptre performs OCR and document analysis over **user-supplied images and documents**. In scope: crashes, panics, and unbounded resource use from crafted inputs, unsafe handling of native library boundaries, path traversal when writing output, and any model or data file loaded from a path an attacker can influence.
 
-Out of scope: ONNX Runtime, `tract`, `candle`, and other third-party dependencies (report
-upstream and notify us). Model artifacts are fetched from Hugging Face and sha256-verified
-against pins baked into the registry; a mismatch between a published artifact and its pin is
-in scope and should be reported here.
+## Out of scope
+
+- Vulnerabilities in third-party dependencies: report those to the dependency's
+  own maintainers. Open an advisory here as well if this project's pinned version
+  is affected, so we can upgrade.
+- Findings from automated scanners with no demonstrated impact. Show us the
+  consequence, not the signature.
+- Attacks requiring physical access to a machine, or an already-compromised host
+  or account.
+- Social engineering of maintainers or users.
+
+## Supported versions
+
+Security fixes are applied to the latest release from the default branch. Fixes for
+Critical and High severity issues are back-ported to the current minor series;
+older minor series receive no back-ports.
+
+## Disclosure
+
+We coordinate disclosure with you. Our default is to publish a GitHub Security
+Advisory once a fix is released, crediting you by name unless you ask to remain
+anonymous. If a report is disputed or we conclude it is not a vulnerability, we
+will explain our reasoning rather than simply closing it.

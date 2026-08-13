@@ -1,5 +1,3 @@
-# Default owner — everything
-* @Goldziher
-
-# Rust crates
-/crates/ @Goldziher
+# Default owner — everything.
+# Both maintainers are requested for review on every pull request.
+* @Goldziher @tobocop2
