@@ -1,6 +1,7 @@
 //! CRAFT text-detection configuration.
 //!
-//! Defaults mirror EasyOCR's `readtext` detection parameters.
+//! Defaults mirror EasyOCR's `readtext` detection parameters, except `width_ths`
+//! (see its documentation for the measurements behind the deviation).
 
 use serde::{Deserialize, Serialize};
 
@@ -28,7 +29,16 @@ pub struct DetectionConfig {
     pub ycenter_ths: f32,
     /// Height threshold for line merging. Default `0.5`.
     pub height_ths: f32,
-    /// Width threshold for line merging. Default `0.5`.
+    /// Width threshold for line merging, as a multiple of box height. Default `1.0`.
+    ///
+    /// Deliberately wider than EasyOCR's `0.5`, which the other defaults here still
+    /// mirror. At `0.5` a letter-spaced all-caps heading exceeds the gap test and
+    /// surfaces one word per line. Measured over scanned fixtures (lines / one-word
+    /// lines, at `0.5` -> `1.0`): a 16-page ordinance 417/136 -> 339/85, a two-column
+    /// paper 1510/799 -> 1297/669, an academic scan 151/55 -> 135/51, with recognized
+    /// word counts flat or slightly up in every case. `1.5` and `2.0` were also
+    /// measured and rejected: they merge across the gutter on two-column pages and
+    /// start losing text (4974 -> 4923 -> 4895 words on the same paper).
     pub width_ths: f32,
     /// Fractional margin added around each box. Default `0.1`.
     pub add_margin: f32,
@@ -75,7 +85,7 @@ impl Default for DetectionConfig {
             slope_ths: 0.1,
             ycenter_ths: 0.5,
             height_ths: 0.5,
-            width_ths: 0.5,
+            width_ths: 1.0,
             add_margin: 0.1,
             detect_orientation: false,
             orientation_probe_canvas_size: 1280,
@@ -103,6 +113,15 @@ impl DetectionConfig {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// `width_ths` is the one detection default that deliberately departs from
+    /// EasyOCR's `0.5`. Pinned because reverting it silently restores the
+    /// one-word-per-line splitting on letter-spaced headings, which is invisible
+    /// in any single-box unit test.
+    #[test]
+    fn should_default_width_ths_wider_than_easyocr_to_avoid_splitting_letter_spaced_lines() {
+        assert_eq!(DetectionConfig::default().width_ths, 1.0);
+    }
 
     #[test]
     fn should_default_orientation_pre_pass_to_disabled() {
