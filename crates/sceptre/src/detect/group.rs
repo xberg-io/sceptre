@@ -369,6 +369,61 @@ mod tests {
         assert_eq!(grouped.horizontal, vec![[2.0, 103.0, 2.0, 47.0]]);
     }
 
+    /// The motivating case for the `width_ths` default of `3.0`: a letter-spaced
+    /// all-caps heading rendered as five single-character boxes (width 20, height
+    /// 30) with a 50px gap between each. Every pairwise gap must clear
+    /// `width_ths * height`, so the five merge into one line only once
+    /// `width_ths` is at least `50/30 = 1.67`. At the previous default of `1.0`
+    /// (and at any narrower per-run relaxation up to `1.3`) each box surfaces as
+    /// its own line and the heading is emitted one word per line.
+    #[test]
+    fn should_merge_letter_spaced_single_character_boxes_into_one_line() {
+        let config = config_with(0.0);
+        let boxes = [
+            axis_box(0.0, 20.0, 100.0, 130.0),
+            axis_box(70.0, 90.0, 100.0, 130.0),
+            axis_box(140.0, 160.0, 100.0, 130.0),
+            axis_box(210.0, 230.0, 100.0, 130.0),
+            axis_box(280.0, 300.0, 100.0, 130.0),
+        ];
+
+        let grouped = group_boxes(&boxes, &config);
+
+        assert_eq!(grouped.horizontal, vec![[0.0, 300.0, 100.0, 130.0]]);
+    }
+
+    /// The widened `width_ths` applies to every pair of same-line boxes, not only
+    /// to glyph-shaped ones: two normal multi-character word boxes (width 80,
+    /// height 30) separated by a 60px inter-word gap merge because `60 < 3.0*30`.
+    /// At the previous default of `1.0` the same pair split (`60 >= 1.0*30`).
+    #[test]
+    fn should_merge_normal_width_word_boxes_across_a_wide_inter_word_gap() {
+        let config = config_with(0.0);
+        let boxes = [axis_box(0.0, 80.0, 100.0, 130.0), axis_box(140.0, 220.0, 100.0, 130.0)];
+
+        let grouped = group_boxes(&boxes, &config);
+
+        assert_eq!(grouped.horizontal, vec![[0.0, 220.0, 100.0, 130.0]]);
+    }
+
+    /// Upper bound on the widened `width_ths`: a two-column gutter is still wide
+    /// enough to split. The last box of the left column and the first of the
+    /// right are 30px tall and 150px apart, and `150 >= 3.0*30 = 90`, so they
+    /// stay two lines. Pins that `3.0` did not swallow the gutter case that
+    /// rejected earlier widening attempts.
+    #[test]
+    fn should_never_merge_boxes_across_a_gutter_sized_gap() {
+        let config = config_with(0.0);
+        let left_column = axis_box(0.0, 80.0, 100.0, 130.0);
+        let right_column = axis_box(230.0, 310.0, 100.0, 130.0);
+
+        let grouped = group_boxes(&[left_column, right_column], &config);
+
+        assert_eq!(grouped.horizontal.len(), 2);
+        assert!(grouped.horizontal.contains(&[0.0, 80.0, 100.0, 130.0]));
+        assert!(grouped.horizontal.contains(&[230.0, 310.0, 100.0, 130.0]));
+    }
+
     #[test]
     fn should_merge_line_of_three_and_keep_distant_line_separate() {
         // Exercises the running-mean accumulation: three adjacent same-height boxes ~keep

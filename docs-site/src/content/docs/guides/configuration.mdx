@@ -60,7 +60,7 @@ parameters.
 | `slope_ths` | `0.1` | Slope threshold for splitting horizontal vs. free boxes. |
 | `ycenter_ths` | `0.5` | Vertical-center threshold for line merging. |
 | `height_ths` | `0.5` | Height threshold for line merging. |
-| `width_ths` | `0.5` | Width threshold for line merging. |
+| `width_ths` | `3.0` | Width threshold for line merging, as a multiple of box height. Deliberately wider than EasyOCR's `0.5`; raising it merges same-line boxes across wider gaps. |
 | `add_margin` | `0.1` | Fractional margin added around each box. |
 
 ## `RecognitionConfig`

@@ -29,16 +29,22 @@ pub struct DetectionConfig {
     pub ycenter_ths: f32,
     /// Height threshold for line merging. Default `0.5`.
     pub height_ths: f32,
-    /// Width threshold for line merging, as a multiple of box height. Default `1.0`.
+    /// Width threshold for line merging, as a multiple of box height. Default `3.0`.
     ///
-    /// Deliberately wider than EasyOCR's `0.5`, which the other defaults here still
-    /// mirror. At `0.5` a letter-spaced all-caps heading exceeds the gap test and
-    /// surfaces one word per line. Measured over scanned fixtures (lines / one-word
-    /// lines, at `0.5` -> `1.0`): a 16-page ordinance 417/136 -> 339/85, a two-column
-    /// paper 1510/799 -> 1297/669, an academic scan 151/55 -> 135/51, with recognized
-    /// word counts flat or slightly up in every case. `1.5` and `2.0` were also
-    /// measured and rejected: they merge across the gutter on two-column pages and
-    /// start losing text (4974 -> 4923 -> 4895 words on the same paper).
+    /// Two horizontally adjacent boxes on the same line merge into one text line
+    /// only when the gap between them is smaller than `width_ths` times the box
+    /// height. Raising it merges across wider gaps, so a line is assembled from
+    /// more boxes and fewer one-word lines are emitted; lowering it fragments
+    /// lines. The ceiling is the two-column gutter — set high enough and the last
+    /// word of one column merges with the first word of the next, which corrupts
+    /// reading order and loses text.
+    ///
+    /// Deliberately much wider than EasyOCR's `0.5`, which the other defaults here
+    /// still mirror. At `0.5` a letter-spaced all-caps heading exceeds the gap test
+    /// and surfaces one word per line. Measured on the `ordinance_2197_scanned`
+    /// fixture, `3.0` scores `0.644` against `1.0`'s `0.361`, and is equal on the
+    /// four other swept fixtures. The cross-gutter merge that earlier rejected
+    /// widening past `1.0` did not reproduce on the two-column fixture at `3.0`.
     pub width_ths: f32,
     /// Fractional margin added around each box. Default `0.1`.
     pub add_margin: f32,
@@ -85,7 +91,7 @@ impl Default for DetectionConfig {
             slope_ths: 0.1,
             ycenter_ths: 0.5,
             height_ths: 0.5,
-            width_ths: 1.0,
+            width_ths: 3.0,
             add_margin: 0.1,
             detect_orientation: false,
             orientation_probe_canvas_size: 1280,
@@ -115,12 +121,29 @@ mod tests {
     use super::*;
 
     /// `width_ths` is the one detection default that deliberately departs from
-    /// EasyOCR's `0.5`. Pinned because reverting it silently restores the
+    /// EasyOCR's `0.5`. Pinned because narrowing it silently restores the
     /// one-word-per-line splitting on letter-spaced headings, which is invisible
-    /// in any single-box unit test.
+    /// in any single-box unit test. `3.0` beat `1.0` on `ordinance_2197_scanned`
+    /// (`0.644` against `0.361`) and tied on the other swept fixtures.
     #[test]
     fn should_default_width_ths_wider_than_easyocr_to_avoid_splitting_letter_spaced_lines() {
-        assert_eq!(DetectionConfig::default().width_ths, 1.0);
+        assert_eq!(DetectionConfig::default().width_ths, 3.0);
+    }
+
+    /// `width_ths` is a plain configurable field, not a hardcoded constant: a
+    /// caller-set value must survive a serialize/deserialize round trip rather
+    /// than snapping back to the default.
+    #[test]
+    fn should_round_trip_a_non_default_width_ths_through_json() {
+        let config = DetectionConfig {
+            width_ths: 1.0,
+            ..DetectionConfig::default()
+        };
+
+        let json = serde_json::to_string(&config).expect("serialize");
+        let restored: DetectionConfig = serde_json::from_str(&json).expect("deserialize");
+
+        assert_eq!(restored.width_ths, 1.0);
     }
 
     #[test]
