@@ -245,10 +245,11 @@ pub(super) fn collapse_classes(classes: impl IntoIterator<Item = usize>, charset
     for class in classes {
         let is_new = previous != Some(class);
         previous = Some(class);
-        if is_new && class != BLANK_CLASS {
-            if let Some(character) = charset.char_at_class(class) {
-                text.push(character);
-            }
+        if is_new
+            && class != BLANK_CLASS
+            && let Some(character) = charset.char_at_class(class)
+        {
+            text.push(character);
         }
     }
     text
