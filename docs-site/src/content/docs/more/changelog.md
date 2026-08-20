@@ -15,11 +15,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`width_ths` now defaults to `3.0`, up from EasyOCR's `0.5`.** Two same-line detection boxes
   merge when the gap between them is smaller than `width_ths` times the box height, so the old
   default split letter-spaced headings, wide-tracked all-caps and generously-kerned scanned body
-  text into one box per word. Raising it assembles those into whole lines: on a 16-page scanned
-  ordinance the list-structure score goes 0.361 to 0.644, and four other swept fixtures are
-  unchanged. A two-column gutter is several box-heights wide and still does not merge, which is
-  the upper bound this default is pinned against. Callers that set `width_ths` explicitly are
-  unaffected; callers relying on the default will see fewer, longer line boxes.
+  text into one box per word. Raising it assembles those into whole lines. Callers that set
+  `width_ths` explicitly are unaffected; callers relying on the default will see fewer, longer line
+  boxes. The value has not been measured end to end against the `0.5` it replaces: the sweep that
+  chose it compared `3.0` against `1.0`, an unreleased intermediate default, on a single fixture --
+  a 16-page scanned ordinance, list-structure score `0.361` at `1.0` against `0.644` at `3.0`, with
+  the four other swept fixtures unchanged. The upper bound is the two-column gutter, which survives
+  only because it is wider than three box heights, and that is pinned by a unit test on synthetic
+  geometry; the earlier measurement that rejected `1.5` and `2.0` for merging across a real gutter
+  and losing text (4974 to 4923 to 4895 words on the same two-column paper) has not been re-run at
+  `3.0`.
 
 - **The benchmark `--assert` speed gate is now self-referential and host-scoped.** It required
   sceptre's warm/batch wall time to beat EasyOCR's by 2.0×; it now requires sceptre's own warm
