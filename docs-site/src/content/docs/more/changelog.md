@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-08-20
+
 ### Changed
 
 - **`width_ths` now defaults to `3.0`, up from EasyOCR's `0.5`.** Two same-line detection boxes
@@ -17,14 +19,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   default split letter-spaced headings, wide-tracked all-caps and generously-kerned scanned body
   text into one box per word. Raising it assembles those into whole lines. Callers that set
   `width_ths` explicitly are unaffected; callers relying on the default will see fewer, longer line
-  boxes. The value has not been measured end to end against the `0.5` it replaces: the sweep that
-  chose it compared `3.0` against `1.0`, an unreleased intermediate default, on a single fixture --
-  a 16-page scanned ordinance, list-structure score `0.361` at `1.0` against `0.644` at `3.0`, with
-  the four other swept fixtures unchanged. The upper bound is the two-column gutter, which survives
-  only because it is wider than three box heights, and that is pinned by a unit test on synthetic
-  geometry; the earlier measurement that rejected `1.5` and `2.0` for merging across a real gutter
-  and losing text (4974 to 4923 to 4895 words on the same two-column paper) has not been re-run at
-  `3.0`.
+  boxes.
+
+  Measured end to end against the `0.5` it replaces (2026-08-20), over all seven scanned
+  fixtures, scoring recognized word count and one-word-line count. Words / one-word lines:
+  `0.5` 12959/596, `1.0` 12945/501, `1.5` 12894/471, `2.0` 12868/443, `3.0` 12862/402. So
+  `3.0` costs 0.75% of recognized words for a third fewer one-word lines, and the word cost
+  saturates above `2.0` -- the last step gives up only 6 further words while removing 41 more
+  one-word lines. Marginal cost in words per one-word-line removed runs 0.15, 1.70, 0.93, 0.15
+  across the four steps, making `1.0`-`2.0` the worst band and `3.0` as efficient as the first
+  widening.
+
+  The earlier round's gutter concern is real but local: the corpus-wide `-97` words is
+  essentially one fixture. A two-column paper loses 132 words from `1.0` to `3.0` -- closely
+  reproducing that round's 4974/4923/4895 series at 4941/4878/4851 -- while five of the seven
+  fixtures gain words at `3.0`. Two-column pages pay; single-column pages do not. Callers
+  extracting two-column material should consider setting `width_ths` back to `1.0`.
 
 - **The benchmark `--assert` speed gate is now self-referential and host-scoped.** It required
   sceptre's warm/batch wall time to beat EasyOCR's by 2.0×; it now requires sceptre's own warm
@@ -360,7 +370,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Offline-first model provisioning: models download from Hugging Face on first use, cache locally,
   and are sha256-verified on download — every run thereafter reads the cache with no network.
 
-[Unreleased]: https://github.com/xberg-io/sceptre/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/xberg-io/sceptre/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/xberg-io/sceptre/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/xberg-io/sceptre/compare/v0.4.0...v0.6.0
 [0.4.0]: https://github.com/xberg-io/sceptre/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/xberg-io/sceptre/compare/v0.2.0...v0.3.0
