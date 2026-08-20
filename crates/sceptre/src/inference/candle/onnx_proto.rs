@@ -179,7 +179,7 @@ fn decode_tensor(tensor: TensorProto) -> Result<OnnxTensor> {
     let data = if tensor.raw_data.is_empty() {
         tensor.float_data
     } else {
-        if tensor.raw_data.len() % RAW_DATA_BYTES_PER_FLOAT != 0 {
+        if !tensor.raw_data.len().is_multiple_of(RAW_DATA_BYTES_PER_FLOAT) {
             return Err(OcrError::inference(format!(
                 "initializer `{}` has a raw_data length {} that is not a multiple of {RAW_DATA_BYTES_PER_FLOAT}",
                 tensor.name,
