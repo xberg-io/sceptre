@@ -369,41 +369,55 @@ mod tests {
         assert_eq!(grouped.horizontal, vec![[2.0, 103.0, 2.0, 47.0]]);
     }
 
-    /// The motivating case for the `width_ths` default of `3.0`: a letter-spaced
-    /// all-caps heading rendered as five single-character boxes (width 20, height
-    /// 30) with a 50px gap between each. Every pairwise gap must clear
-    /// `width_ths * height`, so the five merge into one line only once
-    /// `width_ths` is at least `50/30 = 1.67`. At the previous default of `1.0`
-    /// (and at any narrower per-run relaxation up to `1.3`) each box surfaces as
-    /// its own line and the heading is emitted one word per line.
+    /// The motivating case for widening `width_ths` past EasyOCR's `0.5`: a
+    /// letter-spaced all-caps heading rendered as five single-character boxes
+    /// (width 20, height 30) with a 25px gap between each. Every pairwise gap must
+    /// clear `width_ths * height`, so at the `1.0` default these merge into one line
+    /// (`25 < 1.0*30`) while at `0.5` (`25 >= 0.5*30`) each box surfaces as its own
+    /// line and the heading is emitted one word per line.
+    ///
+    /// The gap is deliberately 25, not the 50 an earlier revision used. A 50px gap is
+    /// ratio `1.67`, which only merges at `width_ths >= 1.67` — and every value that
+    /// high breaks `korean.png`'s two-column golden. See `config/detection.rs` for the
+    /// CJK sweep that settles the bound.
     #[test]
     fn should_merge_letter_spaced_single_character_boxes_into_one_line() {
         let config = config_with(0.0);
         let boxes = [
             axis_box(0.0, 20.0, 100.0, 130.0),
-            axis_box(70.0, 90.0, 100.0, 130.0),
-            axis_box(140.0, 160.0, 100.0, 130.0),
-            axis_box(210.0, 230.0, 100.0, 130.0),
-            axis_box(280.0, 300.0, 100.0, 130.0),
+            axis_box(45.0, 65.0, 100.0, 130.0),
+            axis_box(90.0, 110.0, 100.0, 130.0),
+            axis_box(135.0, 155.0, 100.0, 130.0),
+            axis_box(180.0, 200.0, 100.0, 130.0),
         ];
 
         let grouped = group_boxes(&boxes, &config);
 
-        assert_eq!(grouped.horizontal, vec![[0.0, 300.0, 100.0, 130.0]]);
+        assert_eq!(grouped.horizontal, vec![[0.0, 200.0, 100.0, 130.0]]);
     }
 
-    /// The widened `width_ths` applies to every pair of same-line boxes, not only
-    /// to glyph-shaped ones: two normal multi-character word boxes (width 80,
-    /// height 30) separated by a 60px inter-word gap merge because `60 < 3.0*30`.
-    /// At the previous default of `1.0` the same pair split (`60 >= 1.0*30`).
+    /// The upper bound, expressed as geometry: two normal word boxes (width 80,
+    /// height 30) separated by a 60px gap — ratio `2.0` — must stay SEPARATE at the
+    /// `1.0` default.
+    ///
+    /// This is the two-column gutter case in miniature, and it is the assertion an
+    /// earlier revision had inverted: it asserted these merge, which is only true at
+    /// `width_ths >= 2.0`. Real measurement refuted that. `korean.png` is a
+    /// two-column sign whose columns merge across the gutter at `1.5` and above,
+    /// collapsing six recognized lines to three and degrading `2O5Km` to `25Km`.
+    /// Synthetic geometry does not get to overrule a real fixture scored against the
+    /// EasyOCR reference.
     #[test]
-    fn should_merge_normal_width_word_boxes_across_a_wide_inter_word_gap() {
+    fn should_not_merge_normal_width_word_boxes_across_a_gutter_width_gap() {
         let config = config_with(0.0);
         let boxes = [axis_box(0.0, 80.0, 100.0, 130.0), axis_box(140.0, 220.0, 100.0, 130.0)];
 
         let grouped = group_boxes(&boxes, &config);
 
-        assert_eq!(grouped.horizontal, vec![[0.0, 220.0, 100.0, 130.0]]);
+        assert_eq!(
+            grouped.horizontal,
+            vec![[0.0, 80.0, 100.0, 130.0], [140.0, 220.0, 100.0, 130.0]]
+        );
     }
 
     /// A synthetic-geometry floor on `width_ths`, not evidence about a real

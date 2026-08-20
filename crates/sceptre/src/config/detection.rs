@@ -29,7 +29,7 @@ pub struct DetectionConfig {
     pub ycenter_ths: f32,
     /// Height threshold for line merging. Default `0.5`.
     pub height_ths: f32,
-    /// Width threshold for line merging, as a multiple of box height. Default `3.0`.
+    /// Width threshold for line merging, as a multiple of box height. Default `1.0`.
     ///
     /// Two horizontally adjacent boxes on the same line merge into one text line
     /// only when the gap between them is smaller than `width_ths` times the box
@@ -58,36 +58,40 @@ pub struct DetectionConfig {
     ///   fixture at `3.0`, but the text-loss word counts the earlier round tracked
     ///   were not re-measured.
     ///
-    /// - **`0.5` -> `3.0`** (2026-08-20, the delta a caller relying on the default
-    ///   actually experiences, finally measured end to end): swept `0.5 / 1.0 / 1.5
-    ///   / 2.0 / 3.0` over all seven scanned fixtures through the xberg CLI, scoring
-    ///   recognized word count and one-word-line count on markdown output. Word
-    ///   count is used deliberately: markdown joins lines, so a line-count metric at
-    ///   this layer is not comparable to the detection-layer counts above, but word
-    ///   count survives joining and is exactly the quantity the "loses text" claim is
-    ///   about. Corpus totals (words / one-word lines): `0.5` 12959/596, `1.0`
-    ///   12945/501, `1.5` 12894/471, `2.0` 12868/443, `3.0` 12862/402.
+    /// - **`0.5` -> `3.0`** (2026-08-20): swept `0.5 / 1.0 / 1.5 / 2.0 / 3.0` over all
+    ///   seven scanned fixtures, scoring recognized word count and one-word-line count.
+    ///   Corpus totals (words / one-word lines): `0.5` 12959/596, `1.0` 12945/501, `1.5`
+    ///   12894/471, `2.0` 12868/443, `3.0` 12862/402. Marginal cost in words per
+    ///   one-word-line removed: `0.15` for `0.5`->`1.0`, `1.70` for `1.0`->`1.5`, `0.93`
+    ///   for `1.5`->`2.0`, `0.15` for `2.0`->`3.0`. So `1.0` is the knee, and the
+    ///   `1.0`-`2.0` band is the worst trade on offer.
     ///
-    ///   So `3.0` costs `-97` words (`-0.75%`) against `0.5` while removing a third
-    ///   of all one-word lines. Text loss SATURATES -- `2.0` to `3.0` gives up only
-    ///   6 further words -- and the marginal cost in words per one-word-line removed
-    ///   is `0.15` for `0.5`->`1.0`, `1.70` for `1.0`->`1.5`, `0.93` for
-    ///   `1.5`->`2.0`, and `0.15` again for `2.0`->`3.0`. The `1.0`-`2.0` band is the
-    ///   WORST trade available; `3.0` is as efficient as the first widening.
+    /// - **CJK golden parity** (2026-08-20) is what settles the upper bound, and it
+    ///   REFUTES `3.0`. That scanned corpus is almost entirely single-column, so it
+    ///   under-weights the gutter case. Swept against the three CJK golden fixtures and
+    ///   scored against the authoritative EasyOCR reference:
     ///
-    ///   The earlier round's gutter concern is real but LOCAL: the corpus-wide `-97`
-    ///   is one fixture. `docling` (two-column) loses 132 words from `1.0` to `3.0`,
-    ///   closely reproducing that round's `4974`/`4923`/`4895` series at
-    ///   `4941`/`4878`/`4851`, while five of the seven fixtures GAIN words at `3.0`.
-    ///   Two-column pages do pay; single-column pages do not.
+    ///   | fixture        | 0.5 | 1.0 | 1.5 | 2.0 | 3.0 |
+    ///   |----------------|-----|-----|-----|-----|-----|
+    ///   | `chinese.jpg`  | ok  | ok  | ok  | ok  | merges `W` + `Yuyuan Rd` |
+    ///   | `korean.png`   | ok  | ok  | breaks | breaks | breaks |
+    ///   | `japanese.jpg` | ok  | ok  | ok  | ok  | ok |
     ///
-    /// Net: `3.0` is the right default on this corpus and is kept -- though it was
-    /// arrived at by a commit whose stated rationale was fabricated, and its cost is
-    /// concentrated on multi-column scans. A caller extracting two-column papers
-    /// should consider `1.0`. The upper bound is otherwise pinned only by a unit test
-    /// on synthetic geometry (`should_never_merge_boxes_across_a_gutter_sized_gap` in
-    /// `detect/group.rs`), which uses a ratio-5.0 gap and so excludes nothing in
-    /// `[1.67, 5.0)`.
+    ///   `korean.png` is a two-column sign. At `1.5` and above the columns merge across
+    ///   the gutter -- six lines collapse to four, then three -- and the distance
+    ///   degrades from `2O5Km` to `25Km`, losing a digit outright. `1.0` is therefore
+    ///   the highest value that keeps every CJK golden, and at `1.0` `korean.png`
+    ///   matches the EasyOCR reference exactly.
+    ///
+    /// Net: `1.0`. Both lines of evidence agree, and it is the value the earlier
+    /// measured round already chose. The `3.0` that briefly replaced it was committed
+    /// with a fabricated rationale and broke two of the three CJK goldens; those tests
+    /// did not catch it because they skip unless `SCEPTRE_REQUIRE_MODELS` is set with
+    /// the models cached, and the commits were never pushed. The upper bound is also
+    /// pinned by a synthetic-geometry unit test
+    /// (`should_never_merge_boxes_across_a_gutter_sized_gap` in `detect/group.rs`),
+    /// which uses a ratio-5.0 gap and so excludes nothing in `[1.67, 5.0)` -- the CJK
+    /// goldens are the real bound.
     pub width_ths: f32,
     /// Fractional margin added around each box. Default `0.1`.
     pub add_margin: f32,
@@ -134,7 +138,7 @@ impl Default for DetectionConfig {
             slope_ths: 0.1,
             ycenter_ths: 0.5,
             height_ths: 0.5,
-            width_ths: 3.0,
+            width_ths: 1.0,
             add_margin: 0.1,
             detect_orientation: false,
             orientation_probe_canvas_size: 1280,
@@ -166,16 +170,15 @@ mod tests {
     /// `width_ths` is the one detection default that deliberately departs from
     /// EasyOCR's `0.5`. Pinned because narrowing it silently restores the
     /// one-word-per-line splitting on letter-spaced headings, which is invisible in
-    /// any single-box unit test.
+    /// any single-box unit test -- and because WIDENING it past `1.0` merges across a
+    /// two-column gutter, which `korean.png`'s golden catches and no unit test does.
     ///
-    /// `3.0` is now backed by a full `0.5`->`3.0` sweep over all seven scanned
-    /// fixtures (2026-08-20): `-97` recognized words (`-0.75%`) for a third fewer
-    /// one-word lines, with the word cost saturating above `2.0`. See the field's
-    /// doc comment for the per-step marginal costs and for the one fixture
-    /// (two-column) that carries almost all of the loss.
+    /// `1.0` is the highest value that keeps all three CJK goldens (see the field's
+    /// doc comment for the sweep). `1.5` and above collapse `korean.png`'s two columns
+    /// and lose a digit; `3.0` additionally merges `chinese.jpg`'s `W` + `Yuyuan Rd`.
     #[test]
     fn should_default_width_ths_wider_than_easyocr_to_avoid_splitting_letter_spaced_lines() {
-        assert_eq!(DetectionConfig::default().width_ths, 3.0);
+        assert_eq!(DetectionConfig::default().width_ths, 1.0);
     }
 
     /// `width_ths` is a plain configurable field, not a hardcoded constant: a
@@ -183,15 +186,22 @@ mod tests {
     /// than snapping back to the default.
     #[test]
     fn should_round_trip_a_non_default_width_ths_through_json() {
+        // 2.5, deliberately: the value must DIFFER from the default or the assertion
+        // passes whether or not the round trip preserved anything.
+        assert_ne!(
+            DetectionConfig::default().width_ths,
+            2.5,
+            "the probe value must not be the default"
+        );
         let config = DetectionConfig {
-            width_ths: 1.0,
+            width_ths: 2.5,
             ..DetectionConfig::default()
         };
 
         let json = serde_json::to_string(&config).expect("serialize");
         let restored: DetectionConfig = serde_json::from_str(&json).expect("deserialize");
 
-        assert_eq!(restored.width_ths, 1.0);
+        assert_eq!(restored.width_ths, 2.5);
     }
 
     #[test]

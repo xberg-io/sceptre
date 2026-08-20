@@ -11,27 +11,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **`width_ths` now defaults to `3.0`, up from EasyOCR's `0.5`.** Two same-line detection boxes
-  merge when the gap between them is smaller than `width_ths` times the box height, so the old
-  default split letter-spaced headings, wide-tracked all-caps and generously-kerned scanned body
-  text into one box per word. Raising it assembles those into whole lines. Callers that set
-  `width_ths` explicitly are unaffected; callers relying on the default will see fewer, longer line
-  boxes.
+- **`width_ths` now defaults to `1.0`, up from EasyOCR's `0.5`.** Two same-line detection
+  boxes merge when the gap between them is smaller than `width_ths` times the box height,
+  so the old default split letter-spaced headings, wide-tracked all-caps and generously
+  kerned scanned body text into one box per word. Raising it assembles those into whole
+  lines. Callers that set `width_ths` explicitly are unaffected; callers relying on the
+  default will see fewer, longer line boxes.
 
-  Measured end to end against the `0.5` it replaces (2026-08-20), over all seven scanned
-  fixtures, scoring recognized word count and one-word-line count. Words / one-word lines:
-  `0.5` 12959/596, `1.0` 12945/501, `1.5` 12894/471, `2.0` 12868/443, `3.0` 12862/402. So
-  `3.0` costs 0.75% of recognized words for a third fewer one-word lines, and the word cost
-  saturates above `2.0` -- the last step gives up only 6 further words while removing 41 more
-  one-word lines. Marginal cost in words per one-word-line removed runs 0.15, 1.70, 0.93, 0.15
-  across the four steps, making `1.0`-`2.0` the worst band and `3.0` as efficient as the first
-  widening.
+  Measured two ways, which agree. Over the seven scanned fixtures, scoring recognized
+  words and one-word lines: `0.5` 12959/596, `1.0` 12945/501, `1.5` 12894/471, `2.0`
+  12868/443, `3.0` 12862/402 — so `1.0` buys a 16% cut in one-word lines for 0.11% of
+  words, and the marginal cost per one-word line removed then jumps from `0.15` to
+  `1.70`. `1.0` is the knee.
 
-  The earlier round's gutter concern is real but local: the corpus-wide `-97` words is
-  essentially one fixture. A two-column paper loses 132 words from `1.0` to `3.0` -- closely
-  reproducing that round's 4974/4923/4895 series at 4941/4878/4851 -- while five of the seven
-  fixtures gain words at `3.0`. Two-column pages pay; single-column pages do not. Callers
-  extracting two-column material should consider setting `width_ths` back to `1.0`.
+  The upper bound comes from the CJK golden fixtures, scored against the authoritative
+  EasyOCR reference. `korean.png` is a two-column sign: at `1.5` and above the columns
+  merge across the gutter (six lines collapse to four, then three) and the distance
+  degrades from `2O5Km` to `25Km`, losing a digit. At `3.0` `chinese.jpg` additionally
+  merges `W` and `Yuyuan Rd`. `1.0` is the highest value that keeps all three CJK
+  goldens, and there `korean.png` matches the EasyOCR reference exactly.
 
 - **The benchmark `--assert` speed gate is now self-referential and host-scoped.** It required
   sceptre's warm/batch wall time to beat EasyOCR's by 2.0×; it now requires sceptre's own warm
