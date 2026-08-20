@@ -406,11 +406,18 @@ mod tests {
         assert_eq!(grouped.horizontal, vec![[0.0, 220.0, 100.0, 130.0]]);
     }
 
-    /// Upper bound on the widened `width_ths`: a two-column gutter is still wide
-    /// enough to split. The last box of the left column and the first of the
-    /// right are 30px tall and 150px apart, and `150 >= 3.0*30 = 90`, so they
-    /// stay two lines. Pins that `3.0` did not swallow the gutter case that
-    /// rejected earlier widening attempts.
+    /// A synthetic-geometry floor on `width_ths`, not evidence about a real
+    /// gutter. The gap here is 150px against a 30px box height -- ratio `5.0`,
+    /// chosen so the pair clears `3.0*30 = 90` by a wide margin and the test is
+    /// easy to reason about. Real two-column gutters run roughly ratio 2-4, and
+    /// real inter-word gaps on a scanned page measure roughly ratio 0.33-0.66
+    /// (backed out from sceptre's own detected quads for
+    /// `ordinance_2197_scanned.pdf`, embedded in xberg's `sceptre_ocr` tests at
+    /// `crates/xberg/src/sceptre_ocr/mod.rs:1533-1543`). At ratio `5.0` this test
+    /// is satisfied by construction and pins nothing about whether `3.0` is safe
+    /// on an actual page -- see
+    /// `should_keep_columns_separate_at_a_realistic_two_column_gutter_ratio`
+    /// below for the case this one does not cover.
     #[test]
     fn should_never_merge_boxes_across_a_gutter_sized_gap() {
         let config = config_with(0.0);
@@ -422,6 +429,55 @@ mod tests {
         assert_eq!(grouped.horizontal.len(), 2);
         assert!(grouped.horizontal.contains(&[0.0, 80.0, 100.0, 130.0]));
         assert!(grouped.horizontal.contains(&[230.0, 310.0, 100.0, 130.0]));
+    }
+
+    /// The real-world case `should_never_merge_boxes_across_a_gutter_sized_gap`
+    /// does not cover: a two-column layout at gutter ratio `2.5` (gap 80px
+    /// against a 32px box height), inside the roughly-2-to-4 range real
+    /// two-column gutters run and well under the synthetic test's ratio `5.0`.
+    /// Three word-like boxes per column with a 14px (ratio ~0.44) inter-word
+    /// gap, matching the real detected gaps in xberg's `sceptre_ocr` tests for
+    /// `ordinance_2197_scanned.pdf` (see the sibling test's doc comment).
+    ///
+    /// `group_adjacent`'s mergeable test only compares each box against its
+    /// immediate predecessor's `x_max` (`running_x_max`), which is updated
+    /// unconditionally every iteration regardless of whether a merge happened.
+    /// So one gutter-crossing merge does not stay a single bad pair: the first
+    /// box of the right column chains onto the left column's group, and every
+    /// following right-column box then re-passes the (now-normal, intra-column)
+    /// gap test against it. The whole line collapses into one group spanning
+    /// both columns, not just the two boxes at the boundary -- the failure is
+    /// superlinear in the number of boxes per column, not a single bad merge.
+    ///
+    /// FAILS at the current `width_ths` default of `3.0`: `80 < 3.0*32 = 96`, so
+    /// the gutter merges (in fact all six boxes collapse into one group, since
+    /// `running_x_max` never resets). It would pass at any `width_ths <= 2.5`.
+    /// Ignored rather than weakened or deleted: it records the real bound
+    /// pending the `0.5`-vs-`3.0` end-to-end measurement (see `width_ths`'s doc
+    /// comment in `config/detection.rs`). Do not clear `#[ignore]` by loosening
+    /// this assertion -- only by revisiting the default.
+    #[test]
+    #[ignore = "fails at the current width_ths default of 3.0 (gutter ratio 2.5 < 3.0 merges); \
+                pending the 0.5-vs-3.0 measurement, see config/detection.rs width_ths docs"]
+    fn should_keep_columns_separate_at_a_realistic_two_column_gutter_ratio() {
+        let config = config_with(0.0);
+        let left = [
+            axis_box(0.0, 60.0, 908.0, 940.0),
+            axis_box(74.0, 134.0, 908.0, 940.0),
+            axis_box(148.0, 208.0, 908.0, 940.0),
+        ];
+        let right = [
+            axis_box(288.0, 348.0, 908.0, 940.0),
+            axis_box(362.0, 422.0, 908.0, 940.0),
+            axis_box(436.0, 496.0, 908.0, 940.0),
+        ];
+        let boxes: Vec<[[f32; 2]; 4]> = left.into_iter().chain(right).collect();
+
+        let grouped = group_boxes(&boxes, &config);
+
+        assert_eq!(grouped.horizontal.len(), 2, "the two columns must not merge into one line");
+        assert!(grouped.horizontal.contains(&[0.0, 208.0, 908.0, 940.0]));
+        assert!(grouped.horizontal.contains(&[288.0, 496.0, 908.0, 940.0]));
     }
 
     #[test]

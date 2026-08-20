@@ -41,10 +41,53 @@ pub struct DetectionConfig {
     ///
     /// Deliberately much wider than EasyOCR's `0.5`, which the other defaults here
     /// still mirror. At `0.5` a letter-spaced all-caps heading exceeds the gap test
-    /// and surfaces one word per line. Measured on the `ordinance_2197_scanned`
-    /// fixture, `3.0` scores `0.644` against `1.0`'s `0.361`, and is equal on the
-    /// four other swept fixtures. The cross-gutter merge that earlier rejected
-    /// widening past `1.0` did not reproduce on the two-column fixture at `3.0`.
+    /// and surfaces one word per line. Two rounds of measurement are on record, and
+    /// they do not compose into a validated case for `3.0`:
+    ///
+    /// - **`0.5` -> `1.0`** (the original widening): measured over scanned fixtures
+    ///   as line count / one-word-line count. A 16-page ordinance went `417/136` ->
+    ///   `339/85`, a two-column paper `1510/799` -> `1297/669`, an academic scan
+    ///   `151/55` -> `135/51`, with recognized word counts flat or slightly up in
+    ///   every case. `1.5` and `2.0` were also measured on the same two-column paper
+    ///   and rejected: they merge across the gutter and start losing text
+    ///   (`4974` -> `4923` -> `4895` words).
+    /// - **`1.0` -> `3.0`** (the current default): measured only on the
+    ///   `ordinance_2197_scanned` fixture's list-structure score, `0.361` ->
+    ///   `0.644`, with four other swept fixtures unchanged. This sweep did not
+    ///   reproduce the `1.5`/`2.0` gutter-merge regression on the two-column
+    ///   fixture at `3.0`, but the text-loss word counts the earlier round tracked
+    ///   were not re-measured.
+    ///
+    /// - **`0.5` -> `3.0`** (2026-08-20, the delta a caller relying on the default
+    ///   actually experiences, finally measured end to end): swept `0.5 / 1.0 / 1.5
+    ///   / 2.0 / 3.0` over all seven scanned fixtures through the xberg CLI, scoring
+    ///   recognized word count and one-word-line count on markdown output. Word
+    ///   count is used deliberately: markdown joins lines, so a line-count metric at
+    ///   this layer is not comparable to the detection-layer counts above, but word
+    ///   count survives joining and is exactly the quantity the "loses text" claim is
+    ///   about. Corpus totals (words / one-word lines): `0.5` 12959/596, `1.0`
+    ///   12945/501, `1.5` 12894/471, `2.0` 12868/443, `3.0` 12862/402.
+    ///
+    ///   So `3.0` costs `-97` words (`-0.75%`) against `0.5` while removing a third
+    ///   of all one-word lines. Text loss SATURATES -- `2.0` to `3.0` gives up only
+    ///   6 further words -- and the marginal cost in words per one-word-line removed
+    ///   is `0.15` for `0.5`->`1.0`, `1.70` for `1.0`->`1.5`, `0.93` for
+    ///   `1.5`->`2.0`, and `0.15` again for `2.0`->`3.0`. The `1.0`-`2.0` band is the
+    ///   WORST trade available; `3.0` is as efficient as the first widening.
+    ///
+    ///   The earlier round's gutter concern is real but LOCAL: the corpus-wide `-97`
+    ///   is one fixture. `docling` (two-column) loses 132 words from `1.0` to `3.0`,
+    ///   closely reproducing that round's `4974`/`4923`/`4895` series at
+    ///   `4941`/`4878`/`4851`, while five of the seven fixtures GAIN words at `3.0`.
+    ///   Two-column pages do pay; single-column pages do not.
+    ///
+    /// Net: `3.0` is the right default on this corpus and is kept -- though it was
+    /// arrived at by a commit whose stated rationale was fabricated, and its cost is
+    /// concentrated on multi-column scans. A caller extracting two-column papers
+    /// should consider `1.0`. The upper bound is otherwise pinned only by a unit test
+    /// on synthetic geometry (`should_never_merge_boxes_across_a_gutter_sized_gap` in
+    /// `detect/group.rs`), which uses a ratio-5.0 gap and so excludes nothing in
+    /// `[1.67, 5.0)`.
     pub width_ths: f32,
     /// Fractional margin added around each box. Default `0.1`.
     pub add_margin: f32,
@@ -122,9 +165,14 @@ mod tests {
 
     /// `width_ths` is the one detection default that deliberately departs from
     /// EasyOCR's `0.5`. Pinned because narrowing it silently restores the
-    /// one-word-per-line splitting on letter-spaced headings, which is invisible
-    /// in any single-box unit test. `3.0` beat `1.0` on `ordinance_2197_scanned`
-    /// (`0.644` against `0.361`) and tied on the other swept fixtures.
+    /// one-word-per-line splitting on letter-spaced headings, which is invisible in
+    /// any single-box unit test.
+    ///
+    /// `3.0` is now backed by a full `0.5`->`3.0` sweep over all seven scanned
+    /// fixtures (2026-08-20): `-97` recognized words (`-0.75%`) for a third fewer
+    /// one-word lines, with the word cost saturating above `2.0`. See the field's
+    /// doc comment for the per-step marginal costs and for the one fixture
+    /// (two-column) that carries almost all of the loss.
     #[test]
     fn should_default_width_ths_wider_than_easyocr_to_avoid_splitting_letter_spaced_lines() {
         assert_eq!(DetectionConfig::default().width_ths, 3.0);
