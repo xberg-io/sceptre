@@ -20,6 +20,9 @@ exclude = [
   "docs-site/dist/**",
   "docs-site/node_modules/**",
   "docs-site/.astro/**",
+  # test_documents is a git submodule (a separate shared corpus repo) whose files are
+  # deliberately malformed extraction fixtures. poly must never rewrite them. ~keep
+  "test_documents/**",
   "**/pnpm-lock.yaml",
 ]
 
@@ -92,6 +95,9 @@ lint = { exclude = [
   "docs-site/dist/**",
   "docs-site/node_modules/**",
   "docs-site/.astro/**",
+  # test_documents is a git submodule (a separate shared corpus repo) whose files are
+  # deliberately malformed extraction fixtures. poly must never rewrite them. ~keep
+  "test_documents/**",
   "**/pnpm-lock.yaml",
 ] }
 fmt = { exclude = [
@@ -104,6 +110,9 @@ fmt = { exclude = [
   "docs-site/dist/**",
   "docs-site/node_modules/**",
   "docs-site/.astro/**",
+  # test_documents is a git submodule (a separate shared corpus repo) whose files are
+  # deliberately malformed extraction fixtures. poly must never rewrite them. ~keep
+  "test_documents/**",
   "**/pnpm-lock.yaml",
 ] }
 commit = { stages = ["commit-msg"] }
@@ -117,6 +126,9 @@ file_safety = { exclude = [
   "docs-site/dist/**",
   "docs-site/node_modules/**",
   "docs-site/.astro/**",
+  # test_documents is a git submodule (a separate shared corpus repo) whose files are
+  # deliberately malformed extraction fixtures. poly must never rewrite them. ~keep
+  "test_documents/**",
   "**/pnpm-lock.yaml",
 ] }
 cargo = true

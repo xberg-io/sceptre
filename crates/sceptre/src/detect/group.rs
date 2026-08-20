@@ -475,7 +475,11 @@ mod tests {
 
         let grouped = group_boxes(&boxes, &config);
 
-        assert_eq!(grouped.horizontal.len(), 2, "the two columns must not merge into one line");
+        assert_eq!(
+            grouped.horizontal.len(),
+            2,
+            "the two columns must not merge into one line"
+        );
         assert!(grouped.horizontal.contains(&[0.0, 208.0, 908.0, 940.0]));
         assert!(grouped.horizontal.contains(&[288.0, 496.0, 908.0, 940.0]));
     }
