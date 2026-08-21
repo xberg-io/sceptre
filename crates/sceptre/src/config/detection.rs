@@ -187,7 +187,7 @@ mod tests {
     #[test]
     fn should_round_trip_a_non_default_width_ths_through_json() {
         // 2.5, deliberately: the value must DIFFER from the default or the assertion
-        // passes whether or not the round trip preserved anything.
+        // passes whether or not the round trip preserved anything. ~keep
         assert_ne!(
             DetectionConfig::default().width_ths,
             2.5,
