@@ -124,8 +124,7 @@ fn map_grouped_to_regions(grouped: Grouped, min_size: u32) -> Vec<DetectedRegion
     regions
 }
 
-/// Stable-sort `regions` into top-to-bottom, left-to-right reading order by each
-/// region's vertical center (ties broken by left edge).
+/// Stable-sort `regions` into top-to-bottom, left-to-right reading order.
 ///
 /// [`group::group_boxes`] returns horizontal (line-grouped) boxes and free
 /// (rotated) quads as two *separate* lists, split purely by slope classification,
@@ -137,21 +136,41 @@ fn map_grouped_to_regions(grouped: Grouped, min_size: u32) -> Vec<DetectedRegion
 /// — was silently relocated from wherever it sat on the page to the very end of
 /// the whole region list, downstream of every other line on the page. A stable
 /// sort by vertical center restores true reading order regardless of which
-/// classification bucket a region landed in. It is a no-op on an all-horizontal
-/// input: `group_boxes` already emits horizontal boxes in increasing line order
-/// and, within a line, in increasing `x_min` order, and both orderings are
-/// monotonic in this sort's key.
+/// classification bucket a region landed in. Regions whose centers fall within
+/// half the shorter region's height are treated as one text row and sorted by
+/// their left edge. This keeps mixed-size glyphs on the same row without letting
+/// a tall central label absorb an adjacent row.
 fn sort_regions_into_reading_order(regions: &mut [DetectedRegion]) {
-    regions.sort_by(|a, b| {
-        region_reading_order_key(&a.corners)
-            .partial_cmp(&region_reading_order_key(&b.corners))
-            .unwrap_or(std::cmp::Ordering::Equal)
-    });
+    regions.sort_by(|a, b| region_geometry(&a.corners).0.total_cmp(&region_geometry(&b.corners).0));
+
+    let mut row_start = 0;
+    while row_start < regions.len() {
+        let (first_center, first_height, _) = region_geometry(&regions[row_start].corners);
+        let mut center_sum = first_center;
+        let mut row_len = 1;
+        let mut min_height = first_height;
+        let mut row_end = row_start + 1;
+
+        while row_end < regions.len() {
+            let (center, height, _) = region_geometry(&regions[row_end].corners);
+            let row_center = center_sum / row_len as f32;
+            if center - row_center > 0.5 * min_height.min(height) {
+                break;
+            }
+            center_sum += center;
+            row_len += 1;
+            min_height = min_height.min(height);
+            row_end += 1;
+        }
+
+        regions[row_start..row_end]
+            .sort_by(|a, b| region_geometry(&a.corners).2.total_cmp(&region_geometry(&b.corners).2));
+        row_start = row_end;
+    }
 }
 
-/// `(vertical center, left edge)` of a region's corners, used as the reading-order
-/// sort key: primarily top-to-bottom, secondarily left-to-right.
-fn region_reading_order_key(corners: &[[f32; 2]; REGION_CORNERS]) -> (f32, f32) {
+/// `(vertical center, height, left edge)` of a region's corners.
+fn region_geometry(corners: &[[f32; 2]; REGION_CORNERS]) -> (f32, f32, f32) {
     let mut min_x = f32::MAX;
     let mut min_y = f32::MAX;
     let mut max_y = f32::MIN;
@@ -160,7 +179,7 @@ fn region_reading_order_key(corners: &[[f32; 2]; REGION_CORNERS]) -> (f32, f32) 
         min_y = min_y.min(corner[1]);
         max_y = max_y.max(corner[1]);
     }
-    (0.5 * (min_y + max_y), min_x)
+    (0.5 * (min_y + max_y), max_y - min_y, min_x)
 }
 
 /// Push a region only if its larger extent strictly exceeds `min_size`, else drop it.
@@ -283,6 +302,39 @@ mod tests {
             "the free quad (y-center 110) must sort between the top line (10) and the \
              bottom line (210), not after both -- got order {y_centers:?}"
         );
+    }
+
+    /// A taller label may have a lower center than the short glyphs beside it,
+    /// while still belonging to the same visual row. The following row must not
+    /// be pulled into that group merely because it overlaps the tall label.
+    #[test]
+    fn should_sort_mixed_height_regions_by_rows_before_left_edge() {
+        let mut regions = vec![
+            DetectedRegion {
+                corners: [[500.0, 80.0], [550.0, 80.0], [550.0, 122.0], [500.0, 122.0]],
+                axis_aligned: true,
+            },
+            DetectedRegion {
+                corners: [[180.0, 75.0], [470.0, 75.0], [470.0, 165.0], [180.0, 165.0]],
+                axis_aligned: true,
+            },
+            DetectedRegion {
+                corners: [[80.0, 80.0], [130.0, 80.0], [130.0, 128.0], [80.0, 128.0]],
+                axis_aligned: true,
+            },
+            DetectedRegion {
+                corners: [[80.0, 126.0], [140.0, 126.0], [140.0, 156.0], [80.0, 156.0]],
+                axis_aligned: true,
+            },
+        ];
+
+        sort_regions_into_reading_order(&mut regions);
+
+        let left_edges: Vec<f32> = regions
+            .iter()
+            .map(|region| region_geometry(&region.corners).2)
+            .collect();
+        assert_eq!(left_edges, vec![80.0, 180.0, 500.0, 80.0]);
     }
 
     #[test]

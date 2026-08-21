@@ -60,3 +60,7 @@ This directory holds the project's Architecture Decision Records (ADRs) in
 | [0039](0039-opencv-faithful-min-area-rect.md) | OpenCV-faithful min-area-rect fitting (supersedes ADR 0013's min-area-rect step) | Accepted |
 | [0040](0040-models-hosted-under-the-xberg-io-hf-org.md) | Model artifacts hosted under the `xberg-io` Hugging Face org (amends ADR 0025) | Accepted |
 | [0041](0041-detection-megapixel-budget.md) | Opt-in megapixel budget for detection, `canvas_size` default unchanged | Accepted |
+| [0042](0042-host-scoped-benchmark-floors.md) | Host-scoped benchmark floors | Accepted |
+| [0043](0043-host-scoped-self-referential-speed-floor.md) | Host-scoped self-referential speed floor | Accepted |
+| [0044](0044-single-ci-check-workflow.md) | Single CI check workflow | Accepted |
+| [0045](0045-row-aware-detection-reading-order.md) | Row-aware reading order across detection buckets | Accepted |
