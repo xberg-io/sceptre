@@ -10,6 +10,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.2] - 2026-08-21
+
+### Fixed
+
+- Detection results now preserve left-to-right reading order within a text row while
+  keeping vertically distinct rows separate, including layouts where one region is
+  substantially taller than its neighbors.
+- The workspace now passes Clippy on Rust 1.98 after adopting the slice-array APIs
+  recommended by the new `chunks_exact_to_as_chunks` lint.
+
 ## [0.7.1] - 2026-08-21
 
 ### Fixed
@@ -382,7 +392,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Offline-first model provisioning: models download from Hugging Face on first use, cache locally,
   and are sha256-verified on download — every run thereafter reads the cache with no network.
 
-[Unreleased]: https://github.com/xberg-io/sceptre/compare/v0.7.1...HEAD
+[Unreleased]: https://github.com/xberg-io/sceptre/compare/v0.7.2...HEAD
+[0.7.2]: https://github.com/xberg-io/sceptre/compare/v0.7.1...v0.7.2
 [0.7.1]: https://github.com/xberg-io/sceptre/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/xberg-io/sceptre/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/xberg-io/sceptre/compare/v0.4.0...v0.6.0
