@@ -104,7 +104,9 @@ impl TextDetector for CraftDetector {
 }
 
 /// Map grouped boxes to [`DetectedRegion`]s, converting horizontal boxes to
-/// clockwise corners and dropping regions no larger than `min_size`.
+/// clockwise corners, dropping regions no larger than `min_size`, and restoring
+/// top-to-bottom reading order across the horizontal/free split (see
+/// [`sort_regions_into_reading_order`]).
 ///
 /// A region is kept only when `max(width, height) > min_size` (strict, matching
 /// EasyOCR's small-box filter); `width` and `height` are the corner-extent spans.
@@ -118,7 +120,47 @@ fn map_grouped_to_regions(grouped: Grouped, min_size: u32) -> Vec<DetectedRegion
     for corners in grouped.free {
         push_if_large_enough(&mut regions, corners, false, min_size);
     }
+    sort_regions_into_reading_order(&mut regions);
     regions
+}
+
+/// Stable-sort `regions` into top-to-bottom, left-to-right reading order by each
+/// region's vertical center (ties broken by left edge).
+///
+/// [`group::group_boxes`] returns horizontal (line-grouped) boxes and free
+/// (rotated) quads as two *separate* lists, split purely by slope classification,
+/// not by page position. [`map_grouped_to_regions`] previously concatenated
+/// horizontal-then-free unconditionally, so a region merely *misclassified* as
+/// free — a borderline slope call on a short or punctuation-adjacent word, which
+/// costs only 1-2px of corner noise (see
+/// `group::should_route_near_identical_quads_to_opposite_paths_at_the_slope_boundary`)
+/// — was silently relocated from wherever it sat on the page to the very end of
+/// the whole region list, downstream of every other line on the page. A stable
+/// sort by vertical center restores true reading order regardless of which
+/// classification bucket a region landed in. It is a no-op on an all-horizontal
+/// input: `group_boxes` already emits horizontal boxes in increasing line order
+/// and, within a line, in increasing `x_min` order, and both orderings are
+/// monotonic in this sort's key.
+fn sort_regions_into_reading_order(regions: &mut [DetectedRegion]) {
+    regions.sort_by(|a, b| {
+        region_reading_order_key(&a.corners)
+            .partial_cmp(&region_reading_order_key(&b.corners))
+            .unwrap_or(std::cmp::Ordering::Equal)
+    });
+}
+
+/// `(vertical center, left edge)` of a region's corners, used as the reading-order
+/// sort key: primarily top-to-bottom, secondarily left-to-right.
+fn region_reading_order_key(corners: &[[f32; 2]; REGION_CORNERS]) -> (f32, f32) {
+    let mut min_x = f32::MAX;
+    let mut min_y = f32::MAX;
+    let mut max_y = f32::MIN;
+    for corner in corners {
+        min_x = min_x.min(corner[0]);
+        min_y = min_y.min(corner[1]);
+        max_y = max_y.max(corner[1]);
+    }
+    (0.5 * (min_y + max_y), min_x)
 }
 
 /// Push a region only if its larger extent strictly exceeds `min_size`, else drop it.
@@ -205,6 +247,42 @@ mod tests {
         assert_eq!(regions.len(), 1);
         assert!(!regions[0].axis_aligned);
         assert_eq!(regions[0].corners, quad);
+    }
+
+    /// The bug this file's fix addresses: a free (rotated) quad sitting between two
+    /// horizontal lines on the page — e.g. a single word CRAFT's slope classifier
+    /// misroutes, like the quoted defined term `"City"` in a real scanned ordinance
+    /// page — must land between those two lines in the output order, not after
+    /// both of them. Before the fix, `map_grouped_to_regions` concatenated
+    /// `grouped.horizontal` then `grouped.free` unconditionally, so this free quad
+    /// (vertically between the two horizontal lines) was emitted last: region
+    /// order `[top line, bottom line, middle quad]` instead of
+    /// `[top line, middle quad, bottom line]`.
+    #[test]
+    fn should_interleave_a_free_quad_between_horizontal_lines_by_position() {
+        let grouped = Grouped {
+            // Two horizontal lines: one near the top of the page, one near the bottom. ~keep
+            horizontal: vec![[10.0, 90.0, 0.0, 20.0], [10.0, 90.0, 200.0, 220.0]],
+            // A free quad vertically between the two lines (y in [100, 120]). ~keep
+            free: vec![[[10.0, 100.0], [40.0, 105.0], [38.0, 120.0], [8.0, 115.0]]],
+        };
+
+        let regions = map_grouped_to_regions(grouped, 0);
+
+        assert_eq!(regions.len(), 3, "all three regions must survive the size filter");
+        let y_centers: Vec<f32> = regions
+            .iter()
+            .map(|region| {
+                let ys: Vec<f32> = region.corners.iter().map(|c| c[1]).collect();
+                0.5 * (ys.iter().cloned().fold(f32::MAX, f32::min) + ys.iter().cloned().fold(f32::MIN, f32::max))
+            })
+            .collect();
+        assert_eq!(
+            y_centers,
+            vec![10.0, 110.0, 210.0],
+            "the free quad (y-center 110) must sort between the top line (10) and the \
+             bottom line (210), not after both -- got order {y_centers:?}"
+        );
     }
 
     #[test]

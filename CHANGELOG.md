@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **A detected region misclassified as a free (rotated) quad no longer jumps to the end of
+  the page.** `group_boxes` splits detection boxes into "horizontal" (line-grouped) and
+  "free" (rotated) lists purely by a slope test, and `map_grouped_to_regions` concatenated
+  them horizontal-then-free unconditionally. A region that landed in the free bucket on a
+  borderline slope call — a short or punctuation-adjacent word, which a couple of pixels of
+  corner noise is enough to flip — was emitted after every horizontal line on the page, no
+  matter where it actually sat. Detected regions are now stable-sorted into top-to-bottom,
+  left-to-right reading order after the split, so a misclassified word lands back where it
+  belongs instead of at the end of the region list.
+
 ## [0.7.0] - 2026-08-20
 
 ### Changed
