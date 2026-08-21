@@ -35,7 +35,7 @@ const RGB_CHANNELS: usize = 3;
 pub(crate) fn to_grayscale(image: &Image) -> Result<GrayImage> {
     let rgb = image.as_rgb8();
     let mut luma = Vec::with_capacity(rgb.len() / RGB_CHANNELS);
-    for pixel in rgb.chunks_exact(RGB_CHANNELS) {
+    for pixel in rgb.as_chunks::<RGB_CHANNELS>().0 {
         let (red, green, blue) = (pixel[0] as u32, pixel[1] as u32, pixel[2] as u32);
         let gray = (red * RED_WEIGHT + green * GREEN_WEIGHT + blue * BLUE_WEIGHT + ROUND_BIAS) >> FIXED_SHIFT;
         luma.push(gray as u8);

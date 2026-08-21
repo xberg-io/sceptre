@@ -232,7 +232,7 @@ fn normalize_into_tensor(resized: &RgbImage, padded_h: u32, padded_w: u32) -> Re
         for y in 0..target_h as usize {
             let destination = &mut channel_plane[y * padded_w..y * padded_w + target_w];
             let source = &raw[y * row_stride..y * row_stride + row_stride];
-            for (cell, pixel) in destination.iter_mut().zip(source.chunks_exact(CHANNELS)) {
+            for (cell, pixel) in destination.iter_mut().zip(source.as_chunks::<CHANNELS>().0) {
                 *cell = (f32::from(pixel[channel]) - mean) / std;
             }
         }
