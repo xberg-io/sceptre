@@ -31,7 +31,7 @@ jobs:
       rust: ${{ steps.filter.outcome == 'success' && steps.filter.outputs.rust || 'true' }}
       python: ${{ steps.filter.outcome == 'success' && steps.filter.outputs.python || 'true' }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -102,7 +102,7 @@ jobs:
     if: github.repository == 'xberg-io/sceptre' && github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: xberg-io/actions/install-task@v1
       - run: task docs:changelog:check
 
@@ -133,7 +133,7 @@ jobs:
               features: "ort-bundled,tract,candle,download"
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
 
@@ -163,7 +163,7 @@ jobs:
       # make that true in CI rather than only on a developer machine. ~keep
       - name: Cache Hugging Face models
         if: matrix.variant.label == 'backend-agreement'
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: ${{ github.workspace }}/.hf
           key: hf-${{ runner.os }}-${{ hashFiles('crates/sceptre/src/models/registry.rs') }}
@@ -211,7 +211,7 @@ jobs:
     env:
       HF_HOME: ${{ github.workspace }}/.hf
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
 
@@ -238,7 +238,7 @@ jobs:
       # default `cargo install` unusable. Only an end-to-end run exercises that path. ~keep
       - name: Cache Hugging Face models
         if: matrix.install.e2e && runner.os == 'Linux'
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: ${{ github.workspace }}/.hf
           key: hf-${{ runner.os }}-${{ hashFiles('crates/sceptre/src/models/registry.rs') }}
@@ -299,7 +299,7 @@ jobs:
     env:
       HF_HOME: ${{ github.workspace }}/.hf
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
 
@@ -314,7 +314,7 @@ jobs:
           cache-key-prefix: rust-parity-${{ matrix.accelerator }}
 
       - name: Cache Hugging Face models
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: ${{ github.workspace }}/.hf
           # The registry file holds every pinned sha256, so this key is exact and
@@ -398,7 +398,7 @@ jobs:
             os: ubuntu-latest
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: xberg-io/actions/setup-rust@v1
         with:
           components: clippy
@@ -409,7 +409,7 @@ jobs:
         # toolkit is a build-time requirement even with no GPU present. Only the nvcc
         # sub-package is installed; the runtime libraries are never loaded. ~keep
         if: matrix.device == 'cuda'
-        uses: Jimver/cuda-toolkit@v0.2.19
+        uses: Jimver/cuda-toolkit@v0.2.36
         with:
           method: network
           sub-packages: '["nvcc"]'
@@ -432,7 +432,7 @@ jobs:
     if: needs.changes.outputs.rust == 'true' && github.repository == 'xberg-io/sceptre' && github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: xberg-io/actions/setup-rust@v1
         with:
           components: clippy
@@ -449,7 +449,7 @@ jobs:
     if: needs.changes.outputs.rust == 'true' && github.repository == 'xberg-io/sceptre' && github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: taiki-e/install-action@v2
         with:
           tool: cargo-deny
@@ -461,7 +461,7 @@ jobs:
     if: needs.changes.outputs.python == 'true' && github.repository == 'xberg-io/sceptre' && github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: xberg-io/actions/setup-python-env@v1
         with:

@@ -60,7 +60,7 @@ jobs:
     if: github.repository == 'xberg-io/sceptre' && github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: xberg-io/actions/setup-python-env@v1
         with:
@@ -80,7 +80,7 @@ jobs:
       (inputs.legs == 'all' || inputs.legs == 'criterion')
     runs-on: ubuntu-24.04-arm
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
 
@@ -129,7 +129,7 @@ jobs:
       HF_HOME: ${{ github.workspace }}/.hf
       BENCHMARK_RUNNER_LABEL: runner-medium
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
 
@@ -149,7 +149,7 @@ jobs:
           install-command: "uv sync --group export"
 
       - name: Cache Hugging Face models
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: ${{ github.workspace }}/.hf
           key: hf-${{ runner.os }}-${{ hashFiles('crates/sceptre/src/models/registry.rs') }}
@@ -158,7 +158,7 @@ jobs:
         # EasyOCR fetches its own weights into ~/.EasyOCR through its own mechanism, entirely
         # separately from the Hugging Face cache. Cache only one of the two and half the
         # download cost of this job remains. ~keep
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: ~/.EasyOCR
           key: easyocr-${{ runner.os }}-${{ hashFiles('uv.lock') }}
@@ -212,7 +212,7 @@ jobs:
       RUSTFLAGS: "-C target-feature=+fp16"
       SCEPTRE_BACKEND_MATRIX_OUTPUT_DIR: ${{ github.workspace }}/benchmark-results/backends
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
 
@@ -229,7 +229,7 @@ jobs:
       - uses: xberg-io/actions/install-task@v1
 
       - name: Cache Hugging Face models
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: ${{ github.workspace }}/.hf
           key: hf-${{ runner.os }}-${{ hashFiles('crates/sceptre/src/models/registry.rs') }}
@@ -275,7 +275,7 @@ jobs:
       SCEPTRE_REQUIRE_MODELS: "1"
       SCEPTRE_BACKEND_MATRIX_OUTPUT_DIR: ${{ github.workspace }}/benchmark-results/backends
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
 
@@ -290,7 +290,7 @@ jobs:
           cache-key-prefix: rust-backend-matrix-macos
 
       - name: Cache Hugging Face models
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: ${{ github.workspace }}/.hf
           key: hf-${{ runner.os }}-${{ hashFiles('crates/sceptre/src/models/registry.rs') }}
@@ -335,7 +335,7 @@ jobs:
     env:
       CUDA_COMPUTE_CAP: "89"
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
 
@@ -423,7 +423,7 @@ jobs:
       SCEPTRE_REQUIRE_MODELS: "1"
       SCEPTRE_BACKEND_MATRIX_OUTPUT_DIR: ${{ github.workspace }}/benchmark-results/backends
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
 
@@ -465,7 +465,7 @@ jobs:
           version: ${{ env.ORT_VERSION }}
 
       - name: Cache Hugging Face models
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: ${{ github.workspace }}/.hf
           key: hf-${{ runner.os }}-${{ hashFiles('crates/sceptre/src/models/registry.rs') }}
@@ -494,7 +494,7 @@ jobs:
       (inputs.legs == 'all' || inputs.legs == 'backend-matrix')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: xberg-io/actions/setup-python-env@v1
         with:
