@@ -556,10 +556,11 @@ def measure_sceptre_overhead(binary: Path, entries: list[CorpusEntry], root: Pat
     if not candidates:
         return None
     smallest = min(candidates, key=lambda entry: entry.image.stat().st_size)  # type: ignore[union-attr]
-    timings: list[float] = []
     try:
-        for _ in range(OVERHEAD_RUNS):
-            timings.append(run_sceptre_cold(binary, smallest.image, ["english"], root, threads))  # type: ignore[arg-type]
+        timings: list[float] = [
+            run_sceptre_cold(binary, smallest.image, ["english"], root, threads)  # type: ignore[arg-type]
+            for _ in range(OVERHEAD_RUNS)
+        ]
     except (RuntimeError, ValueError):
         return None
     return statistics.median(timings)
