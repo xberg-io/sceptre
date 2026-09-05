@@ -31,6 +31,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from pathlib import Path
 from time import perf_counter
 
 
@@ -118,10 +119,9 @@ def main() -> None:
     try:
         import easyocr  # noqa: F401 - probe availability before doing any work
     except ImportError:
-        print(
+        sys.stderr.write(
             "sceptre_rs_tools._easyocr_runner: needs the optional 'export' dependency group "
-            "(torch, easyocr). Install it with `uv sync --group export`, then re-run.",
-            file=sys.stderr,
+            "(torch, easyocr). Install it with `uv sync --group export`, then re-run.\n"
         )
         sys.exit(1)
 
@@ -132,7 +132,7 @@ def main() -> None:
     # progress), so stdout is not a trustworthy data channel for this subprocess. Writing to a
     # file the caller names keeps the payload out of their way and survives a dropped buffer. ~keep
     if args.output is not None:
-        with open(args.output, "w", encoding="utf-8") as handle:
+        with Path(args.output).open("w", encoding="utf-8") as handle:
             handle.write(payload + "\n")
             handle.flush()
         return

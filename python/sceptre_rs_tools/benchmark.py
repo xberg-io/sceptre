@@ -42,15 +42,18 @@ import statistics
 import subprocess
 import sys
 import tempfile
-from collections.abc import Iterable
 from dataclasses import dataclass, field
 from pathlib import Path
 from time import perf_counter
+from typing import TYPE_CHECKING
 
 from sceptre_rs_tools.corpus import CorpusEntry, build_corpus
 from sceptre_rs_tools.stats import P95_MIN_SAMPLES, P99_MIN_SAMPLES, integrate_cpu_core_seconds, suppressed_percentile
 from sceptre_rs_tools.text_metrics import f1_parts_from, greedy_match, reading_order_score
 from sceptre_rs_tools.text_metrics import tokenize as _cjk_bigram_tokenize
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Iterable
 
 # sceptre release binary produced by the ort-bundled CLI build.
 SCEPTRE_BIN = Path("target/release/sceptre")
@@ -467,7 +470,7 @@ def _sceptre_batch_command(
     command = [str(binary), "run", *[str(image) for image in images]]
     for language in sceptre_langs:
         command += ["--lang", language]
-    command += _thread_args(threads) + ["--format", "json"]
+    command += [*_thread_args(threads), "--format", "json"]
     return command
 
 
@@ -527,7 +530,7 @@ def _sceptre_cold_command(binary: Path, image: Path, sceptre_langs: list[str], t
     command = [str(binary), "run", str(image)]
     for language in sceptre_langs:
         command += ["--lang", language]
-    command += _thread_args(threads) + ["--format", "json"]
+    command += [*_thread_args(threads), "--format", "json"]
     return command
 
 
@@ -554,11 +557,11 @@ def measure_sceptre_overhead(binary: Path, entries: list[CorpusEntry], root: Pat
         return None
     smallest = min(candidates, key=lambda entry: entry.image.stat().st_size)  # type: ignore[union-attr]
     timings: list[float] = []
-    for _ in range(OVERHEAD_RUNS):
-        try:
+    try:
+        for _ in range(OVERHEAD_RUNS):
             timings.append(run_sceptre_cold(binary, smallest.image, ["english"], root, threads))  # type: ignore[arg-type]
-        except (RuntimeError, ValueError):
-            return None
+    except (RuntimeError, ValueError):
+        return None
     return statistics.median(timings)
 
 
@@ -878,7 +881,9 @@ def _runnable_images(entries: list[CorpusEntry]) -> list[CorpusEntry]:
     return [entry for entry in entries if entry.image is not None and entry.image.exists()]
 
 
-def _group_by(entries: list[CorpusEntry], key) -> dict[tuple[str, ...], list[CorpusEntry]]:
+def _group_by(
+    entries: list[CorpusEntry], key: Callable[[CorpusEntry], list[str]]
+) -> dict[tuple[str, ...], list[CorpusEntry]]:
     """Group runnable entries by a language-tuple key, preserving input order."""
     groups: dict[tuple[str, ...], list[CorpusEntry]] = {}
     for entry in _runnable_images(entries):
@@ -1336,8 +1341,7 @@ def _median_of(aggregates: dict[str, dict[str, float]], field_name: str) -> floa
 def _markdown_table(header: list[str], rows: list[list[str]]) -> str:
     """Render a simple GitHub-flavored Markdown table."""
     lines = ["| " + " | ".join(header) + " |", "| " + " | ".join("---" for _ in header) + " |"]
-    for row in rows:
-        lines.append("| " + " | ".join(row) + " |")
+    lines.extend("| " + " | ".join(row) + " |" for row in rows)
     return "\n".join(lines)
 
 

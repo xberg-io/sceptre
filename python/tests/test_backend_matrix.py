@@ -3,9 +3,14 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 from sceptre_rs_tools.backend_matrix import SCHEMA_VERSION, combine, load_leg_reports, main, render_summary
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    import pytest
 
 LEG_REPORT = {
     "leg": "ort-cpu",
@@ -64,7 +69,7 @@ def test_render_summary_includes_leg_and_image_figures() -> None:
     assert "250.0" in summary  # model_load_ms
 
 
-def test_main_writes_combined_artifact_and_prints_summary(tmp_path: Path, capsys) -> None:
+def test_main_writes_combined_artifact_and_prints_summary(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
     input_dir = tmp_path / "backends"
     input_dir.mkdir()
     write_leg_report(input_dir, "ort-cpu", LEG_REPORT)

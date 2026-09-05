@@ -233,10 +233,10 @@ def _ratio_parenthetical(value: object, suffix: str = "") -> str:
     aside: a cell that says nothing beats one asserting a non-difference. One decimal
     place, never zero — rounding 1.08 to ``1×`` reads as "1× lower", which claims an
     advantage and states equality in the same breath.
-    """
+    """  # noqa: RUF002 - U+00D7 is the character this function actually renders
     if not isinstance(value, (int, float)) or value < MIN_CLAIMABLE_RATIO:
         return ""
-    return f" (~{value:.1f}×{suffix})"
+    return f" (~{value:.1f}×{suffix})"  # noqa: RUF001 - published tables use the typographic multiplication sign
 
 
 def render_headline_table(payload: dict, *, unit: str) -> str:

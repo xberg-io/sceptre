@@ -8,8 +8,12 @@ side and its provenance, and must never drop the ``sceptre`` side written by
 from __future__ import annotations
 
 import json
+from typing import TYPE_CHECKING
 
 from sceptre_rs_tools import golden
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 def _sceptre_side() -> dict[str, object]:
@@ -47,11 +51,11 @@ def test_merge_result_is_json_serializable() -> None:
     assert json.loads(json.dumps(merged))["metadata"]["easyocr"]["languages"] == ["en"]
 
 
-def test_load_existing_returns_an_empty_dual_golden_for_a_missing_file(tmp_path) -> None:
+def test_load_existing_returns_an_empty_dual_golden_for_a_missing_file(tmp_path: Path) -> None:
     assert golden.load_existing(tmp_path / "absent.json") == {"metadata": {}, "sceptre": {"lines": []}}
 
 
-def test_load_existing_returns_an_empty_dual_golden_for_invalid_json(tmp_path) -> None:
+def test_load_existing_returns_an_empty_dual_golden_for_invalid_json(tmp_path: Path) -> None:
     broken = tmp_path / "broken.json"
     broken.write_text("{not json", encoding="utf-8")
     assert golden.load_existing(broken) == {"metadata": {}, "sceptre": {"lines": []}}

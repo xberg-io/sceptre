@@ -15,6 +15,10 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 # Abstract language name -> EasyOCR language code. Latin maps to English per the
 # benchmark spec (the itext latin_g2 recognizer has no dedicated EasyOCR analogue).
@@ -169,7 +173,7 @@ _CAPABILITY: tuple[ManifestRecord, ...] = (
 MANIFEST: tuple[ManifestRecord, ...] = _LABELED + _BREADTH + _CAPABILITY
 
 
-def _dedupe(values) -> list[str]:
+def _dedupe(values: Iterable[str]) -> list[str]:
     """Return values with duplicates removed while preserving first-seen order."""
     seen: list[str] = []
     for value in values:
@@ -218,7 +222,7 @@ def build_corpus(root: Path, group: str = "all") -> list[CorpusEntry]:
     """
     entries: list[CorpusEntry] = []
     for record in MANIFEST:
-        if group != "all" and record.group != group:
+        if group not in ("all", record.group):
             continue
         entries.append(
             CorpusEntry(

@@ -167,7 +167,9 @@ def test_parse_child_cpu_seconds_reads_linux_user_and_sys() -> None:
     assert b._parse_child_cpu_seconds(stderr) == pytest.approx(0.42)
 
 
-def test_time_wrapper_warns_once_when_gnu_time_is_missing(monkeypatch, capsys) -> None:
+def test_time_wrapper_warns_once_when_gnu_time_is_missing(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
     """A missing /usr/bin/time silently nulls peak RSS and CPU core-seconds -- say so."""
     monkeypatch.setattr(b.Path, "exists", lambda _self: False)
     b._warned_missing_time_binary.clear()

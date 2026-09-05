@@ -37,7 +37,7 @@ def test_tokenize_strips_invisible_characters() -> None:
 
 def test_tokenize_applies_nfkc_normalization() -> None:
     # U+FF21 (fullwidth "A") NFKC-normalizes to ASCII "a" after lowercasing.
-    assert tokenize("Ａ") == ["a"]
+    assert tokenize("Ａ") == ["a"]  # noqa: RUF001 - U+FF21 is the input under test
 
 
 def test_tokenize_splits_mixed_cjk_and_latin_within_one_token() -> None:
@@ -58,7 +58,7 @@ def test_greedy_match_pairs_by_descending_similarity() -> None:
 
 
 def test_greedy_match_excludes_pairs_below_threshold() -> None:
-    matches = greedy_match([0], [0], lambda p, r: 0.3, threshold=0.5)
+    matches = greedy_match([0], [0], lambda _p, _r: 0.3, threshold=0.5)
     assert matches == []
 
 

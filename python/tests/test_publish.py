@@ -7,10 +7,13 @@ binary — which is what lets the drift check run on every pull request.
 from __future__ import annotations
 
 import json
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pytest
 from sceptre_rs_tools import publish as p
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 def _report(**overrides: object) -> dict:
@@ -282,25 +285,25 @@ def _report_with_peak_rss(sceptre_mb: float, easyocr_mb: float) -> dict:
 
 def test_should_state_a_large_rss_ratio_to_one_decimal_place() -> None:
     table = p.render_headline_table(p.published_payload(_report_with_peak_rss(1000.0, 22000.0)), unit="GB")
-    assert "(~22.0× lower, per-image median)" in table
+    assert "(~22.0× lower, per-image median)" in table  # noqa: RUF001 - the rendered aside uses U+00D7 deliberately
 
 
 def test_should_name_the_statistic_the_rss_aside_reports() -> None:
     """The aside is not the quotient of the two cells beside it, so it must not read as one."""
     table = p.render_headline_table(p.published_payload(_report_with_two_language_groups()), unit="GB")
-    assert "(~3.0× lower, per-image median)" in table
+    assert "(~3.0× lower, per-image median)" in table  # noqa: RUF001 - the rendered aside uses U+00D7 deliberately
 
 
 def test_should_state_a_two_fold_rss_ratio_rather_than_rounding_it_away() -> None:
     table = p.render_headline_table(p.published_payload(_report_with_peak_rss(6624.0, 13248.0)), unit="GB")
-    assert "(~2.0× lower, per-image median)" in table
+    assert "(~2.0× lower, per-image median)" in table  # noqa: RUF001 - the rendered aside uses U+00D7 deliberately
 
 
 def test_should_drop_the_rss_aside_when_the_ratio_is_too_close_to_parity() -> None:
-    """1.08x is a real measured value; rounded to no decimals it published as "1× lower"."""
+    """1.08x is a real measured value; rounded to no decimals it published as "1× lower"."""  # noqa: RUF002 - U+00D7
     table = p.render_headline_table(p.published_payload(_report_with_peak_rss(6624.0, 7153.92)), unit="GB")
     assert "lower" not in table
-    assert "1×" not in table
+    assert "1×" not in table  # noqa: RUF001 - the rendered aside uses U+00D7 deliberately
     assert "**6.5 GB**" in table
 
 
@@ -317,7 +320,7 @@ def test_should_drop_the_throughput_aside_when_the_speedup_is_too_close_to_parit
 
 def test_should_keep_stating_a_speedup_above_the_claim_threshold() -> None:
     table = p.render_headline_table(p.published_payload(_report()), unit="GB")
-    assert "(~4.0×)" in table
+    assert "(~4.0×)" in table  # noqa: RUF001 - the rendered aside uses U+00D7 deliberately
 
 
 def test_should_render_an_em_dash_for_an_unmeasured_figure() -> None:

@@ -28,7 +28,7 @@ crate_features() {
   local crate="$1" tree
   shift
   if ! tree="$(cargo tree --locked -p sceptre-cli -e normal,build -f '{p} {f}' --prefix none "$@" 2>&1)"; then
-    printf 'FAIL: `cargo tree %s` did not resolve:\n%s\n' "$*" "${tree}" >&2
+    printf 'FAIL: "cargo tree %s" did not resolve:\n%s\n' "$*" "${tree}" >&2
     failures=$((failures + 1))
     resolved=""
     return 1

@@ -21,9 +21,11 @@ from __future__ import annotations
 
 import bisect
 import unicodedata
-from collections.abc import Callable
 from dataclasses import dataclass
-from typing import TypeVar
+from typing import TYPE_CHECKING, TypeVar
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 # Zero-width space, zero-width non-joiner/joiner, BOM, soft hyphen: characters a scanner or
 # PDF extractor sometimes emits that carry no visible content and would otherwise silently
