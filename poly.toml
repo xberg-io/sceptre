@@ -163,7 +163,16 @@ preserve_patterns = [
 # Library modules in the same package (corpus, stats, text_metrics) are deliberately
 # NOT listed and keep T201 on. ~keep
 "python/sceptre_rs_tools/backend_matrix.py" = ["T201"]
-"python/sceptre_rs_tools/benchmark.py" = ["C901", "PLR0912", "PLR0913", "PLR0915", "PLR0917", "T201", "file-too-long", "function-too-long"]
+"python/sceptre_rs_tools/benchmark.py" = [
+  "C901",
+  "PLR0912",
+  "PLR0913",
+  "PLR0915",
+  "PLR0917",
+  "T201",
+  "file-too-long",
+  "function-too-long",
+]
 "python/sceptre_rs_tools/export.py" = ["T201"]
 "python/sceptre_rs_tools/golden.py" = ["T201"]
 "python/sceptre_rs_tools/publish.py" = ["T201"]
@@ -228,3 +237,9 @@ id = "ai-rulez"
 git = "https://github.com/Goldziher/ai-rulez.git"
 revision = "v4.9.3"
 hooks = ["ai-rulez-validate", "ai-rulez-plugin-verify"]
+
+# Shell is tab-indented in this tree. `use_tabs` rather than `indent_width` because shfmt spells
+# tabs as `-i 0`, which an indent width cannot express -- poly filters a 0 out. ~keep
+[fmt.shell.shfmt]
+enabled = true
+use_tabs = true
