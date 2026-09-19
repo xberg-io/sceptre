@@ -188,8 +188,10 @@ fn decode_tensor(tensor: TensorProto) -> Result<OnnxTensor> {
         }
         tensor
             .raw_data
-            .chunks_exact(RAW_DATA_BYTES_PER_FLOAT)
-            .map(|chunk| f32::from_le_bytes([chunk[0], chunk[1], chunk[2], chunk[3]]))
+            .as_chunks::<RAW_DATA_BYTES_PER_FLOAT>()
+            .0
+            .iter()
+            .map(|chunk| f32::from_le_bytes(*chunk))
             .collect()
     };
 

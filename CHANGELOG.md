@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- The candle ONNX loader now passes Clippy on Rust 1.98 (`chunks_exact_to_as_chunks`), which
+  was failing every candle CI leg.
+
 ## [0.7.2] - 2026-08-21
 
 ### Fixed
