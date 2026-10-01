@@ -112,10 +112,9 @@ jobs:
   # release binary) and its numbers are only comparable when the machine is not otherwise
   # busy, so it runs via workflow_dispatch and this weekly schedule, never on every PR.
   #
-  # Runner moved from ubuntu-latest to runner-medium (amd64, non-spot): this changes the
-  # numbers the published figures and --assert floors were measured on. The first scheduled
-  # run here is deliberate re-baselining, and its provenance block records the runner label
-  # so a future reader can tell which host produced it (ADR 0035). ~keep
+  # This CPU comparison uses GitHub-hosted capacity so scheduled runs do not depend on the
+  # private runner fleet. Hosted hardware can vary between runs; the provenance block records
+  # ubuntu-latest as the runner class, not a promise of identical hardware (ADR 0035). ~keep
   easyocr-benchmark:
     name: EasyOCR head-to-head
     if: >-
@@ -123,11 +122,11 @@ jobs:
       (github.event_name == 'schedule' ||
        (github.event_name == 'workflow_dispatch' &&
         (inputs.legs == 'all' || inputs.legs == 'head-to-head')))
-    runs-on: runner-medium
+    runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
       HF_HOME: ${{ github.workspace }}/.hf
-      BENCHMARK_RUNNER_LABEL: runner-medium
+      BENCHMARK_RUNNER_LABEL: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
         with:
