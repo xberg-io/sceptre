@@ -10,10 +10,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.3] - 2026-10-09
+
 ### Fixed
 
 - The candle ONNX loader now passes Clippy on Rust 1.98 (`chunks_exact_to_as_chunks`), which
   was failing every candle CI leg.
+- Built-in OCR models now resolve through immutable Hugging Face commit revisions instead
+  of mutable branch names. Cached artifacts are SHA-256 verified on every use; corrupt
+  entries are evicted and repaired from the pinned revision when network access is available,
+  while offline callers fail closed rather than loading unverified bytes.
 
 ## [0.7.2] - 2026-08-21
 
