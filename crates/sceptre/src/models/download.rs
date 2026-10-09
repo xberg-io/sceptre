@@ -34,6 +34,16 @@ use crate::models::registry::effective_repo;
 /// [`hf_cache_root`]).
 #[cfg(feature = "download")]
 pub fn ensure(entry: &ModelEntry, cache_dir_override: Option<&Path>, registry_owner: Option<&str>) -> Result<PathBuf> {
+    ensure_with_env(entry, cache_dir_override, registry_owner, non_empty_env)
+}
+
+#[cfg(feature = "download")]
+fn ensure_with_env(
+    entry: &ModelEntry,
+    cache_dir_override: Option<&Path>,
+    registry_owner: Option<&str>,
+    env: impl Fn(&str) -> Option<String>,
+) -> Result<PathBuf> {
     let repo = effective_repo(entry, registry_owner)?;
     let root = hf_cache_root(cache_dir_override)?;
 
@@ -41,6 +51,13 @@ pub fn ensure(entry: &ModelEntry, cache_dir_override: Option<&Path>, registry_ow
         && verify_or_evict(&path, entry.sha256, entry.name).is_ok()
     {
         return Ok(path);
+    }
+
+    if hub_offline(env) {
+        return Err(OcrError::model(format!(
+            "model `{}` is unavailable in the verified cache while Hugging Face offline mode is enabled",
+            entry.name
+        )));
     }
 
     let (owner, name) = match repo.split_once('/') {
@@ -62,6 +79,14 @@ pub fn ensure(entry: &ModelEntry, cache_dir_override: Option<&Path>, registry_ow
 
     verify_or_evict(&path, entry.sha256, entry.name)?;
     Ok(path)
+}
+
+#[cfg(feature = "download")]
+fn hub_offline(env: impl Fn(&str) -> Option<String>) -> bool {
+    ["HF_HUB_OFFLINE", "HUGGINGFACE_HUB_OFFLINE"]
+        .into_iter()
+        .filter_map(env)
+        .any(|value| matches!(value.to_ascii_lowercase().as_str(), "1" | "true" | "yes" | "on"))
 }
 
 /// Ensure a model artifact is present locally, returning its path.
@@ -617,6 +642,62 @@ mod download_tests {
         assert_eq!(path, planted);
 
         std::fs::remove_dir_all(&root).ok();
+    }
+
+    #[test]
+    fn ensure_fails_closed_offline_after_evicting_a_corrupt_artifact() {
+        use super::tests::{snapshot_dir, unique_temp_dir};
+
+        let entry = ModelEntry {
+            name: "offline-corrupt",
+            hf_repo: "test/offline-corrupt",
+            revision: "rev0",
+            file: "corrupt.onnx",
+            sha256: ABC_SHA256,
+        };
+
+        for offline_key in ["HF_HUB_OFFLINE", "HUGGINGFACE_HUB_OFFLINE"] {
+            let root = unique_temp_dir(offline_key);
+            let planted = snapshot_dir(&root, entry.hf_repo, entry.revision).join(entry.file);
+            std::fs::write(&planted, b"corrupt").unwrap();
+
+            let error = ensure_with_env(&entry, Some(&root), None, |key| {
+                (key == offline_key).then(|| "1".to_string())
+            })
+            .expect_err("offline mode must not attempt to repair a corrupt cache entry over the network");
+
+            assert!(!planted.exists(), "the corrupt artifact must still be evicted");
+            assert!(
+                error.to_string().contains("offline mode"),
+                "the failure must clearly identify offline mode: {error}"
+            );
+            std::fs::remove_dir_all(&root).ok();
+        }
+    }
+
+    #[test]
+    fn ensure_fails_closed_offline_when_the_artifact_is_missing() {
+        use super::tests::unique_temp_dir;
+
+        let entry = ModelEntry {
+            name: "offline-missing",
+            hf_repo: "test/offline-missing",
+            revision: "rev0",
+            file: "missing.onnx",
+            sha256: ABC_SHA256,
+        };
+        let root = unique_temp_dir("offline-missing");
+
+        let error = ensure_with_env(&entry, Some(&root), None, |key| {
+            (key == "HF_HUB_OFFLINE").then(|| "true".to_string())
+        })
+        .expect_err("offline mode must not attempt to download a missing artifact");
+
+        assert!(error.to_string().contains("offline mode"));
+        assert!(
+            !root.exists(),
+            "the offline check must not create a cache or network client"
+        );
     }
 
     #[test]
