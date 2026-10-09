@@ -1,6 +1,6 @@
 //! The rmcp `ServerHandler` implementation and its transport wiring.
 
-use rmcp::model::{ServerCapabilities, ServerInfo};
+use rmcp::model::{ServerCapabilities, ServerConfig};
 use rmcp::transport::stdio;
 use rmcp::{ServerHandler, ServiceExt, tool_handler};
 
@@ -11,8 +11,8 @@ use super::tools::SceptreServer;
 
 #[tool_handler]
 impl ServerHandler for SceptreServer {
-    fn get_info(&self) -> ServerInfo {
-        ServerInfo::new(ServerCapabilities::builder().enable_tools().build()).with_instructions(
+    fn get_info(&self) -> ServerConfig {
+        ServerConfig::new(ServerCapabilities::builder().enable_tools().build()).with_instructions(
             "sceptre OCR server: call `readtext` with an image path to detect and \
              recognize text (CRAFT detection + gen2 CRNN recognition).",
         )
