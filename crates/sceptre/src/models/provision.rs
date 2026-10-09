@@ -119,7 +119,7 @@ fn descriptor_for(entry: &ModelEntry, role: ModelRole, owner: Option<&str>) -> R
 /// Inspect the cache for `entry` without touching the network.
 fn info_for(entry: &ModelEntry, role: ModelRole, cache_dir: &Path, owner: Option<&str>) -> Result<ModelInfo> {
     let repo = effective_repo(entry, owner)?;
-    let path = resolve_cached(cache_dir, &repo, entry.file);
+    let path = resolve_cached(cache_dir, &repo, entry.revision, entry.file);
     let cached = path.is_some();
     Ok(ModelInfo {
         name: entry.name.to_string(),

@@ -8,18 +8,16 @@
 //! `$HF_HOME/hub` → `~/.cache/huggingface/hub`, overridable via
 //! [`crate::config::ModelConfig::cache_dir`]. Downloads run through `hf-hub` when
 //! the `download` feature is enabled, verifying the SHA-256 against the registry
-//! pin (every CRAFT and gen2 artifact is pinned; see the registry). A cached
-//! artifact is trusted (verified when first downloaded) and returned without a
-//! network round-trip, but only once it passes a cheap usability check that keeps
-//! a concurrently-downloading or interrupted cache entry from being handed back;
-//! an artifact that fails its pin is evicted so the next run re-downloads it.
+//! pin (every CRAFT and gen2 artifact is pinned; see the registry). Every cache
+//! hit is resolved from the pinned revision and re-verified before use. A corrupt
+//! artifact is evicted and fetched again when the network is available; offline
+//! callers fail closed.
 //!
 //! The registry host is re-pointable: the optional `registry_owner` override
 //! (see [`crate::config::ModelConfig`] and ADR 0003) swaps the owner segment of
 //! the repo id so the same exports can be served from a mirror.
 
 use std::path::{Path, PathBuf};
-use std::time::SystemTime;
 
 use crate::error::{OcrError, Result};
 use crate::models::registry::ModelEntry;
@@ -30,17 +28,18 @@ use crate::models::registry::effective_repo;
 /// Ensure a model artifact is present locally, returning its path.
 ///
 /// Offline-first: when the artifact already resolves in the Hugging Face hub cache
-/// it is returned directly — no network — skipping hf-hub's per-call revision
-/// revalidation (a `304` round-trip to the Hub that otherwise costs a network RTT
-/// on every run). Only a cache miss fetches from the Hub, verifying the download
-/// against [`ModelEntry::sha256`] (empty pin → skipped). `cache_dir_override`
-/// overrides the hub cache root (see [`hf_cache_root`]).
+/// it is SHA-256 verified and returned without a network round-trip. A missing or
+/// corrupt artifact is fetched at the registry's immutable revision and verified
+/// before use. `cache_dir_override` overrides the hub cache root (see
+/// [`hf_cache_root`]).
 #[cfg(feature = "download")]
 pub fn ensure(entry: &ModelEntry, cache_dir_override: Option<&Path>, registry_owner: Option<&str>) -> Result<PathBuf> {
     let repo = effective_repo(entry, registry_owner)?;
     let root = hf_cache_root(cache_dir_override)?;
 
-    if let Some(path) = resolve_cached(&root, &repo, entry.file) {
+    if let Some(path) = resolve_cached(&root, &repo, entry.revision, entry.file)
+        && verify_or_evict(&path, entry.sha256, entry.name).is_ok()
+    {
         return Ok(path);
     }
 
@@ -57,6 +56,7 @@ pub fn ensure(entry: &ModelEntry, cache_dir_override: Option<&Path>, registry_ow
         .model(owner, name)
         .download_file()
         .filename(entry.file.to_string())
+        .revision(entry.revision.to_string())
         .send()
         .map_err(|source| model_error(format!("could not download `{}` from `{repo}`", entry.file), source))?;
 
@@ -129,33 +129,21 @@ pub(crate) fn repo_cache_dir_name(repo_id: &str) -> String {
 
 /// Resolve a cached model file within the hub cache without touching the network.
 ///
-/// Under `<root>/<repo_cache_dir_name>/snapshots/`, returns the newest snapshot
-/// subdirectory (by modification time) holding a *usable* `file`, or `None` when
-/// the repo, the snapshots directory, or every candidate is absent or unusable.
+/// Under `<root>/<repo_cache_dir_name>/snapshots/<revision>`, returns `file` when
+/// it is usable, or `None` when the pinned snapshot or artifact is absent or unusable.
 /// This is the offline "is it cached, and where" check.
 ///
 /// A `None` here is not an error: the caller falls through to the hf-hub download
 /// path, which takes the hub's advisory per-file lock. Rejecting an unusable
 /// candidate is therefore how a concurrent or interrupted download is made safe —
 /// see [`is_usable_artifact`] for what "usable" means.
-pub(crate) fn resolve_cached(root: &Path, repo_id: &str, file: &str) -> Option<PathBuf> {
-    let snapshots = root.join(repo_cache_dir_name(repo_id)).join("snapshots");
-    std::fs::read_dir(&snapshots)
-        .ok()?
-        .filter_map(std::result::Result::ok)
-        .filter_map(|entry| {
-            let candidate = entry.path().join(file);
-            if !is_usable_artifact(&candidate) {
-                return None;
-            }
-            let modified = entry
-                .metadata()
-                .and_then(|meta| meta.modified())
-                .unwrap_or(SystemTime::UNIX_EPOCH);
-            Some((modified, candidate))
-        })
-        .max_by_key(|(modified, _)| *modified)
-        .map(|(_, path)| path)
+pub(crate) fn resolve_cached(root: &Path, repo_id: &str, revision: &str, file: &str) -> Option<PathBuf> {
+    let candidate = root
+        .join(repo_cache_dir_name(repo_id))
+        .join("snapshots")
+        .join(revision)
+        .join(file);
+    is_usable_artifact(&candidate).then_some(candidate)
 }
 
 /// Whether a snapshot path is a model artifact safe to hand back without a download.
@@ -445,7 +433,7 @@ mod tests {
         let planted = snapshot.join(file);
         std::fs::write(&planted, b"onnx").unwrap();
 
-        assert_eq!(resolve_cached(&root, repo, file), Some(planted));
+        assert_eq!(resolve_cached(&root, repo, "deadbeef", file), Some(planted));
 
         std::fs::remove_dir_all(&root).ok();
     }
@@ -456,7 +444,7 @@ mod tests {
         std::fs::create_dir_all(&root).unwrap();
 
         assert_eq!(
-            resolve_cached(&root, "xberg-io/sceptre-english_g2", "english_g2.onnx"),
+            resolve_cached(&root, "xberg-io/sceptre-english_g2", "deadbeef", "english_g2.onnx"),
             None
         );
 
@@ -494,7 +482,7 @@ mod tests {
             std::os::unix::fs::symlink(blobs.join("missing-etag"), snapshot.join(TEST_FILE)).unwrap();
 
             assert_eq!(
-                resolve_cached(&root, TEST_REPO, TEST_FILE),
+                resolve_cached(&root, TEST_REPO, "rev0", TEST_FILE),
                 None,
                 "a dangling snapshot symlink must not be reported as cached"
             );
@@ -510,7 +498,7 @@ mod tests {
         std::fs::write(snapshot.join(TEST_FILE), b"").unwrap();
 
         assert_eq!(
-            resolve_cached(&root, TEST_REPO, TEST_FILE),
+            resolve_cached(&root, TEST_REPO, "rev0", TEST_FILE),
             None,
             "a zero-length artifact must not be reported as cached"
         );
@@ -525,20 +513,21 @@ mod tests {
         let planted = snapshot.join(TEST_FILE);
         std::fs::write(&planted, b"onnx-bytes").unwrap();
 
-        assert_eq!(resolve_cached(&root, TEST_REPO, TEST_FILE), Some(planted));
+        assert_eq!(resolve_cached(&root, TEST_REPO, "rev0", TEST_FILE), Some(planted));
 
         std::fs::remove_dir_all(&root).ok();
     }
 
     #[test]
-    fn resolve_cached_prefers_a_healthy_snapshot_over_a_broken_newer_one() {
+    fn resolve_cached_only_uses_the_requested_revision() {
         let root = unique_temp_dir("resolve-mixed");
         let healthy = snapshot_dir(&root, TEST_REPO, "rev-old").join(TEST_FILE);
         std::fs::write(&healthy, b"onnx-bytes").unwrap();
         let broken = snapshot_dir(&root, TEST_REPO, "rev-new").join(TEST_FILE);
         std::fs::write(&broken, b"").unwrap();
 
-        assert_eq!(resolve_cached(&root, TEST_REPO, TEST_FILE), Some(healthy));
+        assert_eq!(resolve_cached(&root, TEST_REPO, "rev-old", TEST_FILE), Some(healthy));
+        assert_eq!(resolve_cached(&root, TEST_REPO, "rev-new", TEST_FILE), None);
 
         std::fs::remove_dir_all(&root).ok();
     }
@@ -605,9 +594,13 @@ mod download_tests {
 
     #[test]
     fn ensure_returns_a_cached_artifact_without_network() {
-        use crate::models::registry::craft_entry;
-
-        let entry = craft_entry();
+        let entry = ModelEntry {
+            name: "cached",
+            hf_repo: "test/cached",
+            revision: "rev0",
+            file: "cached.onnx",
+            sha256: ABC_SHA256,
+        };
         let root = std::env::temp_dir().join(format!("sceptre-ensure-cache-{}", std::process::id()));
         let snapshot = root
             .join(repo_cache_dir_name(entry.hf_repo))
@@ -615,7 +608,7 @@ mod download_tests {
             .join("rev0");
         std::fs::create_dir_all(&snapshot).unwrap();
         let planted = snapshot.join(entry.file);
-        std::fs::write(&planted, b"onnx-bytes").unwrap();
+        std::fs::write(&planted, b"abc").unwrap();
 
         // Resolves from the planted cache with no Hub client built and no network. ~keep
         let path = ensure(&entry, Some(root.as_path()), None).expect("cached artifact resolves offline");
@@ -638,7 +631,7 @@ mod download_tests {
         assert!(matches!(error, OcrError::Model { .. }), "expected OcrError::Model");
         assert!(!planted.exists(), "the corrupt artifact must be evicted");
         assert_eq!(
-            resolve_cached(&root, repo, file),
+            resolve_cached(&root, repo, "rev0", file),
             None,
             "the next run must see a cache miss and re-download"
         );
@@ -670,7 +663,11 @@ mod download_tests {
                 std::fs::symlink_metadata(&link).is_err(),
                 "the snapshot symlink must be evicted"
             );
-            assert_eq!(resolve_cached(&root, repo, file), None, "the cache must read as a miss");
+            assert_eq!(
+                resolve_cached(&root, repo, "rev0", file),
+                None,
+                "the cache must read as a miss"
+            );
 
             std::fs::remove_dir_all(&root).ok();
         }

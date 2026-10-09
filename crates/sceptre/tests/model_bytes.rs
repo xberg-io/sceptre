@@ -36,6 +36,41 @@ fn should_describe_models_without_inspecting_the_filesystem() {
 }
 
 #[test]
+fn should_pin_builtin_models_to_immutable_revisions() {
+    let mut config = OcrConfig::default();
+    config.model.languages = vec![
+        Language::English,
+        Language::Latin,
+        Language::ChineseSimplified,
+        Language::Japanese,
+        Language::Korean,
+        Language::Cyrillic,
+        Language::Telugu,
+        Language::Kannada,
+    ];
+
+    let descriptors = model_descriptors(&config).expect("built-in registry metadata should resolve");
+
+    assert_eq!(descriptors.len(), 9);
+    for descriptor in descriptors {
+        assert_eq!(
+            descriptor.revision.len(),
+            40,
+            "{} must use a full commit SHA",
+            descriptor.name
+        );
+        assert!(
+            descriptor
+                .revision
+                .chars()
+                .all(|character| character.is_ascii_hexdigit()),
+            "{} must use a hexadecimal commit SHA",
+            descriptor.name
+        );
+    }
+}
+
+#[test]
 fn should_serve_only_sha256_verified_model_bytes() {
     let detector = b"detector".to_vec();
     let recognizer = b"recognizer".to_vec();

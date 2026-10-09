@@ -8,8 +8,6 @@
 use crate::config::Language;
 use crate::error::{OcrError, Result};
 
-const DEFAULT_REVISION: &str = "main";
-
 /// A single downloadable ONNX model artifact.
 // Fields describe the artifact consumed by `download::ensure`. ~keep
 #[allow(dead_code)]
@@ -32,7 +30,7 @@ pub const fn craft_entry() -> ModelEntry {
     ModelEntry {
         name: "craft_mlt_25k",
         hf_repo: "xberg-io/sceptre-craft_mlt_25k",
-        revision: DEFAULT_REVISION,
+        revision: "5569f7c684f6a0718aaad1c3d994ab8585b50df9",
         file: "craft_mlt_25k.onnx",
         sha256: "159f5ffecde90d567f54da3e449fb0eba54a1da791c429c3509984dcfd7f684e",
     }
@@ -82,56 +80,56 @@ pub const fn recognizer_entry(language: Language) -> ModelEntry {
         Language::English => ModelEntry {
             name: "english_g2",
             hf_repo: "xberg-io/sceptre-english_g2",
-            revision: DEFAULT_REVISION,
+            revision: "11f8e6857741ac8e7151a327c5a4b0030edafa84",
             file: "english_g2.onnx",
             sha256: "29ef336a7ad835d3e16eb70f23973d0fefd7a81fe6070845850954fe1cece0db",
         },
         Language::Latin => ModelEntry {
             name: "latin_g2",
             hf_repo: "xberg-io/sceptre-latin_g2",
-            revision: DEFAULT_REVISION,
+            revision: "94d0e80dfd8d7c6a290468b1013727b3ee7fb3b1",
             file: "latin_g2.onnx",
             sha256: "69ff1f543bb2b733708d4ab9e25d7dd3a9a25033da163698236211e36df4c787",
         },
         Language::ChineseSimplified => ModelEntry {
             name: "zh_sim_g2",
             hf_repo: "xberg-io/sceptre-zh_sim_g2",
-            revision: DEFAULT_REVISION,
+            revision: "81d76b3b2948ed72d9e8d2a061e3eb14f085f3c1",
             file: "zh_sim_g2.onnx",
             sha256: "4ce0cde647eb9305ec2ed9dfd79bd27ab573750424be2fe46daf91093dd0464f",
         },
         Language::Japanese => ModelEntry {
             name: "japanese_g2",
             hf_repo: "xberg-io/sceptre-japanese_g2",
-            revision: DEFAULT_REVISION,
+            revision: "282afb8b270f1d78e9ee9db780fcb6370d7a4ca3",
             file: "japanese_g2.onnx",
             sha256: "daa18f93ff2cb5d3666fa3e0f14909d520e17c90bb49d2aa1ad633d8c4f8bd45",
         },
         Language::Korean => ModelEntry {
             name: "korean_g2",
             hf_repo: "xberg-io/sceptre-korean_g2",
-            revision: DEFAULT_REVISION,
+            revision: "88550138112fb70bf6cf48a7098b3d79382b4560",
             file: "korean_g2.onnx",
             sha256: "ccfd19e313c112999f6faa72d9e5bc4d67e11fedc96169a8de9e72c8110b3de8",
         },
         Language::Cyrillic => ModelEntry {
             name: "cyrillic_g2",
             hf_repo: "xberg-io/sceptre-cyrillic_g2",
-            revision: DEFAULT_REVISION,
+            revision: "c6fce2da8bbf45b9b4c3076277b32b5dbc0ff023",
             file: "cyrillic_g2.onnx",
             sha256: "71fb248ecb7fd5e47333ea5269fd1abdb82934b01ae877bbdad95e9ce2e2ea9b",
         },
         Language::Telugu => ModelEntry {
             name: "telugu_g2",
             hf_repo: "xberg-io/sceptre-telugu_g2",
-            revision: DEFAULT_REVISION,
+            revision: "c30a84a2790caa555fbfab503a5e668405eecc56",
             file: "telugu_g2.onnx",
             sha256: "d9bd97bc07c48504722c8a0e69ac5e1394e069d79fd51a17fd40d51192ac2ef4",
         },
         Language::Kannada => ModelEntry {
             name: "kannada_g2",
             hf_repo: "xberg-io/sceptre-kannada_g2",
-            revision: DEFAULT_REVISION,
+            revision: "f5e4c92ef9b024805853442723bf6313d1287a9a",
             file: "kannada_g2.onnx",
             sha256: "86b925fd3eef9557792b017206c01b3fcf6824099472a3be54748042ffe21334",
         },
@@ -175,7 +173,7 @@ mod tests {
         let entry = ModelEntry {
             name: "bare",
             hf_repo: "bare-model",
-            revision: DEFAULT_REVISION,
+            revision: "0000000000000000000000000000000000000000",
             file: "bare-model.onnx",
             sha256: "",
         };
