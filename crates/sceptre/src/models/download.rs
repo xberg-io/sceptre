@@ -258,8 +258,8 @@ fn evict_artifact(path: &Path, model_name: &str) {
 /// The `blobs/` file a snapshot symlink points at, when it is one.
 ///
 /// Returns `None` for a regular file, an unresolvable link, or any target that is
-/// not a regular file living directly inside a `blobs` directory — the guard that
-/// keeps eviction inside the hub cache layout.
+/// not a regular file living directly inside this snapshot's repository-level
+/// `blobs` directory — the guard that keeps eviction inside the hub cache layout.
 #[cfg(feature = "download")]
 fn backing_blob(path: &Path) -> Option<PathBuf> {
     let metadata = std::fs::symlink_metadata(path).ok()?;
@@ -267,11 +267,13 @@ fn backing_blob(path: &Path) -> Option<PathBuf> {
         return None;
     }
     let target = std::fs::canonicalize(path).ok()?;
-    let parent_is_blobs = target
-        .parent()
-        .and_then(Path::file_name)
-        .is_some_and(|name| name == BLOBS_DIR_NAME);
-    if parent_is_blobs && target.is_file() {
+    let snapshots = path.parent()?.parent()?;
+    if snapshots.file_name()? != "snapshots" {
+        return None;
+    }
+    let repository_cache = snapshots.parent()?;
+    let expected_blobs = std::fs::canonicalize(repository_cache.join(BLOBS_DIR_NAME)).ok()?;
+    if target.parent() == Some(expected_blobs.as_path()) && target.is_file() {
         Some(target)
     } else {
         None
@@ -670,6 +672,35 @@ mod download_tests {
             );
 
             std::fs::remove_dir_all(&root).ok();
+        }
+    }
+
+    #[test]
+    fn verify_or_evict_never_removes_a_blob_outside_the_repo_cache() {
+        #[cfg(unix)]
+        {
+            use super::tests::{snapshot_dir, unique_temp_dir};
+
+            let root = unique_temp_dir("evict-external-root");
+            let external_root = unique_temp_dir("evict-external-target");
+            let snapshot = snapshot_dir(&root, "xberg-io/sceptre-english_g2", "rev0");
+            let external_blobs = external_root.join("blobs");
+            std::fs::create_dir_all(&external_blobs).unwrap();
+            let external_blob = external_blobs.join("victim");
+            std::fs::write(&external_blob, b"corrupt").unwrap();
+            let link = snapshot.join("english_g2.onnx");
+            std::os::unix::fs::symlink(&external_blob, &link).unwrap();
+
+            verify_or_evict(&link, ABC_SHA256, "english_g2").expect_err("a mismatched pin must error");
+
+            assert!(!link.exists(), "the corrupt snapshot link must be evicted");
+            assert!(
+                external_blob.exists(),
+                "a symlink must never authorize deletion outside its own repository cache"
+            );
+
+            std::fs::remove_dir_all(&root).ok();
+            std::fs::remove_dir_all(&external_root).ok();
         }
     }
 
