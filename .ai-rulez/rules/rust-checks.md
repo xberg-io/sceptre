@@ -1,5 +1,11 @@
 ---
-priority: high
+type: Decision
+title: Rust Checks
+x-ai-rulez:
+  kind: rule
+  id: rust-checks
+  metadata:
+    priority: high
 ---
 
 # Rust Check Discipline

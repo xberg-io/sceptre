@@ -1,5 +1,11 @@
 ---
-priority: high
+type: Decision
+title: Comment Hygiene
+x-ai-rulez:
+  kind: rule
+  id: comment-hygiene
+  metadata:
+    priority: high
 ---
 
 # Comment Hygiene

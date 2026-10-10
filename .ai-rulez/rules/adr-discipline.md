@@ -1,5 +1,11 @@
 ---
-priority: high
+type: Decision
+title: Adr Discipline
+x-ai-rulez:
+  kind: rule
+  id: adr-discipline
+  metadata:
+    priority: high
 ---
 
 # ADR Discipline
