@@ -1,15 +1,17 @@
-version = "4.0"
+version = "5.0"
 name = "sceptre"
 description = "Rust reimplementation of EasyOCR — CRAFT detection + gen2 CRNN recognition over ONNX, as a library + CLI + MCP server."
 gitignore = true
 
-presets = ["claude", "codex"]
+presets = ["claude", "codex", "opencode", "pi"]
 
 compact = true
+builtins = ["rust", "cicd", "documentation", "default-commands"]
+
 [header]
 style = "minimal"
 
-builtins = ["rust", "cicd", "documentation", "default-commands"]
+hashes = "full"
 
 [[includes]]
 name = "xberg-core"

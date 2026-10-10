@@ -1,5 +1,11 @@
 ---
-priority: high
+type: Decision
+title: Backend Seam
+x-ai-rulez:
+  kind: rule
+  id: backend-seam
+  metadata:
+    priority: high
 ---
 
 # Inference Backend Seam

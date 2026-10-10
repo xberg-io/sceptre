@@ -1,5 +1,11 @@
 ---
-priority: high
+type: Concept
+title: Ocr Pipeline
+x-ai-rulez:
+  kind: context
+  id: ocr-pipeline
+  metadata:
+    priority: high
 ---
 
 # OCR Pipeline
