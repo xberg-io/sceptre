@@ -1,4 +1,5 @@
 [package]
+include = ["/Cargo.toml", "/Cargo.lock", "/README.md", "/LICENSE*", "/src/**"]
 name = "sceptre-cli"
 description = "Command-line interface for sceptre — CRAFT + gen2 CRNN OCR over ONNX."
 version.workspace = true
