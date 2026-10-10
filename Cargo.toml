@@ -7,7 +7,10 @@ resolver = "2"
 version = "0.7.3"
 edition = "2024"
 rust-version = "1.92"
-authors = ["Na'aman Hirschfeld <nhirschfeld@gmail.com>"]
+authors = [
+  "Na'aman Hirschfeld <naaman@xberg.io>",
+  "Tobias Perlstein <tobias@xberg.io>",
+]
 license = "MIT"
 repository = "https://github.com/xberg-io/sceptre"
 homepage = "https://github.com/xberg-io/sceptre"
