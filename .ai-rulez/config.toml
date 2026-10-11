@@ -9,6 +9,10 @@ compact = true
 builtins = ["rust", "cicd", "documentation", "default-commands"]
 
 [header]
+text = """AI-RULEZ :: GENERATED FILE - DO NOT EDIT
+Source: .ai-rulez/config.toml
+Modify .ai-rulez/ content and regenerate with pnpm dlx ai-rulez@5.0.1 generate
+MCP server: pnpm dlx ai-rulez@5.0.1 mcp"""
 style = "minimal"
 
 hashes = "full"
@@ -44,3 +48,6 @@ marketplace = "basemind"
 name = "basemind"
 scope = "project"
 enabled = true
+
+[mcp]
+self_server_command = ["pnpm", "dlx", "ai-rulez@5.0.1", "mcp"]
