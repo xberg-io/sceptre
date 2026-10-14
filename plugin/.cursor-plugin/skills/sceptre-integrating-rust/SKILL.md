@@ -6,7 +6,7 @@ name: sceptre-integrating-rust
 <!--
 AI-RULEZ :: GENERATED FILE — DO NOT EDIT
 Content-Hash: blake3:8a2764e592fca4078d462d08b57a3bed76460dc415af41bc7ff745857663b731
-Source-Hash: blake3:838e0729665e45091c8b001bac71aa502671c6c390dd8e87276f2d8fd0b917f5
+Source-Hash: blake3:5c8442fa8b2f9f7d5d68801c4562f6bf03cc6e52237900bbcf720e4b5bedfa5e
 Schema-Version: v1
 -->
 
