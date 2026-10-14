@@ -64,3 +64,5 @@ This directory holds the project's Architecture Decision Records (ADRs) in
 | [0043](0043-host-scoped-self-referential-speed-floor.md) | Host-scoped self-referential speed floor | Accepted |
 | [0044](0044-single-ci-check-workflow.md) | Single CI check workflow | Accepted |
 | [0045](0045-row-aware-detection-reading-order.md) | Row-aware reading order across detection buckets | Accepted |
+| [0046](0046-retained-ort-environment.md) | Retain one ONNX Runtime environment per process | Accepted |
+| [0047](0047-macos-bundled-ort-compiler-runtime.md) | Link the macOS compiler runtime for bundled ONNX Runtime | Accepted |

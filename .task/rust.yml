@@ -61,9 +61,9 @@ tasks:
       - cargo test --workspace
 
   release:build:
-    desc: Build the release CLI binary with a bundled ONNX Runtime
+    desc: Build the MCP-enabled release CLI binary with a bundled ONNX Runtime
     cmds:
-      - cargo build --release -p sceptre-cli --no-default-features --features ort-bundled,download
+      - cargo build --release -p sceptre-cli --no-default-features --features ort-bundled,download,mcp
 
   release:package:
     desc: Build and archive the self-contained release CLI binary for TRIPLE (e.g. TRIPLE=x86_64-unknown-linux-gnu)
@@ -71,8 +71,23 @@ tasks:
       vars: [TRIPLE]
     cmds:
       # ort-bundled links ONNX Runtime statically, so the archive is a self-contained binary. ~keep
-      - cargo build --release -p sceptre-cli --no-default-features --features ort-bundled,download --target {{.TRIPLE}}
+      - cargo build --release -p sceptre-cli --no-default-features --features ort-bundled,download,mcp --target {{.TRIPLE}}
       - bash scripts/package-release.sh {{.TRIPLE}}
+
+  release:smoke:
+    desc: Verify the packaged release version and MCP initialization/tool discovery
+    requires:
+      vars: [TRIPLE, VERSION]
+    vars:
+      ARCHIVE_EXTENSION: '{{if eq .TRIPLE "x86_64-pc-windows-msvc"}}zip{{else}}tar.gz{{end}}'
+    cmds:
+      - python3 scripts/smoke_release.py --archive "sceptre-{{.TRIPLE}}.{{.ARCHIVE_EXTENSION}}" --version "{{.VERSION}}"
+
+  release:smoke:test:
+    desc: Test the release smoke gate against protocol and archive failure controls
+    cmds:
+      - python3 scripts/tests/test_release_smoke.py
+      - python3 scripts/tests/test_macos_link.py
 
   release:dry-run:
     desc: Validate that both crates package cleanly for crates.io, without publishing

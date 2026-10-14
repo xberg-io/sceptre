@@ -1,6 +1,6 @@
 {
   "name": "sceptre",
-  "version": "0.7.3",
+  "version": "0.8.0",
   "description": "Local OCR with CRAFT detection and multilingual CRNN recognition.",
   "contextFileName": "GEMINI.md",
   "mcpServers": {

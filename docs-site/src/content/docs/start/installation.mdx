@@ -19,7 +19,11 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
     download and cache at first use. No `ORT_DYLIB_PATH`, no separately installed
     `libonnxruntime`.
 
-    To also expose the MCP server subcommand, add the `mcp` feature:
+    [Prebuilt release archives](https://github.com/xberg-io/sceptre/releases/latest) support Linux
+    x86_64/ARM64, macOS ARM64, and Windows x86_64. They include MCP support, bundled ONNX Runtime,
+    and model downloads. Extract the archive and put `sceptre` (`sceptre.exe` on Windows) on `PATH`.
+
+    When installing from Cargo, add the `mcp` feature to expose the MCP server subcommand:
 
     ```sh
     cargo install sceptre-cli --features mcp
@@ -66,7 +70,7 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
     ```toml
     [dependencies]
-    sceptre = { version = "0.5", features = ["ort-bundled", "download"] }
+    sceptre = { version = "0.8", features = ["ort-bundled", "download"] }
     ```
 
     See [Feature flags](/reference/feature-flags/) for every flag and when to pick it, and
@@ -76,12 +80,13 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
   <TabItem label="MCP server">
 
     The MCP surface is behind the `mcp` cargo feature, exposed as the `sceptre mcp` subcommand.
-    Install the CLI with `mcp` enabled (see the CLI tab), or depend on the library with `mcp` plus a
+    Release archives include MCP support. For a Cargo install, enable `mcp` (see the CLI tab),
+    or depend on the library with `mcp` plus a
     backend and `download`:
 
     ```toml
     [dependencies]
-    sceptre = { version = "0.5", features = ["ort-bundled", "download", "mcp"] }
+    sceptre = { version = "0.8", features = ["ort-bundled", "download", "mcp"] }
     ```
 
   </TabItem>

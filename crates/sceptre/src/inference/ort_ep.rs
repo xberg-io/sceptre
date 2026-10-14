@@ -176,8 +176,8 @@ fn coreml_provider() -> Option<Provider> {
     use ort::ep::ExecutionProvider;
     let provider = ort::ep::CoreML::default();
     Some(Provider {
-        name: provider.name(),
-        available: provider.is_available().unwrap_or(false),
+        name: ort::ep::CoreML::NAME,
+        available: ort::ep::CoreML::is_available().unwrap_or(false),
         dispatch: provider.build(),
     })
 }
@@ -192,8 +192,8 @@ fn directml_provider() -> Option<Provider> {
     use ort::ep::ExecutionProvider;
     let provider = ort::ep::DirectML::default();
     Some(Provider {
-        name: provider.name(),
-        available: provider.is_available().unwrap_or(false),
+        name: ort::ep::DirectML::NAME,
+        available: ort::ep::DirectML::is_available().unwrap_or(false),
         dispatch: provider.build(),
     })
 }
@@ -208,8 +208,8 @@ fn cuda_provider() -> Option<Provider> {
     use ort::ep::ExecutionProvider;
     let provider = ort::ep::CUDA::default();
     Some(Provider {
-        name: provider.name(),
-        available: provider.is_available().unwrap_or(false),
+        name: ort::ep::CUDA::NAME,
+        available: ort::ep::CUDA::is_available().unwrap_or(false),
         dispatch: provider.build(),
     })
 }
@@ -264,7 +264,8 @@ mod tests {
     #[cfg(all(feature = "ort-bundled", not(feature = "ort-cuda")))]
     #[test]
     fn should_reject_an_accelerator_that_is_not_compiled_in() {
-        let builder = ort::session::Session::builder().expect("build session options");
+        let environment = super::super::ort_backend::environment().expect("build ONNX Runtime environment");
+        let builder = ort::session::Session::builder(environment).expect("build session options");
 
         // `SessionBuilder` is not `Debug`, so unwrap the error by hand. ~keep
         let Err(error) = apply_accelerator(builder, Accelerator::Cuda) else {
@@ -280,7 +281,8 @@ mod tests {
     #[cfg(all(feature = "ort-bundled", feature = "ort-coreml", target_os = "macos"))]
     #[test]
     fn should_register_coreml_on_macos_when_compiled_in() {
-        let builder = ort::session::Session::builder().expect("build session options");
+        let environment = super::super::ort_backend::environment().expect("build ONNX Runtime environment");
+        let builder = ort::session::Session::builder(environment).expect("build session options");
 
         let (_builder, registered) = apply_accelerator(builder, Accelerator::CoreMl).expect("coreml must register");
 
@@ -291,7 +293,8 @@ mod tests {
     #[cfg(feature = "ort-bundled")]
     #[test]
     fn should_leave_the_cpu_selection_on_the_implicit_provider() {
-        let builder = ort::session::Session::builder().expect("build session options");
+        let environment = super::super::ort_backend::environment().expect("build ONNX Runtime environment");
+        let builder = ort::session::Session::builder(environment).expect("build session options");
 
         let (_builder, registered) = apply_accelerator(builder, Accelerator::Cpu).expect("cpu never fails");
 
