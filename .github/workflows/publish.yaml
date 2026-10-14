@@ -405,3 +405,144 @@ jobs:
           assets: |
             dist/*-plugins-*.tar.gz
             dist/*-plugins-*.tar.gz.sha256
+
+  publish-plugin-opencode:
+    name: Publish OpenCode and Pi plugin to npm
+    needs: [meta, finalize]
+    if: always() && needs.meta.result == 'success' && (needs.finalize.result == 'success' || needs.meta.outputs.release_complete == 'true')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.meta.outputs.tag }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org/"
+      - name: Install ai-rulez
+        uses: xberg-io/actions/setup-ai-rulez@98adf87f1ed4c62a57ff56f9010d62faf42d4db6
+        with:
+          ai-rulez-version: "5.3.0"
+          source-revision: "1dd46d774f156f3d170ecd1b702598b12d1eaf5b"
+      - name: Verify plugin versions and generated resources before publishing
+        env:
+          VERSION: ${{ needs.meta.outputs.version }}
+        run: |
+          set -euo pipefail
+          python3 scripts/sync_plugin_version.py --expect "$VERSION"
+          python3 scripts/sync_public_skills.py --check
+          ai-rulez verify --plugin
+      - name: Verify packed OpenCode and Pi resources
+        shell: bash
+        run: |
+          set -euo pipefail
+          pack_dir="$(mktemp -d)"
+          npm pack ./plugin --ignore-scripts --json --pack-destination "$pack_dir" > "$pack_dir/pack.json"
+          node - "$pack_dir/pack.json" <<'NODE'
+          const fs = require('node:fs');
+          const pkg = require('./plugin/package.json');
+          const packed = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+          if (packed.length !== 1) throw new Error('Expected exactly one packed plugin');
+          const files = packed[0].files.map(file => file.path);
+          if (!files.includes(pkg.exports['.'].replace(/^\.\//, ''))) {
+            throw new Error('OpenCode entry point was not packed');
+          }
+          if (!pkg.keywords.includes('pi-package') || !pkg.pi.skills.length) {
+            throw new Error('Missing Pi package metadata');
+          }
+          for (const resource of [...pkg.pi.skills, ...pkg.pi.prompts]) {
+            const relative = resource.replace(/^\.\//, '').replace(/\/$/, '');
+            if (!files.some(path => path === relative || path.startsWith(`${relative}/`))) {
+              throw new Error(`Declared Pi resource was not packed: ${resource}`);
+            }
+          }
+          console.log(`Verified ${files.length} packed files and ${pkg.pi.skills.length} Pi skills`);
+          NODE
+      - name: Publish verified npm package
+        uses: xberg-io/actions/publish-npm@v1
+        with:
+          expected-version: ${{ needs.meta.outputs.version }}
+          package-dir: plugin
+          access: public
+          npm-tag: ${{ contains(needs.meta.outputs.version, '-') && 'next' || 'latest' }}
+          provenance: "true"
+
+  publish-plugin-hermes:
+    name: Publish Hermes plugin to PyPI
+    needs: [meta, finalize]
+    if: always() && needs.meta.result == 'success' && (needs.finalize.result == 'success' || needs.meta.outputs.release_complete == 'true')
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.meta.outputs.tag }}
+          fetch-depth: 0
+      - name: Install ai-rulez
+        uses: xberg-io/actions/setup-ai-rulez@98adf87f1ed4c62a57ff56f9010d62faf42d4db6
+        with:
+          ai-rulez-version: "5.3.0"
+          source-revision: "1dd46d774f156f3d170ecd1b702598b12d1eaf5b"
+      - name: Verify plugin versions and generated resources before publishing
+        env:
+          VERSION: ${{ needs.meta.outputs.version }}
+        run: |
+          set -euo pipefail
+          python3 scripts/sync_plugin_version.py --expect "$VERSION"
+          python3 scripts/sync_public_skills.py --check
+          ai-rulez verify --plugin
+      - uses: astral-sh/setup-uv@v10.3.0
+        with:
+          python-version: "3.13"
+      - name: Read the verified Hermes package version
+        id: wheel-version
+        run: |
+          python3 - <<'PY'
+          import os
+          import tomllib
+          from pathlib import Path
+
+          project = tomllib.loads(Path('plugin/.hermes/package/pyproject.toml').read_text())['project']
+          if project['name'] != 'sceptre-hermes-plugin' or not project['version']:
+              raise SystemExit('Missing or unexpected Hermes package identity')
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write(f"version={project['version']}\n")
+          PY
+      - name: Build Hermes wheel
+        run: uv build --wheel --out-dir dist-hermes plugin/.hermes/package
+      - name: Publish verified Hermes wheel
+        uses: xberg-io/actions/publish-pypi@v1
+        with:
+          expected-version: ${{ steps.wheel-version.outputs.version }}
+          packages-dir: dist-hermes
+
+  plugin-release-report:
+    name: Verify all plugin distribution jobs succeeded
+    needs: [publish-plugin-artifacts, publish-plugin-opencode, publish-plugin-hermes]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reject failed or skipped plugin distribution
+        env:
+          RESULTS_JSON: ${{ toJSON(needs) }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+
+          results = json.loads(os.environ['RESULTS_JSON'])
+          expected = {'publish-plugin-artifacts', 'publish-plugin-opencode', 'publish-plugin-hermes'}
+          if set(results) != expected:
+              raise SystemExit('Expected exactly three plugin distribution jobs')
+          failed = [name for name, job in results.items() if job['result'] != 'success']
+          if failed:
+              raise SystemExit(f"Incomplete plugin distribution: {', '.join(failed)}")
+          print('Verified 3/3 plugin distribution jobs succeeded')
+          PY
