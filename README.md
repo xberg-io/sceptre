@@ -71,6 +71,10 @@ no ONNX Runtime at all.
 cargo install sceptre-cli
 ```
 
+[Prebuilt release archives](https://github.com/xberg-io/sceptre/releases/latest) for Linux x86_64/ARM64,
+macOS ARM64, and Windows x86_64 include `sceptre mcp`, bundled ONNX Runtime, and model downloads.
+Extract the archive and put `sceptre` (`sceptre.exe` on Windows) on `PATH`.
+
 That default build is self-contained: it links a prebuilt ONNX Runtime fetched at build time (`ort-bundled`) and enables
 model download (`download`), so the binary needs no `ORT_DYLIB_PATH` and no separately installed `libonnxruntime`.
 
@@ -121,7 +125,7 @@ for line in reader.readtext("receipt.png".as_ref(), &ReadOptions::default())?.li
 ```
 
 The library ships `default = []`, so enable a backend and model download:
-`sceptre = { version = "0.7", features = ["ort-bundled", "download"] }` (see [Feature flags](#feature-flags)).
+`sceptre = { version = "0.8", features = ["ort-bundled", "download"] }` (see [Feature flags](#feature-flags)).
 
 WASM and mobile hosts can avoid filesystem and network assumptions by calling `model_descriptors`,
 fetching the selected artifacts, constructing a `VerifiedModelProvider`, and passing it to
@@ -132,7 +136,8 @@ Android and iOS hosts that package ONNX assets as real files may instead set bot
 
 ### MCP server
 
-Expose a `readtext` tool to an agent. The `mcp` subcommand is behind the `mcp` cargo feature, which is off by default:
+Expose a `readtext` tool to an agent. Release archives include the `mcp` subcommand. When installing from Cargo,
+enable the `mcp` feature explicitly:
 
 ```sh
 cargo install sceptre-cli --features mcp

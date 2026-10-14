@@ -27,13 +27,15 @@ pass() {
 crate_features() {
 	local crate="$1" tree
 	shift
-	if ! tree="$(cargo tree --locked -p sceptre-cli -e normal,build -f '{p} {f}' --prefix none "$@" 2>&1)"; then
+	if ! tree="$(cargo tree --locked -p sceptre-cli -e normal,build -f '{p}|{f}' --prefix none "$@" 2>&1)"; then
 		printf 'FAIL: "cargo tree %s" did not resolve:\n%s\n' "$*" "${tree}" >&2
 		failures=$((failures + 1))
 		resolved=""
 		return 1
 	fi
-	resolved="$(printf '%s\n' "${tree}" | awk -v crate="${crate}" '$1 == crate { print $3 }' | sort -u | paste -sd, - | tr -d '[:space:]')"
+	resolved="$(printf '%s\n' "${tree}" |
+		awk -F '|' -v crate="${crate}" 'split($1, package, " ") && package[1] == crate { print $2 }' |
+		sort -u | paste -sd, - | tr -d '[:space:]')"
 }
 
 ort_features() {
@@ -98,6 +100,18 @@ bundled_label="--no-default-features --features ort-bundled,download"
 if ort_features --no-default-features --features ort-bundled,download; then
 	assert_has "${bundled_label}" ort "download-binaries" "${resolved}"
 	assert_lacks "${bundled_label}" ort "load-dynamic" "${resolved}"
+fi
+
+# Release binaries add MCP without changing runtime provisioning or model downloads. ~keep
+release_features="ort-bundled,download,mcp"
+release_label="release binary (${release_features})"
+if ort_features --no-default-features --features "${release_features}"; then
+	assert_has "${release_label}" ort "download-binaries" "${resolved}"
+	assert_lacks "${release_label}" ort "load-dynamic" "${resolved}"
+fi
+if crate_features sceptre --no-default-features --features "${release_features}"; then
+	assert_has "${release_label}" sceptre "mcp" "${resolved}"
+	assert_has "${release_label}" sceptre "download" "${resolved}"
 fi
 
 # 4. The pure-Rust paths must not drag ort (or its build-time native download) in at all. ~keep

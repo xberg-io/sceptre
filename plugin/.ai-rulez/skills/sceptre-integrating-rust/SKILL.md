@@ -11,7 +11,7 @@ x-ai-rulez:
 
 # Integrating Rust
 
-Add `sceptre = { version = "0.7", features = ["ort-bundled", "download"] }` to Cargo dependencies.
+Add `sceptre = { version = "0.8", features = ["ort-bundled", "download"] }` to Cargo dependencies.
 The library default features are empty; select a backend explicitly.
 
 ```rust

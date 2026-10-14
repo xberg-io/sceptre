@@ -11,6 +11,17 @@ includes:
     taskfile: ./.task/docs.yml
 
 tasks:
+  version:set:
+    desc: Set the workspace and plugin versions, then regenerate plugin bundles
+    preconditions:
+      - sh: test -n '{{.CLI_ARGS}}'
+        msg: 'Pass a version: task version:set -- X.Y.Z'
+    cmds:
+      - cargo set-version --workspace {{.CLI_ARGS}}
+      - python3 scripts/sync_plugin_version.py
+      - task: plugin:generate
+      - python3 scripts/sync_plugin_version.py --check
+
   setup:
     desc: Fetch Rust dependencies, install git hooks, sync the Python dev environment, and fetch the test corpus
     cmds:

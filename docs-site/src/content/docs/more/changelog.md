@@ -10,6 +10,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-10-14
+
+### Added
+
+- Native coding-agent plugins for eleven runtimes, marketplace indexes, and six public
+  skills with bundled reference resources. Release archives include plugin checksums,
+  publishing metadata, and an SBOM.
+- Prebuilt CLI binaries now include the MCP server. Release checks initialize the
+  server and discover its tools through JSON-RPC using the packaged executable.
+- `task version:set -- X.Y.Z` synchronizes workspace and plugin versions and regenerates
+  the runtime bundles and public skills.
+
+### Changed
+
+- Upgrade the ONNX Runtime Rust bindings from `ort` 2.0.0-rc.13 and pin them to exactly
+  2.0.0-rc.14 so future prereleases cannot silently change the required APIs.
+  Retain one runtime environment for model sessions and environment probes so multiple
+  models and readers can run in the same process ([ADR 0046](https://github.com/xberg-io/sceptre/blob/main/adrs/0046-retained-ort-environment.md)).
+- Remove the detection and engine complexity exceptions through behavior-preserving
+  helper extraction.
+
+### Fixed
+
+- Update the locked rustls dependency to 0.23.46, resolving four security advisories
+  reported by the release dependency audit.
+- Restore compiler-runtime linking for bundled ONNX Runtime on macOS, which the ort-sys
+  upgrade removed ([ADR 0047](https://github.com/xberg-io/sceptre/blob/main/adrs/0047-macos-bundled-ort-compiler-runtime.md)).
+
 ## [0.7.3] - 2026-10-09
 
 ### Fixed
@@ -403,7 +431,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Offline-first model provisioning: models download from Hugging Face on first use, cache locally,
   and are sha256-verified on download — every run thereafter reads the cache with no network.
 
-[Unreleased]: https://github.com/xberg-io/sceptre/compare/v0.7.2...HEAD
+[Unreleased]: https://github.com/xberg-io/sceptre/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/xberg-io/sceptre/compare/v0.7.3...v0.8.0
+[0.7.3]: https://github.com/xberg-io/sceptre/compare/v0.7.2...v0.7.3
 [0.7.2]: https://github.com/xberg-io/sceptre/compare/v0.7.1...v0.7.2
 [0.7.1]: https://github.com/xberg-io/sceptre/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/xberg-io/sceptre/compare/v0.6.0...v0.7.0

@@ -280,13 +280,12 @@ fn dilate_segmap(segmap: GrayImage, niter: u32) -> GrayImage {
         return segmap;
     }
     let (width, height) = segmap.dimensions();
-    let kernel = (DILATION_KERNEL_OFFSET + niter) as i32;
-    let anchor = kernel / 2;
+    let kernel = DilationKernel::new(niter);
     let source = segmap.as_raw();
     let mut horizontal = vec![0u8; source.len()];
-    dilate_along_axis(source, &mut horizontal, width, height, kernel, anchor, Axis::Horizontal);
+    dilate_along_axis(source, &mut horizontal, width, height, kernel, Axis::Horizontal);
     let mut dilated = vec![0u8; source.len()];
-    dilate_along_axis(&horizontal, &mut dilated, width, height, kernel, anchor, Axis::Vertical);
+    dilate_along_axis(&horizontal, &mut dilated, width, height, kernel, Axis::Vertical);
     GrayImage::from_raw(width, height, dilated).expect("dilated segmap keeps the source dimensions")
 }
 
@@ -297,16 +296,28 @@ enum Axis {
     Vertical,
 }
 
+#[derive(Clone, Copy)]
+struct DilationKernel {
+    size: i32,
+    anchor: i32,
+}
+
+impl DilationKernel {
+    fn new(niter: u32) -> Self {
+        let size = (DILATION_KERNEL_OFFSET + niter) as i32;
+        Self { size, anchor: size / 2 }
+    }
+}
+
 /// One separable line-max pass: for every output pixel, write foreground when any
-/// in-bounds sample in the `kernel`-length line window (anchored at `anchor`) is
+/// in-bounds sample in the `kernel.size`-length line window (anchored at `kernel.anchor`) is
 /// foreground. Since the buffer is 0/255, the max reduces to a first-hit test.
 fn dilate_along_axis(
     source: &[u8],
     destination: &mut [u8],
     width: u32,
     height: u32,
-    kernel: i32,
-    anchor: i32,
+    kernel: DilationKernel,
     axis: Axis,
 ) {
     // Stride/extent along the pass axis vs. the orthogonal iteration axis. ~keep
@@ -324,7 +335,7 @@ fn dilate_along_axis(
             Axis::Vertical => outer_index as usize,
         };
         for center in 0..inner as i32 {
-            if line_hits_foreground(source, base, stride, extent, center, kernel, anchor) {
+            if line_hits_foreground(source, base, stride, extent, center, kernel) {
                 destination[base + center as usize * stride] = SEGMAP_FOREGROUND;
             }
         }
@@ -341,11 +352,10 @@ fn line_hits_foreground(
     stride: usize,
     extent: i32,
     center: i32,
-    kernel: i32,
-    anchor: i32,
+    kernel: DilationKernel,
 ) -> bool {
-    for offset in 0..kernel {
-        let sample = center + offset - anchor;
+    for offset in 0..kernel.size {
+        let sample = center + offset - kernel.anchor;
         if sample < 0 || sample >= extent {
             continue;
         }
@@ -610,28 +620,32 @@ mod tests {
         let mut dilated = vec![0u8; source.len()];
         for y in 0..height as i32 {
             for x in 0..width as i32 {
-                let mut hit = false;
-                for j in 0..kernel {
-                    let sample_y = y + j - anchor;
-                    if sample_y < 0 || sample_y >= height as i32 {
-                        continue;
-                    }
-                    for i in 0..kernel {
-                        let sample_x = x + i - anchor;
-                        if sample_x < 0 || sample_x >= width as i32 {
-                            continue;
-                        }
-                        if source[(sample_y as u32 * width + sample_x as u32) as usize] != 0 {
-                            hit = true;
-                        }
-                    }
-                }
-                if hit {
+                if reference_neighborhood_hits(segmap, x, y, kernel, anchor) {
                     dilated[(y as u32 * width + x as u32) as usize] = SEGMAP_FOREGROUND;
                 }
             }
         }
         GrayImage::from_raw(width, height, dilated).expect("reference dilation keeps dimensions")
+    }
+
+    fn reference_neighborhood_hits(segmap: &GrayImage, x: i32, y: i32, kernel: i32, anchor: i32) -> bool {
+        let (width, height) = segmap.dimensions();
+        for j in 0..kernel {
+            let sample_y = y + j - anchor;
+            if sample_y < 0 || sample_y >= height as i32 {
+                continue;
+            }
+            for i in 0..kernel {
+                let sample_x = x + i - anchor;
+                if sample_x < 0 || sample_x >= width as i32 {
+                    continue;
+                }
+                if segmap.as_raw()[(sample_y as u32 * width + sample_x as u32) as usize] != 0 {
+                    return true;
+                }
+            }
+        }
+        false
     }
 
     /// A hand-built dilation test case: map dimensions plus foreground pixels.

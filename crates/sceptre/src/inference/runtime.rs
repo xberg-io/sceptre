@@ -113,7 +113,8 @@ const fn ort_provisioning() -> &'static str {
 #[cfg(feature = "ort")]
 fn probe_ort(requested: Accelerator) -> (Option<Accelerator>, Option<OrtRuntimeInfo>) {
     let probed = std::panic::catch_unwind(|| {
-        let builder = ort::session::Session::builder().ok()?;
+        let environment = super::ort_backend::environment().ok()?;
+        let builder = ort::session::Session::builder(environment).ok()?;
         let build_info = ort::info().to_string();
         let registered = super::ort_ep::apply_accelerator(builder, requested)
             .map(|(_builder, registered)| registered)

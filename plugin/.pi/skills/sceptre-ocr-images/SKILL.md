@@ -6,7 +6,7 @@ name: sceptre-ocr-images
 <!--
 AI-RULEZ :: GENERATED FILE — DO NOT EDIT
 Content-Hash: blake3:9c581451a7a7128f2b88e77b99d1b3f36971e42b432c5e2d12d5360761cd8e0e
-Source-Hash: blake3:37ae8027dbd4b33d66846ad9bbe13ca51138e442fc1d8ab21d26ab06f0fe6f44
+Source-Hash: blake3:2a7689a1ee03315e21c810ba70d3440b78a81a4d0a10b17f3434febf1cb8f7ca
 Schema-Version: v1
 -->
 

@@ -7,12 +7,26 @@
 
 use std::sync::Mutex;
 
+use once_cell::sync::OnceCell;
+use ort::environment::Environment;
 use ort::session::Session;
 use ort::session::builder::GraphOptimizationLevel;
 use ort::value::Tensor as OrtTensor;
 
 use super::{BackendOptions, ModelBackend, Tensor, buffer, ort_ep};
 use crate::error::{OcrError, Result};
+
+/// Retain ONNX Runtime's single process environment for every probe and model session.
+///
+/// See ADR 0046 for the environment lifetime required by ONNX Runtime.
+pub(super) fn environment() -> Result<&'static Environment> {
+    static ENVIRONMENT: OnceCell<Environment> = OnceCell::new();
+    ENVIRONMENT.get_or_try_init(|| {
+        ort::init()
+            .build()
+            .map_err(|error| inference_error("create an ONNX Runtime environment", error))
+    })
+}
 
 /// ONNX Runtime session wrapper.
 ///
@@ -37,8 +51,8 @@ impl OrtBackend {
     /// Execution providers are registered before the optimization level is set,
     /// because ONNX Runtime applies EP-aware layout transforms while optimizing.
     pub(crate) fn load(model_bytes: &[u8], options: BackendOptions<'_>) -> Result<Self> {
-        let builder =
-            Session::builder().map_err(|error| inference_error("create an ONNX Runtime session builder", error))?;
+        let builder = Session::builder(environment()?)
+            .map_err(|error| inference_error("create an ONNX Runtime session builder", error))?;
         let (mut builder, accelerator) = ort_ep::apply_accelerator(builder, options.accelerator)?;
         tracing::debug!(
             requested = options.accelerator.as_str(),
@@ -219,32 +233,39 @@ mod tests {
         assert!(matches!(error, OcrError::Inference { .. }));
     }
 
-    /// End-to-end load-and-run over a real ONNX model.
+    /// Probe the runtime, then load multiple sessions and run dynamic-width CRAFT inputs.
     ///
-    /// Ignored by default: it links and initializes the ONNX Runtime native
-    /// library and needs a model file. Point `EASYOCR_TEST_ONNX` at a CRAFT
-    /// detector (`craft_mlt_25k`) — the input below is a `[1, 3, 64, 64]` batch,
-    /// which the detector maps to a rank-4 `[1, 2, 32, 32]` heat-map.
+    /// Point `EASYOCR_TEST_ONNX` at a `craft_mlt_25k` detector. Each session must
+    /// retain a shared environment after the runtime probe and model bytes are dropped.
     #[test]
     #[ignore = "requires the ONNX Runtime native library and a model file"]
     fn load_and_run_over_real_model() {
+        let model = crate::config::ModelConfig {
+            backend: crate::config::Backend::Ort,
+            accelerator: crate::config::Accelerator::Cpu,
+            ..crate::config::ModelConfig::default()
+        };
+        let runtime = crate::inference::runtime_info_for(&model).expect("probe the runtime before loading models");
+        assert_eq!(runtime.accelerator_registered, Some(crate::config::Accelerator::Cpu));
         let model_path = std::env::var("EASYOCR_TEST_ONNX").expect("set EASYOCR_TEST_ONNX to an ONNX model path");
         let model_bytes = std::fs::read(&model_path).expect("read the model file");
         let options = BackendOptions {
             threads: 1,
+            accelerator: crate::config::Accelerator::Cpu,
             ..BackendOptions::default()
         };
-        let backend = OrtBackend::load(&model_bytes, options).expect("load the ONNX model");
-        assert_eq!(backend.name(), "ort");
+        let first = OrtBackend::load(&model_bytes, options).expect("load the first ONNX model");
+        let second = OrtBackend::load(&model_bytes, options).expect("load the second ONNX model");
+        drop(model_bytes);
 
-        let input = ArrayD::from_elem(IxDyn(&[1, 3, 64, 64]), 1.0_f32);
-        let output = backend.run(input).expect("run inference");
-
-        assert!(output.ndim() >= 2, "expected a multi-dimensional output");
-        assert!(!output.is_empty(), "expected a non-empty output");
-        assert!(
-            output.iter().all(|value| value.is_finite()),
-            "expected all outputs to be finite"
-        );
+        for backend in [first, second] {
+            assert_eq!(backend.name(), "ort");
+            for width in [64, 96, 64] {
+                let input = ArrayD::from_elem(IxDyn(&[1, 3, 64, width]), 1.0_f32);
+                let output = backend.run(input).expect("run inference");
+                assert_eq!(output.len(), 32 * (width / 2) * 2);
+                assert!(output.iter().all(|value| value.is_finite()), "expected finite outputs");
+            }
+        }
     }
 }

@@ -1,5 +1,5 @@
 [package]
-include = ["/Cargo.toml", "/Cargo.lock", "/README.md", "/LICENSE*", "/src/**", "/assets/character/*.txt"]
+include = ["/Cargo.toml", "/Cargo.lock", "/build.rs", "/README.md", "/LICENSE*", "/src/**", "/assets/character/*.txt"]
 name = "sceptre"
 description = "Rust reimplementation of EasyOCR (CRAFT detection + gen2 CRNN recognition) over ONNX."
 version.workspace = true
