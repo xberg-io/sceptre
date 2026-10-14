@@ -15,7 +15,7 @@ tasks:
     desc: Fetch Rust dependencies, install git hooks, sync the Python dev environment, and fetch the test corpus
     cmds:
       - cargo fetch
-      - poly hooks install
+      - task: governance:hooks:install
       - uv sync
       - git submodule update --init --recursive test_documents
       - python3 test_documents/scripts/fetch_corpus.py --include 'images/**'
@@ -88,3 +88,53 @@ tasks:
     desc: Remove Rust build artifacts
     cmds:
       - cargo clean
+
+  governance:hooks:install:
+    desc: Provision machine preferences and install reviewed AI governance hooks
+    cmds:
+      - |
+        python3 - <<'PYTHON'
+        import pathlib
+        import shutil
+        import subprocess
+        import tomllib
+
+        if shutil.which("ai-rulez") is None:
+            raise SystemExit("Install the reviewed ai-rulez CLI before installing hooks")
+        preferences = pathlib.Path("poly.local.toml")
+        text = preferences.read_text() if preferences.exists() else ""
+        data = tomllib.loads(text)
+        if "hook_preferences" not in data:
+            preferences.write_text(text.rstrip() + '\n\n[hook_preferences]\nchannels = ["system"]\n')
+        elif "system" not in data["hook_preferences"].get("channels", []):
+            raise SystemExit("Add system to hook_preferences.channels in poly.local.toml")
+        subprocess.run(["poly", "hooks", "install"], check=True)
+        PYTHON
+
+  plugin:hermes:test:
+    desc: Verify the Hermes bridge against a real MCP stdio fixture
+    cmds:
+      - uv run --no-project --python 3.11 --with mcp==1.28.1 --with PyYAML==6.0.3 python scripts/tests/test_hermes_plugin.py
+
+  governance:check:
+    desc: Check materialized local governance outputs against shared sources
+    cmds:
+      - ai-rulez generate --check --no-local --strict-config
+
+  plugin:skills:test:
+    desc: Verify public skill ownership and resource freshness
+    cmds:
+      - python3 scripts/tests/test_public_skills.py
+      - python3 scripts/sync_public_skills.py --check
+
+  plugin:generate:
+    desc: Generate all native plugin bundles and public skills
+    cmds:
+      - ai-rulez generate --plugin
+      - python3 scripts/sync_public_skills.py
+
+  plugin:verify:
+    desc: Verify native plugin bundles and public skills
+    cmds:
+      - ai-rulez verify --plugin
+      - python3 scripts/sync_public_skills.py --check

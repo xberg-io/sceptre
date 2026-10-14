@@ -1,0 +1,16 @@
+{
+  "name": "sceptre",
+  "version": "0.7.3",
+  "description": "Local OCR with CRAFT detection and multilingual CRNN recognition.",
+  "contextFileName": "GEMINI.md",
+  "mcpServers": {
+    "sceptre": {
+      "command": "sceptre",
+      "args": [
+        "mcp",
+        "--lang",
+        "english"
+      ]
+    }
+  }
+}

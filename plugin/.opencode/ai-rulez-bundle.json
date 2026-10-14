@@ -1,0 +1,40 @@
+{
+  "plugin": "sceptre",
+  "mcp": {
+    "sceptre": {
+      "type": "local",
+      "command": [
+        "sceptre",
+        "mcp",
+        "--lang",
+        "english"
+      ]
+    }
+  },
+  "skills": {
+    "sceptre": {
+      "name": "sceptre",
+      "description": "Extract text, confidence scores and bounding boxes from local images using Sceptre OCR; inspect or download multilingual models."
+    },
+    "sceptre-integrating-rust": {
+      "name": "sceptre-integrating-rust",
+      "description": "Embed Sceptre OCR in Rust with Reader, decoded images, model providers and structured error handling."
+    },
+    "sceptre-managing-models": {
+      "name": "sceptre-managing-models",
+      "description": "List, download and prepare Sceptre multilingual OCR models and inspect backend configuration."
+    },
+    "sceptre-ocr-images": {
+      "name": "sceptre-ocr-images",
+      "description": "Recognize text in one or many image files with local Sceptre OCR, preserving bounding boxes and confidence."
+    },
+    "sceptre-tuning-ocr": {
+      "name": "sceptre-tuning-ocr",
+      "description": "Tune Sceptre detection memory, orientation and language options when OCR misses text or consumes too much memory."
+    },
+    "sceptre-using-the-mcp-server": {
+      "name": "sceptre-using-the-mcp-server",
+      "description": "Configure and call the Sceptre readtext MCP tool for local image OCR with confidence and bounding boxes."
+    }
+  }
+}

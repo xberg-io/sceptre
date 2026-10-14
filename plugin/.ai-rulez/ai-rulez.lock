@@ -1,0 +1,44 @@
+# ai-rulez.lock: pins remote includes, installed skills and authored content. Commit this file.
+# Refresh it with `ai-rulez lock`; `ai-rulez generate --locked` fails when it is stale.
+
+version = 1
+ai_rulez_version = '5.2.1'
+scope = 'all'
+outputs_pinned = true
+tree = 'sha256:e659769a77519c946cd472f22de6e8522aecbd23dc6850c3b33502ab15ca5cec'
+
+[[item]]
+kind = 'skill'
+id = 'sceptre'
+path = 'skills/sceptre'
+digest = 'sha256:db310b238eb8486734ff597161ad5b7a2570bf16f7343be30d3bd8e360634630'
+
+[[item]]
+kind = 'skill'
+id = 'sceptre-integrating-rust'
+path = 'skills/sceptre-integrating-rust'
+digest = 'sha256:3b8c4b2056ba20ee7c477fa1225c8e1e8af2a7900b85843b5555d208313a61f2'
+
+[[item]]
+kind = 'skill'
+id = 'sceptre-managing-models'
+path = 'skills/sceptre-managing-models'
+digest = 'sha256:05ad97c8d9430d80129926b74746d2160ebd8471987240109619028428164fe0'
+
+[[item]]
+kind = 'skill'
+id = 'sceptre-ocr-images'
+path = 'skills/sceptre-ocr-images'
+digest = 'sha256:3c8d7452d08fb5dae72d2d798cf64699561af671d13282d5b6e252eb02ca00d0'
+
+[[item]]
+kind = 'skill'
+id = 'sceptre-tuning-ocr'
+path = 'skills/sceptre-tuning-ocr'
+digest = 'sha256:591d622c3e3ed5d241f5705ab6d4048d040b609cd1050e4a23dd6c9646416d83'
+
+[[item]]
+kind = 'skill'
+id = 'sceptre-using-the-mcp-server'
+path = 'skills/sceptre-using-the-mcp-server'
+digest = 'sha256:da56569700a86066fcefd68415d6f8086b292c971704c5dce8a71271def2d35f'

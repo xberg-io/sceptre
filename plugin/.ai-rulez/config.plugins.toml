@@ -1,0 +1,60 @@
+[plugin]
+name = "sceptre"
+version = "0.7.3"
+runtimes = [
+  "claude",
+  "cursor",
+  "codex",
+  "gemini",
+  "kimi",
+  "opencode",
+  "factory",
+  "hermes",
+  "pi",
+  "agent-plugins",
+  "copilot",
+]
+display_name = "Sceptre"
+description = "Local OCR with CRAFT detection and multilingual CRNN recognition."
+homepage = "https://xberg.io"
+repository = "https://github.com/xberg-io/sceptre"
+license = "MIT"
+keywords = ["ocr", "images", "text-recognition", "mcp"]
+
+[plugin.author]
+name = "Kreuzberg, Inc."
+email = "contact@xberg.io"
+url = "https://xberg.io"
+
+[[plugin.mcp]]
+name = "sceptre"
+command = "sceptre"
+args = ["mcp", "--lang", "english"]
+
+[plugin.codex]
+manifest = "both"
+marketplace = true
+
+[plugin.cursor]
+marketplace = true
+
+[plugin.gemini]
+commands = true
+
+[plugin.pi]
+package_json = "merge"
+
+[plugin.interface]
+display_name = "Sceptre"
+short_description = "Local multilingual image OCR"
+long_description = "Recognize text in local images with CRAFT detection and CRNN recognition. Includes image OCR, model management, tuning, Rust API and MCP skills. Install sceptre-cli with the mcp feature before registering the server."
+developer_name = "Kreuzberg, Inc."
+category = "developer-tools"
+capabilities = ["Read"]
+default_prompt = ["Read text from this image", "Inspect available OCR models", "OCR a rotated scan"]
+website_url = "https://xberg.io"
+privacy_policy_url = "https://xberg.io/privacy"
+terms_of_service_url = "https://xberg.io/terms"
+
+[plugin.hermes]
+dependencies = ["mcp==1.28.1", "PyYAML==6.0.3"]

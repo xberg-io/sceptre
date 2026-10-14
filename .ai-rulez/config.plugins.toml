@@ -1,0 +1,13 @@
+[[marketplaces]]
+name = "basemind"
+source = "Goldziher/basemind"
+type = "github"
+
+[marketplace]
+name = "sceptre"
+description = "Local image OCR for coding agents."
+members = ["plugin"]
+
+[marketplace.owner]
+name = "Kreuzberg, Inc."
+email = "contact@xberg.io"

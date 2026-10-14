@@ -1,0 +1,73 @@
+{
+  "author": {
+    "email": "contact@xberg.io",
+    "name": "Kreuzberg, Inc.",
+    "url": "https://xberg.io"
+  },
+  "dependencies": {
+    "@opencode/plugin": "^2.0.26"
+  },
+  "description": "Local OCR with CRAFT detection and multilingual CRNN recognition.",
+  "exports": {
+    ".": "./.opencode/plugins/sceptre.js"
+  },
+  "files": [
+    ".opencode/ai-rulez-bundle.json",
+    ".opencode/ai-rulez-content.js",
+    ".opencode/plugins/sceptre.js",
+    ".opencode/skills/sceptre-integrating-rust/SKILL.md",
+    ".opencode/skills/sceptre-integrating-rust/index.md",
+    ".opencode/skills/sceptre-managing-models/SKILL.md",
+    ".opencode/skills/sceptre-managing-models/index.md",
+    ".opencode/skills/sceptre-ocr-images/SKILL.md",
+    ".opencode/skills/sceptre-ocr-images/index.md",
+    ".opencode/skills/sceptre-tuning-ocr/SKILL.md",
+    ".opencode/skills/sceptre-tuning-ocr/index.md",
+    ".opencode/skills/sceptre-using-the-mcp-server/SKILL.md",
+    ".opencode/skills/sceptre-using-the-mcp-server/index.md",
+    ".opencode/skills/sceptre/SKILL.md",
+    ".opencode/skills/sceptre/index.md",
+    ".pi/skills/sceptre-integrating-rust/SKILL.md",
+    ".pi/skills/sceptre-integrating-rust/index.md",
+    ".pi/skills/sceptre-managing-models/SKILL.md",
+    ".pi/skills/sceptre-managing-models/index.md",
+    ".pi/skills/sceptre-ocr-images/SKILL.md",
+    ".pi/skills/sceptre-ocr-images/index.md",
+    ".pi/skills/sceptre-tuning-ocr/SKILL.md",
+    ".pi/skills/sceptre-tuning-ocr/index.md",
+    ".pi/skills/sceptre-using-the-mcp-server/SKILL.md",
+    ".pi/skills/sceptre-using-the-mcp-server/index.md",
+    ".pi/skills/sceptre/SKILL.md",
+    ".pi/skills/sceptre/index.md",
+    "README.md",
+    "assets/"
+  ],
+  "homepage": "https://xberg.io",
+  "keywords": [
+    "images",
+    "mcp",
+    "ocr",
+    "pi-package",
+    "text-recognition"
+  ],
+  "license": "MIT",
+  "main": ".opencode/plugins/sceptre.js",
+  "name": "@xberg-io/opencode-sceptre",
+  "pi": {
+    "prompts": [],
+    "skills": [
+      "./.pi/skills/sceptre-integrating-rust",
+      "./.pi/skills/sceptre-managing-models",
+      "./.pi/skills/sceptre-ocr-images",
+      "./.pi/skills/sceptre-tuning-ocr",
+      "./.pi/skills/sceptre-using-the-mcp-server",
+      "./.pi/skills/sceptre"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xberg-io/sceptre"
+  },
+  "type": "module",
+  "version": "0.7.3"
+}

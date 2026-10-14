@@ -1,0 +1,39 @@
+{
+  "name": "sceptre",
+  "version": "0.7.3",
+  "description": "Local OCR with CRAFT detection and multilingual CRNN recognition.",
+  "author": {
+    "name": "Kreuzberg, Inc.",
+    "email": "contact@xberg.io",
+    "url": "https://xberg.io"
+  },
+  "homepage": "https://xberg.io",
+  "repository": "https://github.com/xberg-io/sceptre",
+  "license": "MIT",
+  "keywords": [
+    "ocr",
+    "images",
+    "text-recognition",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Sceptre",
+    "shortDescription": "Local multilingual image OCR",
+    "longDescription": "Recognize text in local images with CRAFT detection and CRNN recognition. Includes image OCR, model management, tuning, Rust API and MCP skills. Install sceptre-cli with the mcp feature before registering the server.",
+    "developerName": "Kreuzberg, Inc.",
+    "category": "developer-tools",
+    "capabilities": [
+      "Read"
+    ],
+    "defaultPrompt": [
+      "Read text from this image",
+      "Inspect available OCR models",
+      "OCR a rotated scan"
+    ],
+    "websiteURL": "https://xberg.io",
+    "privacyPolicyURL": "https://xberg.io/privacy",
+    "termsOfServiceURL": "https://xberg.io/terms"
+  }
+}

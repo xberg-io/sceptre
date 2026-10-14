@@ -1,0 +1,15 @@
+{
+  "name": "sceptre",
+  "description": "Local image OCR for coding agents.",
+  "owner": {
+    "name": "Kreuzberg, Inc.",
+    "email": "contact@xberg.io"
+  },
+  "plugins": [
+    {
+      "name": "sceptre",
+      "description": "Local OCR with CRAFT detection and multilingual CRNN recognition.",
+      "source": "./plugin"
+    }
+  ]
+}

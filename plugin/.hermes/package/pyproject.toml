@@ -1,0 +1,26 @@
+[build-system]
+requires = ['hatchling>=1.27']
+build-backend = 'hatchling.build'
+
+[project]
+name = 'sceptre-hermes-plugin'
+version = '0.7.3'
+description = 'Local OCR with CRAFT detection and multilingual CRNN recognition.'
+requires-python = '>=3.11'
+dependencies = ['mcp==1.28.1', 'PyYAML==6.0.3']
+keywords = ['ocr', 'images', 'text-recognition', 'mcp']
+
+[project.entry-points]
+[project.entry-points.'hermes_agent.plugins']
+sceptre = 'sceptre_hermes_plugin'
+
+[project.urls]
+Homepage = 'https://xberg.io'
+Repository = 'https://github.com/xberg-io/sceptre'
+
+[tool]
+[tool.hatch]
+[tool.hatch.build]
+[tool.hatch.build.targets]
+[tool.hatch.build.targets.wheel]
+packages = ['src/sceptre_hermes_plugin']

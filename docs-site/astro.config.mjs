@@ -40,6 +40,7 @@ export default defineConfig({
               { label: "CLI", slug: "guides/cli" },
               { label: "Library", slug: "guides/library" },
               { label: "MCP server", slug: "guides/mcp-server" },
+              { label: "Coding agents", slug: "guides/ai-coding-assistants" },
               { label: "Configuration", slug: "guides/configuration" },
               { label: "Offline and CI", slug: "guides/offline-and-ci" },
             ],

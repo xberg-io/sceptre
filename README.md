@@ -266,6 +266,37 @@ env var, `EASYOCR_LOG` (sets `--log-level`), a name kept from the project's Easy
 `cache_dir`, `registry_owner`, `detector_path`, and `recognizer_path` are library-only fields with no
 CLI flag.
 
+## Coding-agent plugin and public skills
+
+The [Sceptre plugin](plugin/README.md) provides local image OCR instructions and MCP tools for
+Claude Code, Codex, Cursor, Gemini CLI, Kimi, OpenCode, Factory Droid, Hermes, Agent Plugins
+and GitHub Copilot CLI. Pi loads the packaged skills and prompts and uses the CLI directly.
+
+Install an MCP-enabled binary before using the server or Hermes bridge:
+
+```sh
+cargo install sceptre-cli --features mcp
+```
+
+Models download on first use. Set the image language through the MCP configuration; the default
+is English. Install the Claude marketplace plugin with:
+
+```text
+/plugin marketplace add xberg-io/sceptre
+/plugin install sceptre@sceptre
+```
+
+For other runtimes, follow [the plugin installation guide](plugin/README.md).
+Install [public skills](skills/) independently with the [skills CLI](https://github.com/vercel-labs/skills):
+
+```sh
+npx skills add xberg-io/sceptre --list
+npx skills add xberg-io/sceptre
+```
+
+Select skills and target agents interactively. This installs instructions; the binary and model
+cache remain separate requirements.
+
 ## Development
 
 ```sh
