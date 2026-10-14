@@ -662,6 +662,41 @@ mod tests {
         }
     }
 
+    fn engine_with_orientation_backends(
+        detector_backend: Arc<dyn ModelBackend>,
+        recognizer_backend: Arc<dyn ModelBackend>,
+    ) -> SceptreEngine {
+        let mut config = OcrConfig::default();
+        config.detection.detect_orientation = true;
+        config.detection.orientation_probe_canvas_size = 8;
+        config.detection.orientation_margin = 0.05;
+        config.detection.min_size = 0;
+
+        let engine = SceptreEngine {
+            config,
+            models: Mutex::new(None),
+            progress: Arc::new(SilentProgress),
+            detector_cache: OnceCell::new(),
+            recognizer_cache: OnceCell::new(),
+        };
+        engine
+            .detector_cache
+            .set(detector_backend)
+            .ok()
+            .expect("detector cache starts empty");
+        engine
+            .recognizer_cache
+            .set(Arc::new(CrnnRecognizer::new(
+                recognizer_backend,
+                Charset::for_language(Language::English),
+                RecognitionConfig::default(),
+            )))
+            .ok()
+            .expect("recognizer cache starts empty");
+
+        engine
+    }
+
     /// Regression coverage for the bug the rotate-once-in-the-engine design
     /// fixes: `SceptreEngine::recognize` must run detection *and* cropping in
     /// the same rotated working frame, not detect on a rotated copy while
@@ -712,33 +747,7 @@ mod tests {
             num_classes: Charset::for_language(Language::English).num_classes(),
         });
 
-        let mut config = OcrConfig::default();
-        config.detection.detect_orientation = true;
-        config.detection.orientation_probe_canvas_size = 8;
-        config.detection.orientation_margin = 0.05;
-        config.detection.min_size = 0;
-
-        let engine = SceptreEngine {
-            config,
-            models: Mutex::new(None),
-            progress: Arc::new(SilentProgress),
-            detector_cache: OnceCell::new(),
-            recognizer_cache: OnceCell::new(),
-        };
-        engine
-            .detector_cache
-            .set(detector_backend.clone() as Arc<dyn ModelBackend>)
-            .ok()
-            .expect("detector cache starts empty");
-        engine
-            .recognizer_cache
-            .set(Arc::new(CrnnRecognizer::new(
-                recognizer_backend.clone() as Arc<dyn ModelBackend>,
-                Charset::for_language(Language::English),
-                RecognitionConfig::default(),
-            )))
-            .ok()
-            .expect("recognizer cache starts empty");
+        let engine = engine_with_orientation_backends(detector_backend.clone(), recognizer_backend.clone());
 
         // Non-square, comfortably larger than the heat-map's own coordinate range. ~keep
         let image = solid_image(200, 100);
