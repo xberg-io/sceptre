@@ -1,53 +1,47 @@
 version = "5.0"
+default_layers = ["plugins"]
 name = "sceptre"
 description = "Rust reimplementation of EasyOCR — CRAFT detection + gen2 CRNN recognition over ONNX, as a library + CLI + MCP server."
 gitignore = true
 
-presets = ["claude", "codex", "opencode", "pi"]
+presets = ["claude", "codex", "opencode", "pi", "hermes", "gemini", "copilot"]
 
 compact = true
-builtins = ["rust", "cicd", "documentation", "default-commands"]
+builtins = ["!git-workflow", "rust", "cicd", "documentation", "default-commands"]
 
 [header]
-text = """AI-RULEZ :: GENERATED FILE - DO NOT EDIT
-Source: .ai-rulez/config.toml
-Modify .ai-rulez/ content and regenerate with pnpm dlx ai-rulez@5.0.1 generate
-MCP server: pnpm dlx ai-rulez@5.0.1 mcp"""
 style = "minimal"
 
-hashes = "full"
 
 [[includes]]
 name = "xberg-core"
 source = 'https://github.com/xberg-io/agent-conventions.git'
+ref = "adb0caa92c4d8155fb1680618f72a321a832660b"
 path = "modules/core"
 merge_strategy = "local-override"
 
 [[includes]]
 name = "xberg-cicd"
 source = 'https://github.com/xberg-io/agent-conventions.git'
+ref = "adb0caa92c4d8155fb1680618f72a321a832660b"
 path = "modules/cicd"
 merge_strategy = "local-override"
 
 [[mcp_servers]]
 name = "ai-rulez"
 description = "Manage AI governance config via MCP."
-command = "npx"
-args = ["-y", "ai-rulez@latest", "mcp"]
+command = "ai-rulez"
+args = ["mcp"]
 
 [defaults]
 effort = "medium"
 
-[[marketplaces]]
-name = "basemind"
-source = "Goldziher/basemind"
-type = "github"
-
-[[plugins]]
-marketplace = "basemind"
-name = "basemind"
-scope = "project"
-enabled = true
-
 [mcp]
-self_server_command = ["pnpm", "dlx", "ai-rulez@5.0.1", "mcp"]
+self_server_command = ["ai-rulez", "mcp"]
+
+
+[codex]
+project_doc_max_bytes = 65536
+
+[lock]
+include_outputs = false

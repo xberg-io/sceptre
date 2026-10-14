@@ -1,0 +1,8 @@
+name: "sceptre"
+version: "0.7.3"
+description: "Local OCR with CRAFT detection and multilingual CRNN recognition."
+author: "Kreuzberg, Inc."
+kind: "standalone"
+python_dependencies:
+  - "mcp==1.28.1"
+  - "PyYAML==6.0.3"

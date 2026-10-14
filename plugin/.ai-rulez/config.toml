@@ -1,0 +1,5 @@
+version = "5.0"
+default_layers = ["plugins"]
+name = "sceptre"
+description = "Local OCR with CRAFT detection and multilingual CRNN recognition."
+agents_md = false

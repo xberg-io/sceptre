@@ -1,0 +1,19 @@
+{
+  "name": "sceptre",
+  "version": "0.7.3",
+  "description": "Local OCR with CRAFT detection and multilingual CRNN recognition.",
+  "author": {
+    "name": "Kreuzberg, Inc.",
+    "email": "contact@xberg.io",
+    "url": "https://xberg.io"
+  },
+  "homepage": "https://xberg.io",
+  "repository": "https://github.com/xberg-io/sceptre",
+  "license": "MIT",
+  "keywords": [
+    "ocr",
+    "images",
+    "text-recognition",
+    "mcp"
+  ]
+}

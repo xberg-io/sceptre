@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "sceptre": {
+      "command": "sceptre",
+      "args": [
+        "mcp",
+        "--lang",
+        "english"
+      ]
+    }
+  }
+}

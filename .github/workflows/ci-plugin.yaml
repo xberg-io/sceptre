@@ -1,0 +1,54 @@
+name: CI Plugin
+
+on:
+  push:
+    paths:
+      - "plugin/**"
+      - "skills/**"
+      - "scripts/sync_public_skills.py"
+      - "scripts/tests/test_public_skills.py"
+      - ".ai-rulez/config*.toml"
+      - ".claude-plugin/**"
+      - ".agents/plugins/**"
+      - "Cargo.toml"
+      - "scripts/sync_plugin_version.py"
+      - ".github/workflows/ci-plugin.yaml"
+  pull_request:
+    paths:
+      - "plugin/**"
+      - "skills/**"
+      - "scripts/sync_public_skills.py"
+      - "scripts/tests/test_public_skills.py"
+      - ".ai-rulez/config*.toml"
+      - ".claude-plugin/**"
+      - ".agents/plugins/**"
+      - "Cargo.toml"
+      - "scripts/sync_plugin_version.py"
+      - ".github/workflows/ci-plugin.yaml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install ai-rulez
+        uses: xberg-io/actions/setup-ai-rulez@98adf87f1ed4c62a57ff56f9010d62faf42d4db6
+        with:
+          ai-rulez-version: "5.3.0"
+      - uses: xberg-io/actions/verify-ai-rulez-plugin@98adf87f1ed4c62a57ff56f9010d62faf42d4db6
+        with:
+          config-directory: .ai-rulez
+
+      - name: Install uv for Hermes contract tests
+        uses: astral-sh/setup-uv@v10.3.0
+      - name: Verify Hermes discovery and tool calls
+        run: uv run --no-project --python 3.11 --with mcp==1.28.1 --with PyYAML==6.0.3 python scripts/tests/test_hermes_plugin.py
+
+      - name: Verify public skills and export ownership
+        run: |
+          python3 scripts/tests/test_public_skills.py
+          python3 scripts/sync_public_skills.py --check

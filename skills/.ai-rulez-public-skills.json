@@ -1,0 +1,18 @@
+{
+  "source": "plugin/skills",
+  "skill_count": 6,
+  "files": {
+    "sceptre/SKILL.md": "ad9632a21f378042c1b04c0ae40205bc1feedec060bc99e013607d18dc8be4c5",
+    "sceptre/index.md": "9d25a27bc5bf9e4a01405b468774610779af1af12ae646fcd4f40ef4702997e9",
+    "sceptre-integrating-rust/SKILL.md": "92924729c403c08505e1b0f036f3bf4ebd5f8d7b766ed06c8b5b96f862a3844f",
+    "sceptre-integrating-rust/index.md": "f13d7d4b68a61c7d5de9f5b1231057fda18990442f6aac91b4b9541e57d332c2",
+    "sceptre-managing-models/SKILL.md": "57dc2ab55ef758dc3358c885d3f5ceb1d4995d93210b1dc12d5a8622e0feed76",
+    "sceptre-managing-models/index.md": "a12995dd5bd1ce300a5ae211cc283e2fe2444c530936725099a74006086722d8",
+    "sceptre-ocr-images/SKILL.md": "4e1291f08d2cca0a28a6bade14f536a53885839997990c39d663fcaec0b65f33",
+    "sceptre-ocr-images/index.md": "28d98fb84252fb706feb73e4cb6e971330e04afa76f6eb6e057f0c25c9dde301",
+    "sceptre-tuning-ocr/SKILL.md": "8cfda549c84df7519ac02fea2be766605a9433d09fb24ff6ee95d4a8dde3d56b",
+    "sceptre-tuning-ocr/index.md": "2cb91bf4ae2c214eec90ca0d82573318b4c6aeeb6f87081a36166543cfa296b6",
+    "sceptre-using-the-mcp-server/SKILL.md": "1ce058038e5569c34baa9f15a516b6f291388b370d25b3f488a8d08ae3d5662e",
+    "sceptre-using-the-mcp-server/index.md": "fde1327bf6cd21cb34c7430cfa9c3087eb7deb13d008ad23487d2b5ac44dc886"
+  }
+}
