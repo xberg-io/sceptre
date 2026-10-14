@@ -33,6 +33,10 @@ configuration or introducing a library-installed tracing subscriber. It also mea
 applications must coordinate any independent use of ort's environment builder with
 Sceptre; upstream does not expose a public accessor for an environment initialized elsewhere.
 
+Pin ort to this exact prerelease. A compatible Cargo prerelease range can select a later
+release candidate even when that candidate changes APIs, as rc.14 did to session builders
+and execution providers. Upgrade subsequent candidates explicitly and repeat these checks.
+
 ## Validation
 
 Exercise runtime probing followed by repeated model loading in one process, and run the

@@ -3,8 +3,8 @@
 Local image OCR skills and an MCP server for Claude, Codex, Cursor, Gemini, Kimi,
 OpenCode, Factory, Hermes, Pi, Agent Plugins and Copilot.
 
-Install `cargo install sceptre-cli --features mcp` and ensure `sceptre` is on PATH.
-Prebuilt release binaries omit the MCP feature; install from Cargo with `--features mcp`.
+Prebuilt release binaries include MCP support. Extract the archive and put `sceptre` on PATH.
+For a Cargo install, run `cargo install sceptre-cli --features mcp`.
 The MCP server defaults to English; configure `--lang` for the image language.
 Models download on first use. Pi provides skills without MCP integration; Copilot includes the root MCP configuration.
 

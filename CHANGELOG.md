@@ -21,7 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Upgrade the ONNX Runtime Rust bindings from `ort` 2.0.0-rc.13 to 2.0.0-rc.14.
+- Upgrade the ONNX Runtime Rust bindings from `ort` 2.0.0-rc.13 and pin them to exactly
+  2.0.0-rc.14 so future prereleases cannot silently change the required APIs.
   Retain one runtime environment for model sessions and environment probes so multiple
   models and readers can run in the same process ([ADR 0046](adrs/0046-retained-ort-environment.md)).
 - Remove the detection and engine complexity exceptions through behavior-preserving
