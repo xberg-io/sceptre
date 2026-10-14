@@ -45,7 +45,6 @@ __pycache__/
 .agents/skills/
 .ai-rulez/.generated-manifest.json
 .ai-rulez/.generated-manifest.local.json
-.ai-rulez/config.local.*
 .ai-rulez/local/
 .claude/agents/
 .claude/skills/
