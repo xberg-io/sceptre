@@ -5,7 +5,7 @@ version = 1
 ai_rulez_version = '5.3.0'
 scope = 'all'
 outputs_pinned = true
-tree = 'sha256:e659769a77519c946cd472f22de6e8522aecbd23dc6850c3b33502ab15ca5cec'
+tree = 'sha256:28636ce12493ce11b2ab4e25dacfb43b8e4f2461037cc4a05e56c6e1423f02ec'
 
 [[item]]
 kind = 'skill'
@@ -17,7 +17,7 @@ digest = 'sha256:db310b238eb8486734ff597161ad5b7a2570bf16f7343be30d3bd8e36063463
 kind = 'skill'
 id = 'sceptre-integrating-rust'
 path = 'skills/sceptre-integrating-rust'
-digest = 'sha256:3b8c4b2056ba20ee7c477fa1225c8e1e8af2a7900b85843b5555d208313a61f2'
+digest = 'sha256:d23a8689d7b5be672c01e376ea57dd8f72d01618034a540043c9e133f64c3a72'
 
 [[item]]
 kind = 'skill'

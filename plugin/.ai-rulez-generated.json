@@ -1,6 +1,6 @@
 {
   "schema_version": "v1",
-  "source_hash": "blake3:2a7689a1ee03315e21c810ba70d3440b78a81a4d0a10b17f3434febf1cb8f7ca",
+  "source_hash": "blake3:838e0729665e45091c8b001bac71aa502671c6c390dd8e87276f2d8fd0b917f5",
   "outputs": {
     ".claude-plugin/plugin.json": {
       "content_hash": "blake3:2a95e822de9338a89b70a084d9a47ce971329efc83652a594886c2ba15d5d148",
@@ -75,7 +75,7 @@
       "mode": "0644"
     },
     ".hermes/package/src/sceptre_hermes_plugin/hermes.py": {
-      "content_hash": "blake3:35d2035790f3e7d9a90690103fe6f675c2f6c6684cd458face299a1e54dfc87f",
+      "content_hash": "blake3:84685ebaeb7b3b9bcc2e62f53c3e430589de6cb6f0b3344d2e8a78e490d604e7",
       "mode": "0644"
     },
     ".hermes/package/src/sceptre_hermes_plugin/plugin.yaml": {
@@ -135,7 +135,7 @@
       "mode": "0644"
     },
     ".hermes/plugins/sceptre/hermes.py": {
-      "content_hash": "blake3:35d2035790f3e7d9a90690103fe6f675c2f6c6684cd458face299a1e54dfc87f",
+      "content_hash": "blake3:84685ebaeb7b3b9bcc2e62f53c3e430589de6cb6f0b3344d2e8a78e490d604e7",
       "mode": "0644"
     },
     ".hermes/plugins/sceptre/plugin.yaml": {
