@@ -39,6 +39,9 @@ cache-keys = [{ file = "pyproject.toml" }]
 line-length = 120
 target-version = "py311"
 
+[tool.ruff.lint]
+extend-select = ["RUF001", "RUF002"]
+
 [tool.pytest.ini_options]
 testpaths = ["python/tests"]
 pythonpath = ["python"]

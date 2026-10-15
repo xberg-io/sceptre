@@ -4,7 +4,7 @@ build-backend = 'hatchling.build'
 
 [project]
 name = 'sceptre-hermes-plugin'
-version = '0.8.0'
+version = '0.8.1'
 description = 'Local OCR with CRAFT detection and multilingual CRNN recognition.'
 license = 'MIT'
 requires-python = '>=3.11'

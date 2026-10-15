@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.1] - 2026-10-15
+
+### Fixed
+
+- Restore complete CLI and crates.io releases after a Windows smoke check incorrectly
+  rejected escaped compiler paths.
+- Correct Hermes package metadata and include Cursor marketplace artifacts in the
+  coding-agent plugin distribution.
+
+### Security
+
+- Update `quinn-proto` to 0.11.19, resolving three denial-of-service advisories in
+  the locked HTTP/3 dependency graph.
+
 ## [0.8.0] - 2026-10-14
 
 ### Added

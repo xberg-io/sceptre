@@ -84,12 +84,14 @@ class MacosLinkTests(unittest.TestCase):
 
     def test_should_report_compiler_context_when_runtime_discovery_fails(self) -> None:
         """A missing compiler must fail explicitly before creating broken linker flags."""
-        compiler = str(self.root / "missing-compiler")
-        result = self.run_script(CARGO_CFG_TARGET_OS="macos", CARGO_FEATURE_ORT_BUNDLED="1", CC=compiler)
-        self.assertNotEqual(result.returncode, 0)
-        self.assertIn(compiler, result.stderr)
-        self.assertRegex(result.stderr, r"(?i)(discover|locat|query|runtime)")
-        self.assertEqual(self.link_directives(result), [])
+        for compiler in [str(self.root / "missing-compiler"), r"Z:\missing-directory\missing-compiler"]:
+            with self.subTest(compiler=compiler):
+                result = self.run_script(CARGO_CFG_TARGET_OS="macos", CARGO_FEATURE_ORT_BUNDLED="1", CC=compiler)
+                self.assertNotEqual(result.returncode, 0)
+                # OsString is Debug-formatted inside a String returned by main, escaping twice. ~keep
+                self.assertIn(compiler.replace("\\", r"\\\\"), result.stderr)
+                self.assertRegex(result.stderr, r"(?i)(discover|locat|query|runtime)")
+                self.assertEqual(self.link_directives(result), [])
 
     def test_should_include_build_script_in_published_library(self) -> None:
         """Crates.io consumers need the workaround as well as repository builds."""

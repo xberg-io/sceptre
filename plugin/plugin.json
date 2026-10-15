@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "sceptre",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Local OCR with CRAFT detection and multilingual CRNN recognition.",
   "author": {
     "name": "Kreuzberg, Inc.",
