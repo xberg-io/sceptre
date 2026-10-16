@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Expose `ort_environment()` so applications using ONNX Runtime directly can share
+  Sceptre's retained environment with model sessions and runtime probes.
+
 ## [0.8.1] - 2026-10-15
 
 ### Fixed

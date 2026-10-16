@@ -30,6 +30,8 @@ mod runtime;
 #[cfg(feature = "tract")]
 mod tract_backend;
 
+#[cfg(feature = "ort")]
+pub use ort_backend::environment as ort_environment;
 pub use runtime::{OrtRuntimeInfo, RuntimeInfo, runtime_info, runtime_info_for};
 
 /// A dynamically-shaped `f32` tensor exchanged with a backend.

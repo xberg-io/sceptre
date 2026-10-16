@@ -16,10 +16,20 @@ use ort::value::Tensor as OrtTensor;
 use super::{BackendOptions, ModelBackend, Tensor, buffer, ort_ep};
 use crate::error::{OcrError, Result};
 
-/// Retain ONNX Runtime's single process environment for every probe and model session.
+/// Return the retained ONNX Runtime environment shared by Sceptre's probes and models.
 ///
-/// See ADR 0046 for the environment lifetime required by ONNX Runtime.
-pub(super) fn environment() -> Result<&'static Environment> {
+/// Applications using `ort` directly must create their sessions with this environment
+/// instead of calling `ort::init().build()` independently. The environment remains alive
+/// for the process lifetime and can be requested concurrently.
+///
+/// This function does not adopt an environment initialized elsewhere. See ADR 0046 for
+/// the environment lifetime required by ONNX Runtime.
+///
+/// # Errors
+///
+/// Returns an inference error with its underlying cause if environment initialization
+/// fails, including when an independent caller has already initialized an environment.
+pub fn environment() -> Result<&'static Environment> {
     static ENVIRONMENT: OnceCell<Environment> = OnceCell::new();
     ENVIRONMENT.get_or_try_init(|| {
         ort::init()
