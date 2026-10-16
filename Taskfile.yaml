@@ -149,3 +149,25 @@ tasks:
     cmds:
       - ai-rulez verify --plugin
       - python3 scripts/sync_public_skills.py --check
+
+  release:verify:published:
+    desc: Verify an existing published native archive through checksum, MCP and real OCR checks
+    vars:
+      VERSION: '{{.VERSION | default .RELEASE_VERSION}}'
+      TRIPLE: '{{.TRIPLE | default .RELEASE_TRIPLE}}'
+      OUTPUT: '{{.OUTPUT | default .RELEASE_OUTPUT | default "dist/published-runtime-proof"}}'
+      MODEL_CACHE: '{{.MODEL_CACHE | default .RELEASE_MODEL_CACHE | default "dist/published-runtime-models"}}'
+    requires:
+      vars: [VERSION, TRIPLE]
+    env:
+      VERIFY_RELEASE_VERSION: '{{.VERSION}}'
+      VERIFY_RELEASE_TRIPLE: '{{.TRIPLE}}'
+      VERIFY_RELEASE_OUTPUT: '{{.OUTPUT}}'
+      VERIFY_RELEASE_MODEL_CACHE: '{{.MODEL_CACHE}}'
+    cmds:
+      - python3 scripts/verify_published_release.py
+
+  release:verify:test:
+    desc: Test published runtime verification against checksum, protocol and OCR failure controls
+    cmds:
+      - python3 scripts/tests/test_published_release.py
