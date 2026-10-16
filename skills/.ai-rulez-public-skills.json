@@ -2,17 +2,17 @@
   "source": "plugin/skills",
   "skill_count": 6,
   "files": {
-    "sceptre/SKILL.md": "090ea907b10b60ff0a2a186d3ddd187572017063968b92b45a88b6e1459947a1",
-    "sceptre/index.md": "f5d1337e8cf3c158a98f62761d8f0585b016e8c10c70d6b1beead2654db68c4c",
-    "sceptre-integrating-rust/SKILL.md": "d3e2c98d9534215f3414f84f551dc1dfe5183d75f9440b9a661cc47a37a763fe",
-    "sceptre-integrating-rust/index.md": "4d85545009d8fbc8b30861ca1cd8ab8ec78685ce5da1dfe17ae3d5c37f6f5a4f",
-    "sceptre-managing-models/SKILL.md": "3db21d0de555aad22f84b687e314e39f6e7ffcfb323f7914c6318c1016d375dd",
-    "sceptre-managing-models/index.md": "b99f23cf3fc996dbd166a351d5fcdbfbfdd30c98f4979abdc110f0b0bf5c79db",
-    "sceptre-ocr-images/SKILL.md": "ea902533da3fe6df453112b28b7634a12212f84dd7cf525128730024f9c4fa4d",
-    "sceptre-ocr-images/index.md": "568aaca3ec066f416340aee4ab9233cce7c2b5fd0feb545d0011f1e7f983ffad",
-    "sceptre-tuning-ocr/SKILL.md": "ecc59af2215253a10704bd3883f66d73a3b32e687347c062e2f73c48b9b6c7ac",
-    "sceptre-tuning-ocr/index.md": "cdec945a8b451297f58c4f71a2a23fe8f09aa8f7cb14d5c97bb88f67c83887f7",
-    "sceptre-using-the-mcp-server/SKILL.md": "e608b09fd68c8516118ca5d9c119a7795197507f6796218cea9d03fc84da9f75",
-    "sceptre-using-the-mcp-server/index.md": "cfe86b202e38475524a9b0ba436221d6f30fb0b54deb0c319c7154b65c35e019"
+    "sceptre/SKILL.md": "fe82898f0ef6a664b5d84b67d13e12d62b2f7354c7c1074200749f311427df42",
+    "sceptre/index.md": "2edc2d4c8d86bcbd8aa339c944ed4276bac5484904c94c18686fd6f3fdf5a0d6",
+    "sceptre-integrating-rust/SKILL.md": "731f44459f349cc626b8f5bbed7e50d55c64615d2dae9fe5e95749c95025035f",
+    "sceptre-integrating-rust/index.md": "6aa9f3ffb3ab3ebae7a18b53c46501e09452da6d3a152948b7996346ae56d6f1",
+    "sceptre-managing-models/SKILL.md": "5fdf3dc5dfdeb24feae98cee26377ca58046421acf3d5a5a1c4589c76cbf36b0",
+    "sceptre-managing-models/index.md": "6010fd9c97de6ea46448a3294a4f6c60e5c14aca321f9cb90b4d30b89c3d6220",
+    "sceptre-ocr-images/SKILL.md": "48cf5d8c1a0f4b9dca46508e02816eae337a41379d5aae00c6cb65243d36287f",
+    "sceptre-ocr-images/index.md": "a06c74da797ac807968acc601a1ecfed4dafb482e7836aa759c596b942f9a215",
+    "sceptre-tuning-ocr/SKILL.md": "31252bd87aa3aa59a1e9d6d3b225280c95c56e211ee98320a54c448eac40571a",
+    "sceptre-tuning-ocr/index.md": "6d7fcf1937f48597b941cdc3add5cfa355c902a645aba59959a9e3efcb4950ed",
+    "sceptre-using-the-mcp-server/SKILL.md": "eb8e49f3f2f721620037280b4ac578b617254eadae2f9f6a71b56465180960fa",
+    "sceptre-using-the-mcp-server/index.md": "868768ebec4136d00ba4e72dcad2efa28382f553995519963b4f8ec9309848b4"
   }
 }

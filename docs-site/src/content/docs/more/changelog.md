@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.2] - 2026-10-16
+
 ### Added
 
 - Expose `ort_environment()` so applications using ONNX Runtime directly can share
@@ -450,7 +452,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Offline-first model provisioning: models download from Hugging Face on first use, cache locally,
   and are sha256-verified on download — every run thereafter reads the cache with no network.
 
-[Unreleased]: https://github.com/xberg-io/sceptre/compare/v0.8.0...HEAD
+[Unreleased]: https://github.com/xberg-io/sceptre/compare/v0.8.2...HEAD
+[0.8.2]: https://github.com/xberg-io/sceptre/compare/v0.8.1...v0.8.2
 [0.8.0]: https://github.com/xberg-io/sceptre/compare/v0.7.3...v0.8.0
 [0.7.3]: https://github.com/xberg-io/sceptre/compare/v0.7.2...v0.7.3
 [0.7.2]: https://github.com/xberg-io/sceptre/compare/v0.7.1...v0.7.2
