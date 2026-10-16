@@ -10,7 +10,9 @@ import tempfile
 import threading
 import unittest
 from pathlib import Path
+from typing import BinaryIO
 from unittest.mock import patch
+from urllib.error import URLError
 
 
 class PublishedReleaseTests(unittest.TestCase):
@@ -149,6 +151,44 @@ class PublishedReleaseTests(unittest.TestCase):
             finally:
                 server.shutdown()
                 thread.join(timeout=2)
+
+    def test_should_close_windows_locked_temporary_files_before_failed_download_cleanup(self) -> None:
+        source = self.root / "download-source"
+        source.write_bytes(b"published-model")
+        target = self.root / "downloaded.onnx"
+        target.write_bytes(b"previous-verified-model")
+        handles: dict[Path, BinaryIO] = {}
+        create, unlink = tempfile.NamedTemporaryFile, Path.unlink
+
+        def capture(*, dir: Path, delete: bool) -> BinaryIO:
+            handle = create(dir=dir, delete=delete)
+            handles[Path(handle.name)] = handle
+            return handle
+
+        def windows_unlink(path: Path, missing_ok: bool = False) -> None:
+            if path in handles and not handles[path].closed:
+                raise PermissionError(32, "simulated Windows sharing violation", str(path))
+            unlink(path, missing_ok=missing_ok)
+
+        for mode in ["oversized", "missing"]:
+            with self.subTest(mode=mode):
+                handles.clear()
+                url = source.as_uri() if mode == "oversized" else (self.root / "missing-source").as_uri()
+                expected = ValueError if mode == "oversized" else URLError
+                with (
+                    patch.object(self.module.tempfile, "NamedTemporaryFile", side_effect=capture),
+                    patch.object(Path, "unlink", windows_unlink),
+                    self.assertRaises(expected) as caught,
+                ):
+                    self.module.download(url, target, limit=2)
+                if mode == "oversized":
+                    self.assertEqual(str(caught.exception), "Download exceeded 2 bytes")
+                else:
+                    self.assertIsInstance(caught.exception.reason, FileNotFoundError)
+                self.assertEqual(len(handles), 1)
+                self.assertTrue(all(handle.closed for handle in handles.values()))
+                self.assertTrue(all(not path.exists() for path in handles))
+                self.assertEqual(target.read_bytes(), b"previous-verified-model")
 
     def test_should_check_packaged_version_and_four_platform_census(self) -> None:
         self.assertEqual(len(self.module.PLATFORMS), 4)

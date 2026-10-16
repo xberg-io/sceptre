@@ -67,6 +67,7 @@ def download(url: str, destination: Path, limit: int = 200_000_000) -> None:
             temporary.close()
             temporary_path.replace(destination)
         finally:
+            temporary.close()
             temporary_path.unlink(missing_ok=True)
 
 
