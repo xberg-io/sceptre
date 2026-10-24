@@ -10,6 +10,10 @@ includes:
   docs:
     taskfile: ./.task/docs.yml
 
+vars:
+  # One pin for every task that runs ai-rulez. Keep it equal to ai-rulez-version in the workflows. ~keep
+  AI_RULEZ: "uvx --from ai-rulez==5.6.0 ai-rulez"
+
 tasks:
   version:set:
     desc: Set the workspace and plugin versions, then regenerate plugin bundles
@@ -130,7 +134,7 @@ tasks:
   governance:check:
     desc: Check materialized local governance outputs against shared sources
     cmds:
-      - ai-rulez generate --check --no-local --strict-config
+      - "{{.AI_RULEZ}} generate --check --no-local --strict-config"
 
   plugin:skills:test:
     desc: Verify public skill ownership and resource freshness
@@ -141,13 +145,13 @@ tasks:
   plugin:generate:
     desc: Generate all native plugin bundles and public skills
     cmds:
-      - ai-rulez generate --plugin
+      - "{{.AI_RULEZ}} generate --plugin"
       - python3 scripts/sync_public_skills.py
 
   plugin:verify:
     desc: Verify native plugin bundles and public skills
     cmds:
-      - ai-rulez verify --plugin
+      - "{{.AI_RULEZ}} verify --plugin"
       - python3 scripts/sync_public_skills.py --check
 
   release:verify:published:
