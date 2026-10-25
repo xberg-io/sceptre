@@ -1,8 +1,18 @@
 ---
-type: Concept
+type: Decision
 title: Ocr Pipeline
+paths:
+  - "crates/sceptre/src/imaging.rs"
+  - "crates/sceptre/src/detect/**"
+  - "crates/sceptre/src/recognize/**"
+  - "crates/sceptre/src/models/**"
+  - "crates/sceptre/tests/**"
+  - "python/sceptre_rs_tools/**"
+targets:
+  - ".claude/rules/"
+  - ".github/instructions/"
 x-ai-rulez:
-  kind: context
+  kind: rule
   id: ocr-pipeline
   metadata:
     priority: high

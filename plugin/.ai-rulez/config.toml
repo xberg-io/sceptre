@@ -17,9 +17,3 @@ paths = [
   "skills/*/SKILL.md",
 ]
 reason = "The generated harness and plugin copies repeat the source skill descriptions and names. ai-rulez counts each copy as a duplicate."
-
-# This config validates the repository rules without the shared includes. ~keep
-[[lint.ignore_rules]]
-rules = ["AR301"]
-paths = [".ai-rulez/rules/comment-hygiene.md"]
-reason = "The plugin config does not load the xberg-core include that defines the comment-discipline rule."
