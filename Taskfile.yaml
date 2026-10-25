@@ -10,6 +10,11 @@ includes:
   docs:
     taskfile: ./.task/docs.yml
 
+vars:
+  # One pin for every task that runs ai-rulez. Keep it equal to ai-rulez-version in the workflows. ~keep
+  AI_RULEZ_VERSION: "5.6.0"
+  AI_RULEZ: "uvx --from ai-rulez=={{.AI_RULEZ_VERSION}} ai-rulez"
+
 tasks:
   version:set:
     desc: Set the workspace and plugin versions, then regenerate plugin bundles
@@ -110,8 +115,13 @@ tasks:
         import subprocess
         import tomllib
 
-        if shutil.which("ai-rulez") is None:
-            raise SystemExit("Install the reviewed ai-rulez CLI before installing hooks")
+        wanted = "{{.AI_RULEZ_VERSION}}"
+        found = shutil.which("ai-rulez")
+        if found is None:
+            raise SystemExit("Install ai-rulez " + wanted + " before installing hooks: uv tool install ai-rulez==" + wanted)
+        version = subprocess.run([found, "--version"], capture_output=True, text=True, check=True).stdout.split()[-1]
+        if version != wanted:
+            raise SystemExit("Hooks need ai-rulez " + wanted + ", found " + version + ": uv tool install ai-rulez==" + wanted)
         preferences = pathlib.Path("poly.local.toml")
         text = preferences.read_text() if preferences.exists() else ""
         data = tomllib.loads(text)
@@ -130,7 +140,7 @@ tasks:
   governance:check:
     desc: Check materialized local governance outputs against shared sources
     cmds:
-      - ai-rulez generate --check --no-local --strict-config
+      - "{{.AI_RULEZ}} generate --check --no-local --strict-config"
 
   plugin:skills:test:
     desc: Verify public skill ownership and resource freshness
@@ -141,13 +151,13 @@ tasks:
   plugin:generate:
     desc: Generate all native plugin bundles and public skills
     cmds:
-      - ai-rulez generate --plugin
+      - "{{.AI_RULEZ}} generate --plugin"
       - python3 scripts/sync_public_skills.py
 
   plugin:verify:
     desc: Verify native plugin bundles and public skills
     cmds:
-      - ai-rulez verify --plugin
+      - "{{.AI_RULEZ}} verify --plugin"
       - python3 scripts/sync_public_skills.py --check
 
   release:verify:published:

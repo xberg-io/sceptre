@@ -3,3 +3,23 @@ default_layers = ["plugins"]
 name = "sceptre"
 description = "Local OCR with CRAFT detection and multilingual CRNN recognition."
 agents_md = false
+
+# Goldziher/ai-rulez#485: ai-rulez reports generated skill copies as duplicates. ~keep
+[[lint.ignore_rules]]
+rules = ["AR701", "AR703"]
+paths = [
+  "plugin/.cursor-plugin/skills/*/SKILL.md",
+  "plugin/.hermes/package/src/sceptre_hermes_plugin/skills/*/SKILL.md",
+  "plugin/.hermes/plugins/sceptre/skills/*/SKILL.md",
+  "plugin/.opencode/skills/*/SKILL.md",
+  "plugin/.pi/skills/*/SKILL.md",
+  "plugin/skills/*/SKILL.md",
+  "skills/*/SKILL.md",
+]
+reason = "The generated harness and plugin copies repeat the source skill descriptions and names. ai-rulez counts each copy as a duplicate."
+
+# This config validates the repository rules without the shared includes. ~keep
+[[lint.ignore_rules]]
+rules = ["AR301"]
+paths = [".ai-rulez/rules/comment-hygiene.md"]
+reason = "The plugin config does not load the xberg-core include that defines the comment-discipline rule."
