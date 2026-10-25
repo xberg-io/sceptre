@@ -1,6 +1,12 @@
 ---
 type: Decision
 title: Backend Seam
+paths:
+  - "crates/sceptre/src/**"
+  - "crates/sceptre/Cargo.toml"
+targets:
+  - ".claude/rules/"
+  - ".github/instructions/"
 x-ai-rulez:
   kind: rule
   id: backend-seam

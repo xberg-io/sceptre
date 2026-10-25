@@ -4,7 +4,7 @@
 version = 1
 ai_rulez_version = '5.6.3'
 scope = 'all'
-tree = 'sha256:51e54d1269b4f29db8ea276c7a1861ec84fea50ee445ee2258c8010e544e6cf9'
+tree = 'sha256:4e231f0290a563dfcdcaca834f505cf7a0df7a875755f4278a57aeb206081252'
 
 [[include]]
 name = 'xberg-cicd'
@@ -205,64 +205,52 @@ path = 'commands/check.md'
 digest = 'sha256:82a30c0dff0363976241af2d29b608f992469ba774c4304f5f20bde72a577287'
 
 [[item]]
-kind = 'context'
-id = 'code-style'
-path = 'context/code-style.md'
-digest = 'sha256:cd121f181d6cbee6f21fbb102f6b0095e5ee3b58c22a51cecbed3dd24eb3b8a0'
-
-[[item]]
-kind = 'context'
-id = 'crate-layout'
-path = 'context/crate-layout.md'
-digest = 'sha256:43f83347290c0fadee4188220704a51e87f623d7cea2d59641e9518d6229dc73'
-
-[[item]]
-kind = 'context'
-id = 'ocr-pipeline'
-path = 'context/ocr-pipeline.md'
-digest = 'sha256:75a471db41d9b4702a25ac32cb2baefd0876bd6f6e7de2e8fe001babbc7ceb7a'
-
-[[item]]
 kind = 'rule'
 id = 'adr-discipline'
 path = 'rules/adr-discipline.md'
-digest = 'sha256:ab1dca4caf35924389e06385c9d5a1b35657fd4cce550c228ea8465a8a9ea529'
+digest = 'sha256:783f15f52c6c2c3d3dea174723092e3a443c695d52556cf057be33053a3798bc'
 
 [[item]]
 kind = 'rule'
 id = 'backend-seam'
 path = 'rules/backend-seam.md'
-digest = 'sha256:336a465a24070a103370ba528d1a71f7e183d9e28cfc8081d54903b02c539610'
+digest = 'sha256:b114f57d4e2c54cd163d8ca08d5e293c530df0dfff14ec7df346eb9434d0d161'
 
 [[item]]
 kind = 'rule'
-id = 'basemind-usage'
-path = 'rules/basemind-usage.md'
-digest = 'sha256:7e53c46a0fcb40ada55c3387088b6d926ce7394524951ff446dd940b38d1054c'
+id = 'code-style'
+path = 'rules/code-style.md'
+digest = 'sha256:312a244b1ad27e51f6f9530accb59f99354941f87a3b976f14744d2ceb85c051'
 
 [[item]]
 kind = 'rule'
-id = 'comment-hygiene'
-path = 'rules/comment-hygiene.md'
-digest = 'sha256:f8816b3f23f7709773182d6580e045bab645d3dede45aac0eabdd04f06e13c7e'
+id = 'crate-layout'
+path = 'rules/crate-layout.md'
+digest = 'sha256:d0cd4b4154c855e8865903e9a1801e1452e20a3433a2419167adc7ab67af152e'
 
 [[item]]
 kind = 'rule'
 id = 'mcp-tool-conventions'
 path = 'rules/mcp-tool-conventions.md'
-digest = 'sha256:0dfca28f03ce76d02774bb209cfa4626be55c018a335f3f06d99c14d82f733e2'
+digest = 'sha256:a1f33bcbda1ee88e808454ba4cb251d8175430366bfa589985dd952a47672197'
 
 [[item]]
 kind = 'rule'
 id = 'module-size-cap'
 path = 'rules/module-size-cap.md'
-digest = 'sha256:f522c166ec518702d611119d5f38ede3dc20f9b24c2d67a33ea7d1b2b2d1f3bd'
+digest = 'sha256:8e9c57cedd992af5f9c6bf19b8050290c5dc9d709e7fe0baf8da63e64690c67d'
+
+[[item]]
+kind = 'rule'
+id = 'ocr-pipeline'
+path = 'rules/ocr-pipeline.md'
+digest = 'sha256:49a4d9b6665d675237b737bcddd93f6ee37f821af6cd36ad5bac5bef79cd8529'
 
 [[item]]
 kind = 'rule'
 id = 'rust-checks'
 path = 'rules/rust-checks.md'
-digest = 'sha256:1d510c95c37edc4c73cbfc9ff909d0c8fb610b4fda12e70ec43335f5ea6993da'
+digest = 'sha256:0cf397664063d54ede6bf3024b3b171e047812d8e5147619d354493ccd619542'
 
 [[item]]
 kind = 'settings'
