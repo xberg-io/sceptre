@@ -7,7 +7,9 @@ gitignore = true
 presets = ["claude", "codex", "opencode", "pi", "hermes", "gemini", "copilot"]
 
 compact = true
-builtins = ["!git-workflow", "rust", "cicd", "documentation", "default-commands"]
+# ~keep CLAUDE.md without the glob-scoped rules: they load from .claude/rules on a matching read.
+agents_md = false
+builtins = ["!agent-delegation", "!git-workflow", "documentation", "default-commands"]
 
 [header]
 style = "minimal"
@@ -16,14 +18,21 @@ style = "minimal"
 [[includes]]
 name = "xberg-core"
 source = 'https://github.com/xberg-io/agent-conventions.git'
-ref = "adb0caa92c4d8155fb1680618f72a321a832660b"
+ref = "33efa876153a61192fab38923f31ed2673702791"
 path = "modules/core"
+merge_strategy = "local-override"
+
+[[includes]]
+name = "xberg-languages"
+source = 'https://github.com/xberg-io/agent-conventions.git'
+ref = "33efa876153a61192fab38923f31ed2673702791"
+path = "modules/languages"
 merge_strategy = "local-override"
 
 [[includes]]
 name = "xberg-cicd"
 source = 'https://github.com/xberg-io/agent-conventions.git'
-ref = "adb0caa92c4d8155fb1680618f72a321a832660b"
+ref = "33efa876153a61192fab38923f31ed2673702791"
 path = "modules/cicd"
 merge_strategy = "local-override"
 
