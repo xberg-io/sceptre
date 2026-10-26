@@ -7,6 +7,18 @@ import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
+from typing import Protocol, cast
+
+
+class HermesAdapter(Protocol):
+    CLI_COMMAND: str
+    SERVER_ARGUMENTS: list[str]
+    TOOL_NAMES: list[str]
+
+    async def call_tool(self, arguments: dict[str, object]) -> dict: ...
+
+    def register(self, context: SimpleNamespace) -> None: ...
+
 
 SERVER_SOURCE = 'from mcp.server.fastmcp import FastMCP\nserver = FastMCP("plugin-contract")\n@server.tool()\ndef echo(value: str) -> str:\n    return value\nserver.run(transport="stdio")\n'
 
@@ -24,8 +36,9 @@ class HermesBridgeTests(unittest.IsolatedAsyncioTestCase):
         adapter = root / "plugin/.hermes/plugins/sceptre/hermes.py"
         spec = importlib.util.spec_from_file_location("tested_hermes_adapter", adapter)
         assert spec is not None and spec.loader is not None
-        self.adapter = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(self.adapter)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        self.adapter = cast("HermesAdapter", module)
         self.adapter.CLI_COMMAND = sys.executable
         self.adapter.SERVER_ARGUMENTS = [str(server)]
         self.adapter.TOOL_NAMES = ["echo"]

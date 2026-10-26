@@ -11,6 +11,11 @@ tasks:
     cmds:
       - uv run ruff check python
 
+  typecheck:
+    desc: Check every Python tool and test with Pyrefly, including optional export and corpus tooling
+    cmds:
+      - bash scripts/typecheck.sh
+
   format:
     desc: Format Python code with ruff
     cmds:
@@ -71,6 +76,32 @@ tasks:
   publish:check:
     desc: >-
       Fail if the committed benchmark tables no longer match benchmarks/published/latest.json;
-      the drift gate CI runs on every pull request
+      the drift gate CI runs on main
     cmds:
       - uv run python -m sceptre_rs_tools.publish --check {{.CLI_ARGS}}
+
+  benchmark:release:build:
+    desc: Build the exact bundled-runtime release candidate used for paired measurements
+    cmds:
+      - cargo build --release --locked -p sceptre-cli --no-default-features --features ort-bundled,download,mcp
+
+  benchmark:models:download:
+    desc: Populate immutable model caches before timing either release
+    cmds:
+      - ./target/release/sceptre models download --all
+
+  benchmark:gnu-time:install:
+    desc: Install GNU time required for actual RSS and CPU measurements on the Linux benchmark runner
+    platforms: [linux]
+    cmds:
+      - sudo apt-get update -qq
+      - sudo apt-get install -y -qq time
+
+  benchmark:release:compare:
+    vars:
+      BINARY: '{{.BINARY | default "target/release/sceptre"}}'
+      THREADS: '{{.THREADS | default "2"}}'
+      OUTPUT: '{{.OUTPUT | default "benchmark-results/release"}}'
+    desc: Compare genuine published and candidate executables on one host with unchanged release gates
+    cmds:
+      - uv run python -m sceptre_rs_tools.release_benchmark --candidate-binary "{{.BINARY}}" --threads "{{.THREADS}}" --output "{{.OUTPUT}}" {{.CLI_ARGS}}

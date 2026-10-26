@@ -45,7 +45,7 @@ import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
 from time import perf_counter
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, NotRequired, TypedDict, cast
 
 from sceptre_rs_tools.corpus import CorpusEntry, build_corpus
 from sceptre_rs_tools.stats import P95_MIN_SAMPLES, P99_MIN_SAMPLES, integrate_cpu_core_seconds, suppressed_percentile
@@ -53,7 +53,38 @@ from sceptre_rs_tools.text_metrics import f1_parts_from, greedy_match, reading_o
 from sceptre_rs_tools.text_metrics import tokenize as _cjk_bigram_tokenize
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Iterable
+    from collections.abc import Callable, Iterable, Mapping
+
+
+class QuadPoint(TypedDict):
+    x: float
+    y: float
+
+
+class Quad(TypedDict):
+    points: list[QuadPoint]
+
+
+class SceptreLine(TypedDict):
+    text: NotRequired[str]
+    quad: NotRequired[Quad]
+
+
+class SceptreElement(TypedDict):
+    error: NotRequired[str]
+    lines: NotRequired[list[SceptreLine]]
+
+
+class GuardrailContract(TypedDict):
+    stem: str
+    min_token_f1: float
+
+
+class Guardrails(TypedDict):
+    schema_version: int
+    threshold_factor: float
+    contracts: list[GuardrailContract]
+
 
 # sceptre release binary produced by the ort-bundled CLI build.
 SCEPTRE_BIN = Path("target/release/sceptre")
@@ -420,7 +451,7 @@ def _median(values: list[float]) -> float:
 # --------------------------------------------------------------------------------------
 
 
-def _detections_from_lines(lines: list[dict[str, object]]) -> list[Detection]:
+def _detections_from_lines(lines: list[SceptreLine]) -> list[Detection]:
     """Convert a sceptre ``lines`` array into ``Detection`` records."""
     detections: list[Detection] = []
     for line in lines:
@@ -430,7 +461,7 @@ def _detections_from_lines(lines: list[dict[str, object]]) -> list[Detection]:
     return detections
 
 
-def _sceptre_image_from_element(element: dict[str, object]) -> ImageDetections:
+def _sceptre_image_from_element(element: SceptreElement) -> ImageDetections:
     """Convert one batch JSON element into an ``ImageDetections`` (detections or failure)."""
     if "error" in element:
         message = str(element["error"])
@@ -448,7 +479,7 @@ def _parse_sceptre_batch_json(payload: str, images: list[Path]) -> dict[str, Ima
     results: dict[str, ImageDetections] = {}
     if isinstance(data, dict):
         key = data.get("image") or (str(images[0]) if images else "")
-        results[str(key)] = _sceptre_image_from_element(data)
+        results[str(key)] = _sceptre_image_from_element(cast("SceptreElement", data))
         return results
     for index, element in enumerate(data):
         key = element.get("image")
@@ -1092,10 +1123,10 @@ AGGREGATE_FIELDS = (
 )
 
 
-def aggregate(records: list[ImageRecord]) -> dict[str, dict[str, float]]:
+def aggregate(records: list[ImageRecord]) -> dict[str, dict[str, float | None]]:
     """Summarize every aggregate field over the scored (non-skipped) records."""
     scored = [record for record in records if record.skipped is None]
-    result: dict[str, dict[str, float]] = {}
+    result: dict[str, dict[str, float | None]] = {}
     for field_name in AGGREGATE_FIELDS:
         summary = _summary(_collect(scored, field_name))
         if summary is not None:
@@ -1114,8 +1145,8 @@ class RunReport:
 
     metadata: dict[str, object]
     records: list[ImageRecord]
-    aggregates_labeled: dict[str, dict[str, float]] = field(default_factory=dict)
-    aggregates_all: dict[str, dict[str, float]] = field(default_factory=dict)
+    aggregates_labeled: dict[str, dict[str, float | None]] = field(default_factory=dict)
+    aggregates_all: dict[str, dict[str, float | None]] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, object]:
         """Serialize the whole report for JSON output."""
@@ -1327,13 +1358,13 @@ def _fmt(value: float | None, digits: int = 3) -> str:
     return "-" if value is None else f"{value:.{digits}f}"
 
 
-def _mean_of(aggregates: dict[str, dict[str, float]], field_name: str) -> float | None:
+def _mean_of(aggregates: dict[str, dict[str, float | None]], field_name: str) -> float | None:
     """Mean of an aggregate field, or None if absent."""
     summary = aggregates.get(field_name)
     return summary["mean"] if summary else None
 
 
-def _median_of(aggregates: dict[str, dict[str, float]], field_name: str) -> float | None:
+def _median_of(aggregates: dict[str, dict[str, float | None]], field_name: str) -> float | None:
     """Median of an aggregate field, or None if absent."""
     summary = aggregates.get(field_name)
     return summary["median"] if summary else None
@@ -1411,11 +1442,11 @@ PER_IMAGE_HEADER = [
 ]
 
 
-def _baseline_index(baseline: dict[str, object] | None) -> dict[str, dict[str, object]]:
+def _baseline_index(baseline: Mapping[str, object] | None) -> dict[str, dict[str, object]]:
     """Index a prior report's records by stem for delta lookups."""
     if not baseline:
         return {}
-    records = baseline.get("records", [])
+    records = cast("list[dict[str, object]]", baseline.get("records", []))
     return {str(record.get("stem")): record for record in records if isinstance(record, dict)}
 
 
@@ -1479,7 +1510,7 @@ def _environment_lines(meta: dict[str, object]) -> list[str]:
     ]
 
 
-def render_markdown(report: RunReport, baseline: dict[str, object] | None = None) -> str:
+def render_markdown(report: RunReport, baseline: Mapping[str, object] | None = None) -> str:
     """Render the full scannable Markdown report."""
     meta = report.metadata
     capability = [record for record in report.records if record.unsupported_format]
@@ -1729,9 +1760,7 @@ def check_thresholds(report: RunReport, published: dict[str, object] | None = No
     return breaches
 
 
-def derive_guardrails(
-    records: list[ImageRecord], threshold_factor: float = GUARDRAIL_THRESHOLD_FACTOR
-) -> dict[str, object]:
+def derive_guardrails(records: list[ImageRecord], threshold_factor: float = GUARDRAIL_THRESHOLD_FACTOR) -> Guardrails:
     """Build a per-image guardrail contract from a baseline run's scored, labeled images.
 
     Ported from xberg's `split_benchmark.rs` boundary guardrails: each image's floor is its
@@ -1739,7 +1768,7 @@ def derive_guardrails(
     variation does not trip the gate but a real regression isolated to one image does --
     something a single corpus-mean quality check cannot see.
     """
-    contracts = [
+    contracts: list[GuardrailContract] = [
         {"stem": record.stem, "min_token_f1": record.sceptre_token_f1 * threshold_factor}
         for record in records
         if record.skipped is None and record.group == "labeled" and record.sceptre_token_f1 is not None
@@ -1747,7 +1776,7 @@ def derive_guardrails(
     return {"schema_version": GUARDRAILS_SCHEMA_VERSION, "threshold_factor": threshold_factor, "contracts": contracts}
 
 
-def load_guardrails(path: Path) -> dict[str, object] | None:
+def load_guardrails(path: Path) -> Guardrails | None:
     """Load a guardrail contract file, or ``None`` if it does not exist.
 
     Raises ``ValueError`` for an existing file with an unsupported ``schema_version`` --
@@ -1761,7 +1790,7 @@ def load_guardrails(path: Path) -> dict[str, object] | None:
     return payload
 
 
-def check_guardrails(records: list[ImageRecord], guardrails: dict[str, object]) -> list[str]:
+def check_guardrails(records: list[ImageRecord], guardrails: Guardrails) -> list[str]:
     """Per-image guardrail breaches (empty when every contract clears its floor).
 
     A missing record or a non-finite score is a failure, not a silently-skipped contract --
@@ -1837,10 +1866,12 @@ def run_benchmark(
     assert_gate: bool,
     guardrails_path: Path | None = None,
     write_guardrails_path: Path | None = None,
+    binary_path: Path | None = None,
+    published_baseline_path: Path | None = None,
 ) -> int:
     """Run the full benchmark and write JSON + Markdown; returns a process exit code."""
     root = repo_root()
-    binary = root / SCEPTRE_BIN
+    binary = binary_path.resolve() if binary_path is not None else root / SCEPTRE_BIN
     if not binary.exists():
         print(
             f"sceptre_rs_tools.benchmark: release binary not found at {binary}. Build it with "
@@ -1893,9 +1924,9 @@ def run_benchmark(
     scored = [record for record in records if record.skipped is None]
     reference_versions = next((batch.versions for batch in easyocr_results.values() if batch.versions), {})
     languages = sorted({language for entry in measured for language in entry.sceptre_langs})
-    metadata = {
+    metadata: dict[str, object] = {
         "platform": platform.platform(),
-        "sceptre_binary": str(SCEPTRE_BIN),
+        "sceptre_binary": str(binary),
         "environment": environment_metadata(binary, root, languages, reference_versions, entries),
         "group": group,
         "repeats": repeats,
@@ -1942,7 +1973,9 @@ def run_benchmark(
         print(f"Wrote {write_guardrails_path} ({len(guardrails['contracts'])} contracts)", file=sys.stderr)
 
     if assert_gate:
-        breaches = check_thresholds(report, load_published_baseline(root / PUBLISHED_RELATIVE_PATH))
+        breaches = check_thresholds(
+            report, load_published_baseline(published_baseline_path or root / PUBLISHED_RELATIVE_PATH)
+        )
         if guardrails_path is not None:
             guardrails = load_guardrails(guardrails_path)
             if guardrails is None:
@@ -1961,6 +1994,8 @@ def run_benchmark(
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     """Parse the benchmark CLI arguments."""
     parser = argparse.ArgumentParser(description="Benchmark sceptre against upstream EasyOCR.")
+    parser.add_argument("--binary", type=Path, default=None, help="Explicit release executable to measure.")
+    parser.add_argument("--published-baseline", type=Path, default=None, help="Explicit measured regression baseline.")
     parser.add_argument(
         "--group",
         choices=["labeled", "breadth", "capability", "all"],
@@ -2021,6 +2056,8 @@ def main() -> None:
             assert_gate=args.assert_gate,
             guardrails_path=args.guardrails,
             write_guardrails_path=args.write_guardrails,
+            binary_path=args.binary,
+            published_baseline_path=args.published_baseline,
         )
     )
 

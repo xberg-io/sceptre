@@ -316,6 +316,9 @@ task check    # cargo fmt + clippy -D warnings + test + poly lint
 task bench    # criterion microbenchmarks (--features bench)
 ```
 
+Run `task python:typecheck` to check all Python tooling with Pyrefly. This synchronizes
+the locked optional export and corpus dependencies, including PyTorch and EasyOCR.
+
 Coding conventions are generated from `.ai-rulez/` into `CLAUDE.md` / `AGENTS.md` — edit the source,
 then run `ai-rulez generate`.
 

@@ -270,7 +270,7 @@ def _report(
         unsupported_format=True,
         skipped="sceptre cannot decode this format (capability gap)",
     )
-    metadata = {
+    metadata: dict[str, object] = {
         "platform": "test",
         "sceptre_binary": "bin",
         "corpus_total": 2,
@@ -438,7 +438,7 @@ def test_check_warm_throughput_floor_flags_a_run_that_measured_no_throughput() -
 
 def test_check_thresholds_flags_a_sceptre_warm_throughput_regression() -> None:
     report = _report(0.9, 0.8, 500.0, 11000.0, environment=_HOST)
-    report.metadata["sceptre_batch"]["english"]["total_seconds"] = 2.0
+    report.metadata["sceptre_batch"] = {"english": {"total_seconds": 2.0, "image_count": 2, "rss_mb": 500.0}}
     breaches = b.check_thresholds(report, _published(500.0))
     assert breaches == [
         (
@@ -456,7 +456,7 @@ def test_check_thresholds_ignores_an_easyocr_speed_change(easyocr_seconds: float
     sceptre changing at all, and the old gate reported that as a sceptre regression.
     """
     report = _report(0.9, 0.8, 500.0, 11000.0, environment=_HOST)
-    report.metadata["easyocr_batch"]["en"]["total_seconds"] = easyocr_seconds
+    report.metadata["easyocr_batch"] = {"en": {"total_seconds": easyocr_seconds, "image_count": 2, "rss_mb": 11000.0}}
     assert b.check_thresholds(report, _published(500.0)) == []
 
 
@@ -599,24 +599,40 @@ def test_load_guardrails_rejects_an_unknown_schema_version(tmp_path: Path) -> No
 
 
 def test_check_guardrails_passes_when_every_contract_clears_its_floor() -> None:
-    guardrails = {"schema_version": 1, "threshold_factor": 0.9, "contracts": [{"stem": "a", "min_token_f1": 0.8}]}
+    guardrails: b.Guardrails = {
+        "schema_version": 1,
+        "threshold_factor": 0.9,
+        "contracts": [{"stem": "a", "min_token_f1": 0.8}],
+    }
     assert b.check_guardrails([_labeled_record("a", 0.85)], guardrails) == []
 
 
 def test_check_guardrails_flags_a_score_below_its_floor() -> None:
-    guardrails = {"schema_version": 1, "threshold_factor": 0.9, "contracts": [{"stem": "a", "min_token_f1": 0.8}]}
+    guardrails: b.Guardrails = {
+        "schema_version": 1,
+        "threshold_factor": 0.9,
+        "contracts": [{"stem": "a", "min_token_f1": 0.8}],
+    }
     failures = b.check_guardrails([_labeled_record("a", 0.5)], guardrails)
     assert any("a: sceptre token-F1 0.500 < guardrail floor 0.800" in failure for failure in failures)
 
 
 def test_check_guardrails_treats_a_missing_record_as_a_failure() -> None:
-    guardrails = {"schema_version": 1, "threshold_factor": 0.9, "contracts": [{"stem": "missing", "min_token_f1": 0.8}]}
+    guardrails: b.Guardrails = {
+        "schema_version": 1,
+        "threshold_factor": 0.9,
+        "contracts": [{"stem": "missing", "min_token_f1": 0.8}],
+    }
     failures = b.check_guardrails([], guardrails)
     assert any("missing" in failure and "unmeasurable" in failure for failure in failures)
 
 
 def test_check_guardrails_treats_a_nan_score_as_a_failure() -> None:
-    guardrails = {"schema_version": 1, "threshold_factor": 0.9, "contracts": [{"stem": "a", "min_token_f1": 0.8}]}
+    guardrails: b.Guardrails = {
+        "schema_version": 1,
+        "threshold_factor": 0.9,
+        "contracts": [{"stem": "a", "min_token_f1": 0.8}],
+    }
     failures = b.check_guardrails([_labeled_record("a", float("nan"))], guardrails)
     assert any("unmeasurable" in failure for failure in failures)
 
@@ -652,7 +668,9 @@ def test_validate_report_flags_an_out_of_range_record_score() -> None:
 def test_validate_report_allows_a_sample_count_on_a_unit_interval_metric() -> None:
     """`count` is a sample count, not a score, so the [0, 1] bound must not apply to it."""
     report = _report(0.9, 0.8, 500.0, 11000.0)
-    report.aggregates_labeled["sceptre_token_f1"] = b._summary([0.9] * 27)
+    summary = b._summary([0.9] * 27)
+    assert summary is not None
+    report.aggregates_labeled["sceptre_token_f1"] = summary
     assert report.aggregates_labeled["sceptre_token_f1"]["count"] == 27
     assert b.validate_report(report) == []
 
@@ -706,7 +724,9 @@ def test_environment_metadata_prefers_the_env_subcommand(tmp_path: Path) -> None
     assert environment["backend"] == "ort"
     assert environment["accelerator"] == "coreml"
     assert environment["onnxruntime"] == {"version": "1.22.0"}
-    assert environment["models"][0]["sha256"] == "159f5f"
+    assert environment["models"] == [
+        {"name": "craft_mlt_25k", "repo": "xberg-io/sceptre-craft_mlt_25k", "sha256": "159f5f"}
+    ]
     assert environment["probe"] == "sceptre env --format json"
 
 

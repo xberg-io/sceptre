@@ -250,6 +250,11 @@ file_safety = { exclude = [
 ] }
 cargo = true
 
+[hooks.pre-commit.commands.pyrefly]
+run = "bash scripts/typecheck.sh"
+workspace = true
+files = "{python/**,scripts/**,pyproject.toml,uv.lock,.task/python.yml,Taskfile.yaml,poly.toml}"
+
 [[hooks.sources]]
 id = "ai-rulez"
 git = "https://github.com/Goldziher/ai-rulez.git"

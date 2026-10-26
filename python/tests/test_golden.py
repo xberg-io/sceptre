@@ -31,15 +31,19 @@ def test_merge_preserves_the_sceptre_side_and_its_provenance() -> None:
     merged = golden.merge_easyocr_side(existing, [{"text": "REFERENCE", "quad": []}], ["en"])
 
     assert merged["sceptre"] == _sceptre_side()
-    assert merged["metadata"]["sceptre"] == {"sceptre_version": "0.3.0", "git_commit": "abc123"}
-    assert merged["easyocr"]["lines"][0]["text"] == "REFERENCE"
+    metadata = merged["metadata"]
+    assert isinstance(metadata, dict)
+    assert metadata["sceptre"] == {"sceptre_version": "0.3.0", "git_commit": "abc123"}
+    assert merged["easyocr"] == {"lines": [{"text": "REFERENCE", "quad": []}]}
     assert merged["placeholder"] is False
 
 
 def test_merge_writes_easyocr_provenance() -> None:
     merged = golden.merge_easyocr_side({"sceptre": {"lines": []}}, [], ["ja", "en"])
 
-    provenance = merged["metadata"]["easyocr"]
+    metadata = merged["metadata"]
+    assert isinstance(metadata, dict)
+    provenance = metadata["easyocr"]
     assert provenance["languages"] == ["ja", "en"]
     assert provenance["gpu"] is False
     assert set(provenance) == {"easyocr_version", "torch_version", "python", "gpu", "languages", "generated_at"}

@@ -33,6 +33,7 @@ import sys
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import TypedDict
 
 try:
     import pypdfium2 as pdfium
@@ -151,7 +152,15 @@ def provenance(dpi: int) -> dict[str, object]:
     }
 
 
-def rasterize_one(stem: str, output_dir: Path, dpi: int) -> dict[str, object]:
+class RasterizedEntry(TypedDict):
+    stem: str
+    source: str
+    pages: list[str]
+    ground_truth: str | None
+    provenance: dict[str, object]
+
+
+def rasterize_one(stem: str, output_dir: Path, dpi: int) -> RasterizedEntry:
     """Render one corpus PDF and build its manifest entry: pages, ground truth (if any), and
     provenance.
     """
@@ -193,7 +202,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     output_dir = args.output_dir or default_output_dir()
-    manifest: list[dict[str, object]] = []
+    manifest: list[RasterizedEntry] = []
     for stem in args.stems:
         try:
             entry = rasterize_one(stem, output_dir, args.dpi)

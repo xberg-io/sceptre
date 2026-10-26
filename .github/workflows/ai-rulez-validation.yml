@@ -16,32 +16,18 @@ on:
       - "package.json"
       - ".gitignore"
       - ".github/workflows/ai-rulez-validation.yml"
-  pull_request:
-    paths:
-      - ".ai-rulez/**"
-      - "modules/**"
-      - "plugin/**"
-      - "skills/**"
-      - ".agents/plugins/**"
-      - ".claude-plugin/**"
-      - ".codex/**"
-      - "scripts/sync*"
-      - "Cargo.toml"
-      - "pyproject.toml"
-      - "package.json"
-      - ".gitignore"
-      - ".github/workflows/ai-rulez-validation.yml"
 permissions:
   contents: read
 jobs:
   validate:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: xberg-io/actions/setup-ai-rulez@v1.27.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: xberg-io/actions/setup-ai-rulez@793d3a4d37a17009d91cce29f2825eda570d2abd
         with:
           ai-rulez-version: "5.7.0"
-      - uses: xberg-io/actions/validate-ai-rulez@v1.27.1
+      - uses: xberg-io/actions/validate-ai-rulez@793d3a4d37a17009d91cce29f2825eda570d2abd
         with:
           expected-config-count: "2"
           additional-config-directories: "plugin/.ai-rulez"

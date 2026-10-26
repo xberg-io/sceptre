@@ -18,40 +18,41 @@ if TYPE_CHECKING:
 
 def _report(**overrides: object) -> dict:
     """A minimal but complete comparison report, shaped like benchmark.py's output."""
-    report = {
-        "metadata": {
-            "platform": "macOS-26.0-arm64",
-            "group": "all",
-            "repeats": 2,
-            "threads": "native",
-            "corpus_total": 43,
-            "labeled_scored": 27,
-            "breadth_scored": 13,
-            "capability_gaps": 3,
-            # Mirrors benchmark.py's environment_metadata exactly: onnxruntime is a
-            # nested object, and the reference versions carry a _version suffix.
-            "environment": {
-                "sceptre_version": "0.4.0",
-                "backend": "ort",
-                "accelerator": "cpu",
-                "onnxruntime": {"provisioning": "bundled", "version": "1.28.0"},
-                "sceptre_binary": "/Users/someone/workspace/sceptre/target/release/sceptre",
-                "os": "Darwin",
-                "arch": "arm64",
-                "cpu_count": 14,
-                "reference": {
-                    "easyocr_version": "1.7.2",
-                    "torch_version": "2.13.0",
-                    "python": "3.14.1",
-                },
-            },
-            "sceptre_batch": {
-                "english": {"total_seconds": 50.0, "image_count": 20, "rss_mb": 6624.0},
-            },
-            "easyocr_batch": {
-                "en": {"total_seconds": 200.0, "image_count": 20, "rss_mb": 22626.0},
+    metadata: dict[str, object] = {
+        "platform": "macOS-26.0-arm64",
+        "group": "all",
+        "repeats": 2,
+        "threads": "native",
+        "corpus_total": 43,
+        "labeled_scored": 27,
+        "breadth_scored": 13,
+        "capability_gaps": 3,
+        # Mirrors benchmark.py's environment_metadata exactly: onnxruntime is a
+        # nested object, and the reference versions carry a _version suffix.
+        "environment": {
+            "sceptre_version": "0.4.0",
+            "backend": "ort",
+            "accelerator": "cpu",
+            "onnxruntime": {"provisioning": "bundled", "version": "1.28.0"},
+            "sceptre_binary": "/Users/someone/workspace/sceptre/target/release/sceptre",
+            "os": "Darwin",
+            "arch": "arm64",
+            "cpu_count": 14,
+            "reference": {
+                "easyocr_version": "1.7.2",
+                "torch_version": "2.13.0",
+                "python": "3.14.1",
             },
         },
+        "sceptre_batch": {
+            "english": {"total_seconds": 50.0, "image_count": 20, "rss_mb": 6624.0},
+        },
+        "easyocr_batch": {
+            "en": {"total_seconds": 200.0, "image_count": 20, "rss_mb": 22626.0},
+        },
+    }
+    report = {
+        "metadata": metadata,
         "aggregates": {
             "labeled": {
                 "easyocr_cer": {"mean": 0.554, "median": 0.5, "p95": 0.9, "count": 27},
@@ -81,7 +82,7 @@ def _report(**overrides: object) -> dict:
             {"stem": "c", "skipped": "unsupported", "sceptre_cold_seconds": None},
         ],
     }
-    report["metadata"].update(overrides)
+    metadata.update(overrides)
     return report
 
 

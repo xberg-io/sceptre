@@ -17,6 +17,10 @@ import platform
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
 
 # Maps each example image to the EasyOCR language codes to load for it. English is the
 # default corpus; the others exercise the per-language gen2 recognizers. ~keep
@@ -93,7 +97,7 @@ def easyocr_provenance(languages: list[str], gpu: bool) -> dict[str, object]:
 
 
 def merge_easyocr_side(
-    existing: dict[str, object], lines: list[dict[str, object]], languages: list[str], gpu: bool = False
+    existing: Mapping[str, object], lines: list[dict[str, object]], languages: list[str], gpu: bool = False
 ) -> dict[str, object]:
     """Overwrite only the ``easyocr`` side and its provenance.
 

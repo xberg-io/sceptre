@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import TypedDict
 
 import pytest
 from sceptre_rs_tools import benchmark as b
@@ -18,7 +19,28 @@ from sceptre_rs_tools import benchmark as b
 TOLERANCE = 1e-6
 
 
-def _vectors() -> dict[str, object]:
+class TextVector(TypedDict):
+    note: str
+    hypothesis: str
+    reference: str
+    word_f1: float
+    char_f1: float
+
+
+class BoxVector(TypedDict):
+    note: str
+    a: tuple[float, float, float, float]
+    b: tuple[float, float, float, float]
+    iou: float
+
+
+class MetricVectors(TypedDict):
+    schema_version: int
+    text: list[TextVector]
+    boxes: list[BoxVector]
+
+
+def _vectors() -> MetricVectors:
     path = Path(b.repo_root()) / "crates" / "sceptre" / "tests" / "data" / "metrics_vectors.json"
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -31,13 +53,13 @@ def test_vectors_use_the_known_schema_version() -> None:
 
 
 @pytest.mark.parametrize("case", VECTORS["text"], ids=lambda case: case["note"])
-def test_text_metrics_match_the_contract(case: dict[str, object]) -> None:
+def test_text_metrics_match_the_contract(case: TextVector) -> None:
     hypothesis, reference = case["hypothesis"], case["reference"]
     assert b.word_f1(hypothesis, reference) == pytest.approx(case["word_f1"], abs=TOLERANCE)
     assert b.char_f1(hypothesis, reference) == pytest.approx(case["char_f1"], abs=TOLERANCE)
 
 
 @pytest.mark.parametrize("case", VECTORS["boxes"], ids=lambda case: case["note"])
-def test_box_iou_matches_the_contract(case: dict[str, object]) -> None:
+def test_box_iou_matches_the_contract(case: BoxVector) -> None:
     a, box_b = tuple(case["a"]), tuple(case["b"])
     assert b.box_iou(a, box_b) == pytest.approx(case["iou"], abs=TOLERANCE)

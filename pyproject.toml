@@ -22,7 +22,7 @@ requires = ["hatchling"]
 packages = ["python/sceptre_rs_tools"]
 
 [dependency-groups]
-dev = ["ruff>=0.6", "pytest>=8"]
+dev = ["ruff>=0.6", "pytest>=8", "pyrefly>=1.4.0", "rapidfuzz>=3.14.6"]
 # Heavy, opt-in export path: torch + easyocr drive the .pth->ONNX export and the
 # golden-fixture generation; onnxruntime validates each export against torch. Not
 # installed by default. ~keep
@@ -45,3 +45,9 @@ extend-select = ["RUF001", "RUF002"]
 [tool.pytest.ini_options]
 testpaths = ["python/tests"]
 pythonpath = ["python"]
+
+[tool.pyrefly]
+preset = "default"
+project-includes = ["python", "scripts"]
+search-path = ["python", "scripts"]
+python-version = "3.11"

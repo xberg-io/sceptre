@@ -1,5 +1,7 @@
 """Exercise published-archive acceptance with real local protocol children."""
 
+from __future__ import annotations
+
 import asyncio
 import hashlib
 import http.server
@@ -10,9 +12,13 @@ import tempfile
 import threading
 import unittest
 from pathlib import Path
-from typing import BinaryIO
+from tempfile import _TemporaryFileWrapper
+from typing import IO, TYPE_CHECKING
 from unittest.mock import patch
 from urllib.error import URLError
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
 
 
 class PublishedReleaseTests(unittest.TestCase):
@@ -94,8 +100,14 @@ class PublishedReleaseTests(unittest.TestCase):
             observed = []
             create = asyncio.create_subprocess_exec
 
-            async def capture(*args: str, **kwargs: object) -> asyncio.subprocess.Process:
-                process = await create(*args, **kwargs)
+            async def capture(
+                *args: str,
+                stdin: int | IO[bytes],
+                stdout: int | IO[bytes],
+                stderr: int | IO[bytes],
+                env: Mapping[str, str] | None,
+            ) -> asyncio.subprocess.Process:
+                process = await create(*args, stdin=stdin, stdout=stdout, stderr=stderr, env=env)
                 observed.append(process)
                 return process
 
@@ -133,7 +145,7 @@ class PublishedReleaseTests(unittest.TestCase):
                 self.end_headers()
                 self.wfile.write(b"published-model")
 
-            def log_message(self, *_args: object) -> None:
+            def log_message(self, format: str, *args: object) -> None:
                 pass
 
         with http.server.ThreadingHTTPServer(("127.0.0.1", 0), Handler) as server:
@@ -157,10 +169,10 @@ class PublishedReleaseTests(unittest.TestCase):
         source.write_bytes(b"published-model")
         target = self.root / "downloaded.onnx"
         target.write_bytes(b"previous-verified-model")
-        handles: dict[Path, BinaryIO] = {}
+        handles: dict[Path, _TemporaryFileWrapper[bytes]] = {}
         create, unlink = tempfile.NamedTemporaryFile, Path.unlink
 
-        def capture(*, dir: Path, delete: bool) -> BinaryIO:
+        def capture(*, dir: Path, delete: bool) -> _TemporaryFileWrapper[bytes]:
             handle = create(dir=dir, delete=delete)
             handles[Path(handle.name)] = handle
             return handle
@@ -184,6 +196,7 @@ class PublishedReleaseTests(unittest.TestCase):
                 if mode == "oversized":
                     self.assertEqual(str(caught.exception), "Download exceeded 2 bytes")
                 else:
+                    assert isinstance(caught.exception, URLError)
                     self.assertIsInstance(caught.exception.reason, FileNotFoundError)
                 self.assertEqual(len(handles), 1)
                 self.assertTrue(all(handle.closed for handle in handles.values()))

@@ -6,11 +6,6 @@ on:
     paths:
       - "docs-site/**"
       - ".github/workflows/ci-docs.yaml"
-  pull_request:
-    branches: [main]
-    paths:
-      - "docs-site/**"
-      - ".github/workflows/ci-docs.yaml"
   workflow_dispatch:
 
 permissions:
@@ -24,6 +19,7 @@ concurrency:
 
 jobs:
   docs:
-    uses: xberg-io/actions/.github/workflows/reusable-docs-deploy.yml@v1
+    if: github.ref == 'refs/heads/main'
+    uses: xberg-io/actions/.github/workflows/reusable-docs-deploy.yml@793d3a4d37a17009d91cce29f2825eda570d2abd
     with:
       deploy: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}

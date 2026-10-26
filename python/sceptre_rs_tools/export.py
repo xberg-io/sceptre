@@ -26,6 +26,10 @@ import argparse
 import hashlib
 import sys
 from pathlib import Path
+from typing import TYPE_CHECKING, NotRequired, TypedDict, cast
+
+if TYPE_CHECKING:
+    from torch import Tensor, nn
 
 # Each gen2 recognizer network paired with a representative EasyOCR language list that
 # makes ``easyocr.Reader`` build exactly that network. The charset is taken from EasyOCR's
@@ -73,51 +77,51 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def _build_torch_wrappers() -> tuple[object, object, object]:
+def _build_torch_wrappers() -> tuple[type[nn.Module], type[nn.Module]]:
     """Import torch lazily and build the export wrapper modules.
 
-    Returns ``(torch, RecognizerExport, DetectorExport)`` where the two classes wrap an
+    Returns ``(RecognizerExport, DetectorExport)`` where the two classes wrap an
     EasyOCR network into the single-input / single-output forward the export requires.
     """
-    import torch
     from torch import nn
 
     class MeanPoolH(nn.Module):
         """``AdaptiveAvgPool2d((None, 1))`` over ``[b, w, c, h]`` == mean over ``h``."""
 
-        def forward(self, x: object) -> object:
+        def forward(self, x: Tensor) -> Tensor:
             return x.mean(dim=3, keepdim=True)
 
     class RecognizerExport(nn.Module):
         """Recognizer forward reduced to ``image -> logits`` (CTC ignores the text arg)."""
 
-        def __init__(self, model: object) -> None:
+        def __init__(self, model: nn.Module) -> None:
             super().__init__()
             model.AdaptiveAvgPool = MeanPoolH()
             self.model = model
 
-        def forward(self, image: object) -> object:
+        def forward(self, image: Tensor) -> Tensor:
             return self.model(image, None)
 
     class DetectorExport(nn.Module):
         """CRAFT forward reduced to ``image -> heatmaps`` (drop the feature output)."""
 
-        def __init__(self, model: object) -> None:
+        def __init__(self, model: nn.Module) -> None:
             super().__init__()
             self.model = model
 
-        def forward(self, image: object) -> object:
+        def forward(self, image: Tensor) -> Tensor:
             out = self.model(image)
             return out[0] if isinstance(out, (tuple, list)) else out
 
-    return torch, RecognizerExport, DetectorExport
+    return RecognizerExport, DetectorExport
 
 
-def _validate_parity(torch: object, wrapper: object, onnx_path: Path, shapes: list[tuple[int, ...]]) -> float:
+def _validate_parity(wrapper: nn.Module, onnx_path: Path, shapes: list[tuple[int, ...]]) -> float:
     """Assert the exported ONNX matches torch under onnxruntime; return the max abs diff."""
     import numpy as np
     import onnx
     import onnxruntime as ort
+    import torch
 
     onnx.checker.check_model(onnx.load(str(onnx_path)))
     session = ort.InferenceSession(str(onnx_path), providers=["CPUExecutionProvider"])
@@ -134,12 +138,21 @@ def _validate_parity(torch: object, wrapper: object, onnx_path: Path, shapes: li
     return max_diff
 
 
-def export_recognizer(net: str, languages: list[str], out_dir: Path, write_assets: bool) -> dict[str, object]:
+class ExportSummary(TypedDict):
+    net: str
+    onnx: Path
+    sha256: str
+    parity: float
+    num_classes: NotRequired[int]
+
+
+def export_recognizer(net: str, languages: list[str], out_dir: Path, write_assets: bool) -> ExportSummary:
     """Export one gen2 recognizer to ONNX + its charset asset; return a summary dict."""
     import easyocr
+    import torch
     from easyocr import config
 
-    torch, recognizer_export, _ = _build_torch_wrappers()
+    recognizer_export, _ = _build_torch_wrappers()
 
     reader = easyocr.Reader(languages, gpu=False, quantize=False, verbose=False)
     converter_chars = "".join(reader.converter.character[1:])  # drop the blank at index 0
@@ -162,7 +175,7 @@ def export_recognizer(net: str, languages: list[str], out_dir: Path, write_asset
         opset_version=OPSET_VERSION,
         do_constant_folding=True,
     )
-    max_diff = _validate_parity(torch, wrapper, onnx_path, [(1, 1, 64, 128), (2, 1, 64, 256), (3, 1, 64, 96)])
+    max_diff = _validate_parity(wrapper, onnx_path, [(1, 1, 64, 128), (2, 1, 64, 256), (3, 1, 64, 96)])
 
     if write_assets:
         (character_assets_dir() / f"{net}.txt").write_text(expected_chars, encoding="utf-8")
@@ -176,15 +189,16 @@ def export_recognizer(net: str, languages: list[str], out_dir: Path, write_asset
     }
 
 
-def export_craft(out_dir: Path) -> dict[str, object]:
+def export_craft(out_dir: Path) -> ExportSummary:
     """Export the CRAFT detector to ONNX; return a summary dict."""
     import easyocr
+    import torch
     from torch import nn
 
-    torch, _, detector_export = _build_torch_wrappers()
+    _, detector_export = _build_torch_wrappers()
 
     reader = easyocr.Reader(["en"], gpu=False, quantize=False, verbose=False)
-    detector = reader.detector
+    detector = cast("nn.Module", reader.detector)
     if isinstance(detector, nn.DataParallel):
         detector = detector.module
     wrapper = detector_export(detector.eval()).eval()
@@ -203,7 +217,7 @@ def export_craft(out_dir: Path) -> dict[str, object]:
         opset_version=OPSET_VERSION,
         do_constant_folding=True,
     )
-    max_diff = _validate_parity(torch, wrapper, onnx_path, [(1, 3, 256, 256), (1, 3, 320, 480), (1, 3, 512, 288)])
+    max_diff = _validate_parity(wrapper, onnx_path, [(1, 3, 256, 256), (1, 3, 320, 480), (1, 3, 512, 288)])
 
     return {"net": CRAFT_NETWORK, "onnx": onnx_path, "sha256": sha256_file(onnx_path), "parity": max_diff}
 
@@ -223,7 +237,7 @@ def run(out_dir: Path, only: list[str] | None, skip_craft: bool, write_assets: b
 
     out_dir.mkdir(parents=True, exist_ok=True)
     targets = only or list(RECOGNIZER_NETWORKS)
-    summaries: list[dict[str, object]] = []
+    summaries: list[ExportSummary] = []
 
     for net in targets:
         if net not in RECOGNIZER_NETWORKS:
