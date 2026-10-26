@@ -1,6 +1,8 @@
 ---
 type: Decision
 title: Module Size Cap
+paths:
+  - "crates/*/src/**/*.rs"
 x-ai-rulez:
   kind: rule
   id: module-size-cap

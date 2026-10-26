@@ -1,8 +1,11 @@
 ---
-type: Concept
+type: Decision
 title: Crate Layout
+paths:
+  - "crates/**"
+  - "Cargo.toml"
 x-ai-rulez:
-  kind: context
+  kind: rule
   id: crate-layout
   metadata:
     priority: high

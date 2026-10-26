@@ -1,6 +1,9 @@
 ---
 type: Decision
 title: Mcp Tool Conventions
+paths:
+  - "crates/sceptre/src/mcp/**"
+  - "crates/sceptre/tests/mcp_smoke.rs"
 x-ai-rulez:
   kind: rule
   id: mcp-tool-conventions

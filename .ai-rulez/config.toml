@@ -7,7 +7,7 @@ gitignore = true
 presets = ["claude", "codex", "opencode", "pi", "hermes", "gemini", "copilot"]
 
 compact = true
-builtins = ["!git-workflow", "rust", "cicd", "documentation", "default-commands"]
+builtins = ["!agent-delegation", "!git-workflow", "documentation", "default-commands"]
 
 [header]
 style = "minimal"
@@ -16,14 +16,21 @@ style = "minimal"
 [[includes]]
 name = "xberg-core"
 source = 'https://github.com/xberg-io/agent-conventions.git'
-ref = "adb0caa92c4d8155fb1680618f72a321a832660b"
+ref = "923818e1ce9b71ebe68306c7a551caeaf7b27106"
 path = "modules/core"
+merge_strategy = "local-override"
+
+[[includes]]
+name = "xberg-languages"
+source = 'https://github.com/xberg-io/agent-conventions.git'
+ref = "923818e1ce9b71ebe68306c7a551caeaf7b27106"
+path = "modules/languages"
 merge_strategy = "local-override"
 
 [[includes]]
 name = "xberg-cicd"
 source = 'https://github.com/xberg-io/agent-conventions.git'
-ref = "adb0caa92c4d8155fb1680618f72a321a832660b"
+ref = "923818e1ce9b71ebe68306c7a551caeaf7b27106"
 path = "modules/cicd"
 merge_strategy = "local-override"
 
@@ -38,6 +45,11 @@ effort = "medium"
 
 [mcp]
 self_server_command = ["ai-rulez", "mcp"]
+# ~keep Skill discovery only: the full server lists 67 tools (~38k tokens of schema) at every session start.
+serve_skills = true
+read_only = true
+discover_skills = "repo"
+tools = ["find_skill", "load_skill"]
 
 
 [codex]
@@ -59,3 +71,7 @@ paths = [
   "skills/*/SKILL.md",
 ]
 reason = "The generated harness and plugin copies repeat the source skill descriptions and names. ai-rulez counts each copy as a duplicate."
+
+[rules]
+# ~keep Glob-scoped rules stay out of AGENTS.md: rule files for Claude, path-gated skills for Codex.
+scoped_fallback = "skill"

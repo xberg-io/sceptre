@@ -38,7 +38,7 @@ jobs:
       - name: Install ai-rulez
         uses: xberg-io/actions/setup-ai-rulez@v1.27.1
         with:
-          ai-rulez-version: "5.6.0"
+          ai-rulez-version: "5.7.0"
       - uses: xberg-io/actions/verify-ai-rulez-plugin@v1.27.1
         with:
           config-directory: .ai-rulez

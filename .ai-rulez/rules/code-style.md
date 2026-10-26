@@ -1,8 +1,10 @@
 ---
-type: Concept
+type: Decision
 title: Code Style
+paths:
+  - "crates/**/*.rs"
 x-ai-rulez:
-  kind: context
+  kind: rule
   id: code-style
   metadata:
     priority: high
@@ -10,12 +12,8 @@ x-ai-rulez:
 
 # Code Style
 
-Conventions baked into context so they ship into every AI tool's config.
+## Surface
 
-## Module layout
-
-- One concern per file. Folder modules get a thin `mod.rs` (declare submodules + re-export); logic lives in named siblings.
-- 1000-line cap on `crates/*/src/**/*.rs`, enforced by the `max_lines` integration test in `cargo test`. Refactor by extraction, never by lifting the cap.
 - The library re-exports a curated flat surface from `lib.rs` (`pub use error::{OcrError, Result}`, `pub use types::*`, the config types), so consumers write `use sceptre::{Reader, OcrConfig, OcrResult}`.
 
 ## Errors
@@ -37,6 +35,7 @@ Conventions baked into context so they ship into every AI tool's config.
 - Terminal colour uses `anstyle` rendered through `anstream` (honors `NO_COLOR`).
 - Parallelism is Rayon `par_iter` bounded by the single `ConcurrencyConfig` budget.
 
-## Commits
+## Comments
 
-- Conventional Commit prefixes (`feat:`, `fix:`, `perf:`, `chore:`, `refactor:`). Body explains *why*.
+- Prefer Rust doc comments (`///`, `//!`) for explanatory content; they are kept without a `~keep` marker.
+- No session numbers, milestone tags, or progress notes ("Session 1", "M1", "wired later", "TODO next") in comments or `todo!()` messages. Describe what the code does or what behavior is missing.

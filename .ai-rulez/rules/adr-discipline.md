@@ -1,6 +1,8 @@
 ---
 type: Decision
 title: Adr Discipline
+paths:
+  - "adrs/**"
 x-ai-rulez:
   kind: rule
   id: adr-discipline
