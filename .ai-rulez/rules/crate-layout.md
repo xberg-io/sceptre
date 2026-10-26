@@ -4,9 +4,6 @@ title: Crate Layout
 paths:
   - "crates/**"
   - "Cargo.toml"
-targets:
-  - ".claude/rules/"
-  - ".github/instructions/"
 x-ai-rulez:
   kind: rule
   id: crate-layout

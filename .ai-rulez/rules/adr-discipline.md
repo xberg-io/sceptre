@@ -3,9 +3,6 @@ type: Decision
 title: Adr Discipline
 paths:
   - "adrs/**"
-targets:
-  - ".claude/rules/"
-  - ".github/instructions/"
 x-ai-rulez:
   kind: rule
   id: adr-discipline

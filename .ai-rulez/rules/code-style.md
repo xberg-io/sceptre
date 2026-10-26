@@ -3,9 +3,6 @@ type: Decision
 title: Code Style
 paths:
   - "crates/**/*.rs"
-targets:
-  - ".claude/rules/"
-  - ".github/instructions/"
 x-ai-rulez:
   kind: rule
   id: code-style

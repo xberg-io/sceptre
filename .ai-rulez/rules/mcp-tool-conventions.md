@@ -4,9 +4,6 @@ title: Mcp Tool Conventions
 paths:
   - "crates/sceptre/src/mcp/**"
   - "crates/sceptre/tests/mcp_smoke.rs"
-targets:
-  - ".claude/rules/"
-  - ".github/instructions/"
 x-ai-rulez:
   kind: rule
   id: mcp-tool-conventions
