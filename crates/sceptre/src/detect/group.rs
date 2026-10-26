@@ -463,16 +463,9 @@ mod tests {
     /// both columns, not just the two boxes at the boundary -- the failure is
     /// superlinear in the number of boxes per column, not a single bad merge.
     ///
-    /// FAILS at the current `width_ths` default of `3.0`: `80 < 3.0*32 = 96`, so
-    /// the gutter merges (in fact all six boxes collapse into one group, since
-    /// `running_x_max` never resets). It would pass at any `width_ths <= 2.5`.
-    /// Ignored rather than weakened or deleted: it records the real bound
-    /// pending the `0.5`-vs-`3.0` end-to-end measurement (see `width_ths`'s doc
-    /// comment in `config/detection.rs`). Do not clear `#[ignore]` by loosening
-    /// this assertion -- only by revisiting the default.
+    /// The measured `width_ths` default is `1.0`: the 2.5-height gutter stays
+    /// separate while the 0.44-height gaps within each column still merge.
     #[test]
-    #[ignore = "fails at the current width_ths default of 3.0 (gutter ratio 2.5 < 3.0 merges); \
-                pending the 0.5-vs-3.0 measurement, see config/detection.rs width_ths docs"]
     fn should_keep_columns_separate_at_a_realistic_two_column_gutter_ratio() {
         let config = config_with(0.0);
         let left = [

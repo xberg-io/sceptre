@@ -7,12 +7,19 @@ description: >-
 
 import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
+With the released dependency lockfile, the core, ONNX Runtime, and Tract builds support Rust 1.92
+or newer. On AArch64 targets with `fp16`, including Apple Silicon macOS, enabling `candle` requires
+Rust 1.94 or newer. See [Rust version requirements](/reference/feature-flags/#rust-version-requirements)
+for the backend and dependency-resolution details.
+
 <Tabs>
   <TabItem label="CLI">
 
     ```sh
-    cargo install sceptre-cli
+    cargo install sceptre-cli --locked
     ```
+
+    `--locked` uses the dependency versions tested for that release.
 
     The CLI's default feature set is `["ort-bundled", "download"]`, so this produces a
     self-contained binary: a prebuilt ONNX Runtime is fetched and linked at build time, and models
@@ -26,7 +33,7 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
     When installing from Cargo, add the `mcp` feature to expose the MCP server subcommand:
 
     ```sh
-    cargo install sceptre-cli --features mcp
+    cargo install sceptre-cli --locked --features mcp
     ```
 
     **Targets with no prebuilt ONNX Runtime.**
@@ -44,13 +51,13 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
     Either bring your own `libonnxruntime`:
 
     ```sh
-    cargo install sceptre-cli --features ort-dynamic
+    cargo install sceptre-cli --locked --features ort-dynamic
     ```
 
     or build the pure-Rust backend and select it at runtime:
 
     ```sh
-    cargo install sceptre-cli --no-default-features --features tract,download
+    cargo install sceptre-cli --locked --no-default-features --features tract,download
     sceptre run receipt.png --backend tract
     ```
 

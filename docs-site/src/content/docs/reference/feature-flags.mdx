@@ -29,6 +29,19 @@ The `ort-*` accelerator features only add the Rust-side provider registration; t
 build in use must also carry that provider. The pyke prebuilt for `aarch64-apple-darwin` is
 CoreML-enabled by construction, so on Apple Silicon `ort-coreml` is sufficient on its own.
 
+## Rust version requirements
+
+The core, ONNX Runtime, and Tract builds support Rust 1.92 with the released dependency lockfile.
+On AArch64 targets with `fp16`, including Apple Silicon macOS, the `candle` feature requires Rust
+1.94 or newer. Candle 0.11 uses
+[`float16x8_t`](https://doc.rust-lang.org/stable/core/arch/aarch64/struct.float16x8_t.html),
+which became stable in Rust 1.94. This also applies to `candle-metal` and `candle-cuda`, which enable
+`candle`, and already affected Sceptre 0.8.1.
+
+These minimum versions describe the released lockfile. An unlocked consumer using `download`
+can resolve HF-Xet 1.7 and its `sysinfo` dependency, which requires Rust 1.95. CLI installations
+should use `cargo install sceptre-cli --locked` to use the tested dependency versions.
+
 ## `ort` vs. `tract`: which backend
 
 See [Backends](/concepts/backends/) for the full tradeoff; in short, `ort` for native CPU
@@ -37,7 +50,7 @@ performance on desktop/server, `tract` for a pure-Rust WASM/Android build.
 ## CLI defaults
 
 The `sceptre-cli` binary's own `default` feature set is `["ort-bundled", "download"]`, so
-`cargo install sceptre-cli` produces a self-contained binary: the ONNX Runtime is fetched and linked
+`cargo install sceptre-cli --locked` produces a self-contained binary: the ONNX Runtime is fetched and linked
 at build time, and models download at first use. The CLI re-exports eleven features, each forwarding
 to the identically-named library feature: `ort-bundled`, `ort-dynamic`, `tract`, `candle`,
 `ort-coreml`, `ort-directml`, `ort-cuda`, `candle-metal`, `candle-cuda`, `download`, and `mcp` (off
@@ -62,7 +75,7 @@ the backend in — the run fails at model load with "not compiled in".
 
 `ort-bundled` resolves a prebuilt runtime from a fixed target list. On a target that has none, the
 build fails with ort-sys's own `no prebuilt binaries available for target ...` — at **build** time,
-so `cargo install sceptre-cli` never produces a binary at all:
+so `cargo install sceptre-cli --locked` never produces a binary at all:
 
 - `x86_64-apple-darwin` (Intel macOS)
 - every `*-unknown-linux-musl` target (Alpine)

@@ -10,12 +10,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.8.2] - 2026-10-16
+## [0.8.2] - 2026-10-26
 
 ### Added
 
 - Expose `ort_environment()` so applications using ONNX Runtime directly can share
   Sceptre's retained environment with model sessions and runtime probes.
+
+### Changed
+
+- Update the MCP server dependencies and pure-Rust ONNX backend.
+- Use the released dependency lockfile in Cargo CLI installation examples.
+- Document Candle's existing Rust 1.94 requirement on AArch64 targets with `fp16`.
 
 ## [0.8.1] - 2026-10-15
 

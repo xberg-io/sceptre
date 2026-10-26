@@ -68,8 +68,14 @@ no ONNX Runtime at all.
 ### Install
 
 ```sh
-cargo install sceptre-cli
+cargo install sceptre-cli --locked
 ```
+
+`--locked` uses the dependency versions tested for that release.
+
+The locked core, ONNX Runtime, and Tract builds support Rust 1.92 or newer. On AArch64 targets with
+`fp16`, including Apple Silicon macOS, the optional `candle` backend requires Rust 1.94 or newer;
+see [Rust version requirements](https://docs.sceptre.xberg.io/reference/feature-flags/#rust-version-requirements).
 
 [Prebuilt release archives](https://github.com/xberg-io/sceptre/releases/latest) for Linux x86_64/ARM64,
 macOS ARM64, and Windows x86_64 include `sceptre mcp`, bundled ONNX Runtime, and model downloads.
@@ -88,8 +94,8 @@ cache, and sha256-verified as they download. Every run after that reads the cach
 > `no prebuilt binaries available for target ...`. Two remedies:
 >
 > ```sh
-> cargo install sceptre-cli --features ort-dynamic                          # bring your own libonnxruntime
-> cargo install sceptre-cli --no-default-features --features tract,download  # pure Rust, then --backend tract
+> cargo install sceptre-cli --locked --features ort-dynamic                          # bring your own libonnxruntime
+> cargo install sceptre-cli --locked --no-default-features --features tract,download  # pure Rust, then --backend tract
 > ```
 >
 > `--features ort-dynamic` is additive, but it still wins over the bundled default: `load-dynamic`
@@ -140,7 +146,7 @@ Expose a `readtext` tool to an agent. Release archives include the `mcp` subcomm
 enable the `mcp` feature explicitly:
 
 ```sh
-cargo install sceptre-cli --features mcp
+cargo install sceptre-cli --locked --features mcp
 sceptre mcp --lang english
 sceptre mcp --lang english --detect-orientation   # whole-page orientation pre-pass for rotated scans
 ```
@@ -262,7 +268,7 @@ Hugging Face org (Apache-2.0; see [`adrs/0025`](adrs/0025-first-party-onnx-expor
 | `bench` | Exposes the crate's internal hot paths through a `bench` seam for criterion benchmarking (see ADR 0015) | ✓ | — |
 
 The library ships `default = []`. The CLI ships `default = ["ort-bundled", "download"]`, so
-`cargo install sceptre-cli` produces a self-contained binary; `--features ort-dynamic` overrides the
+`cargo install sceptre-cli --locked` produces a self-contained binary; `--features ort-dynamic` overrides the
 provisioning strategy without `--no-default-features` (see [Install](#install)).
 
 Configuration (`OcrConfig`) is backend-agnostic. The CLI builds it from `OcrConfig::default()` plus
@@ -280,7 +286,7 @@ and GitHub Copilot CLI. Pi loads the packaged skills and prompts and uses the CL
 Install an MCP-enabled binary before using the server or Hermes bridge:
 
 ```sh
-cargo install sceptre-cli --features mcp
+cargo install sceptre-cli --locked --features mcp
 ```
 
 Models download on first use. Set the image language through the MCP configuration; the default

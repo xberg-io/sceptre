@@ -83,6 +83,6 @@ Choose the target agents interactively. For a local checkout, use `npx skills ad
 This installs instructions; it does not install the product CLI, enable MCP, download models
 or set provider credentials.
 
-For an MCP-enabled Cargo install, run `cargo install sceptre-cli --features mcp`.
+For an MCP-enabled Cargo install, run `cargo install sceptre-cli --locked --features mcp`.
 
 OCR models download on first use. The MCP default language is English; configure it for the input.
