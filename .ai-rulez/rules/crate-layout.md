@@ -13,26 +13,22 @@ x-ai-rulez:
 
 # Crate Layout
 
-A Cargo workspace: one rlib core plus a thin CLI. Shared metadata, dependency pins, lints, and profiles live in the root `Cargo.toml`; members inherit with `.workspace = true`.
+A Cargo workspace: an rlib core, a thin CLI, and the dev-only `tools/` crate (not a default member). Shared metadata, dependency pins, lints, and profiles live in the root `Cargo.toml`; members inherit with `.workspace = true`.
 
-## `crates/sceptre` (library, rlib)
+## `crates/sceptre` (library)
 
-- `lib.rs` — crate docs, feature-gated `pub mod`s, curated flat re-exports.
-- `error.rs` — `OcrError` + `Result`.
-- `types.rs` — `Point`, `BBox`, `Quad`, `TextLine`, `OcrResult`.
-- `config/` — `detection.rs`, `recognition.rs`, `concurrency.rs`, `model.rs`, aggregated in `OcrConfig`.
-- `engine/` — `Reader` + `ReaderBuilder`; `engine/seams/` holds the injectable `ModelProvider` / `ProgressSink` traits and defaults.
+- `lib.rs` — crate docs, module declarations, flat re-exports; `error.rs` — `OcrError` + `Result`; `types.rs` — result and geometry types.
+- `config/` — per-stage config structs aggregated in `OcrConfig`.
+- `engine/` — `Reader` + `ReaderBuilder`, the `OcrEngine` seam with `SceptreEngine` and `FallbackEngine`; `engine/seams/` holds the injectable `ModelProvider` / `ProgressSink` traits.
 - `imaging.rs` — decode to RGB + grayscale.
-- `detect/` — `preprocess`, `craft`, `postprocess`, `group` (CRAFT).
-- `recognize/` — `crop`, `preprocess`, `crnn`, `ctc`, `charset`, `contrast` (CRNN + CTC).
-- `inference/` — `ModelBackend` seam + `ort_backend` / `tract_backend` impls, and `candle/` (hand-written `craft_net` / `crnn_net` over ONNX initializers, plus `device` selection).
-- `models/` — `registry` (gen2 model table → Hugging Face) + `download` (fetch/cache/verify).
-- `mcp/` — rmcp server (`mcp` feature).
+- `detect/` — CRAFT detection, the orientation pre-pass, box geometry and line grouping.
+- `recognize/` — cropping, CRNN, CTC greedy and beam decoding, charsets.
+- `inference/` — `ModelBackend` seam, `ort` / `tract` backends, `ort` execution providers, runtime provenance, and `candle/` hand-written networks.
+- `models/` — gen2 model registry, download, integrity checks, provisioning.
+- `mcp/` — rmcp server (`mcp` feature); `bench.rs` — hidden bench seam (`bench` feature).
 
 ## `crates/sceptre-cli` (binary `sceptre`)
 
-- `main.rs` (thin), `cli.rs` (clap `Cli`/`Commands` + dispatch), `overrides.rs` (flattened flag group → `OcrConfig`), `style.rs` (anstyle palette).
+- `main.rs` (thin), `cli.rs` (clap + dispatch), `overrides.rs` (flags → `OcrConfig`), `output.rs` (text/JSON rendering), `timing.rs` (`--timings`), `style.rs` (anstyle palette).
 
-## Repo root
-
-- `adrs/` — MADR decision records. `tools/` (Rust crate) + `python/sceptre_rs_tools/` — model export / golden-fixture tooling. `poly.toml`, `rustfmt.toml`, `deny.toml`, `Taskfile.yaml`, `.github/workflows/ci.yaml`.
+Root config: `poly.toml`, `rustfmt.toml`, `deny.toml`, `Taskfile.yaml` + `.task/`.
