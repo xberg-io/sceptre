@@ -10,6 +10,7 @@ compact = true
 # ~keep adr-immutability is dropped for the more specific local adr-discipline rule (adrs/**).
 builtins = [
   "!agent-delegation",
+  "!ai-governance/agent-workflow",
   "!git-workflow",
   "!testing/test-alongside-code",
   "documentation",
