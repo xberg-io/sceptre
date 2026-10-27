@@ -44,8 +44,6 @@ __pycache__/
 # BEGIN ai-rulez (DO NOT EDIT - managed by ai-rulez)
 .agents/skills/
 .ai-rulez/.generated-manifest.json
-.ai-rulez/config.local.*
-.ai-rulez/local/
 .claude/agents/
 .claude/rules/adr-discipline.md
 .claude/rules/backend-seam.md
@@ -53,19 +51,21 @@ __pycache__/
 .claude/rules/crate-layout.md
 .claude/rules/csharp.md
 .claude/rules/elixir.md
+.claude/rules/generated-artifacts.md
 .claude/rules/go.md
 .claude/rules/java.md
 .claude/rules/kotlin-android.md
-.claude/rules/logging-tracing.md
 .claude/rules/mcp-tool-conventions.md
 .claude/rules/module-size-cap.md
 .claude/rules/ocr-pipeline.md
 .claude/rules/php.md
+.claude/rules/python-scripts.md
 .claude/rules/python.md
 .claude/rules/r.md
 .claude/rules/ruby.md
 .claude/rules/rust-checks.md
 .claude/rules/rust.md
+.claude/rules/shell.md
 .claude/rules/typescript.md
 .claude/skills/
 .codex/agents/
