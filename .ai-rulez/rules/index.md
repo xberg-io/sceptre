@@ -8,3 +8,4 @@
 * [Module Size Cap](module-size-cap.md)
 * [Ocr Pipeline](ocr-pipeline.md)
 * [Rust Checks](rust-checks.md)
+* [Rust Comments](rust-comments.md)
