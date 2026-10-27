@@ -7,7 +7,14 @@ gitignore = true
 presets = ["claude", "codex", "opencode"]
 
 compact = true
-builtins = ["!agent-delegation", "!git-workflow", "documentation", "default-commands"]
+# ~keep adr-immutability is dropped for the more specific local adr-discipline rule (adrs/**).
+builtins = [
+  "!agent-delegation",
+  "!git-workflow",
+  "documentation",
+  "!documentation/adr-immutability",
+  "default-commands",
+]
 
 [header]
 style = "minimal"
