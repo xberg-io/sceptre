@@ -65,7 +65,6 @@ __pycache__/
 .claude/rules/r.md
 .claude/rules/ruby.md
 .claude/rules/rust-checks.md
-.claude/rules/rust-comments.md
 .claude/rules/rust.md
 .claude/rules/typescript.md
 .claude/skills/
