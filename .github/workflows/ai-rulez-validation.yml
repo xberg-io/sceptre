@@ -26,7 +26,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - uses: xberg-io/actions/setup-ai-rulez@793d3a4d37a17009d91cce29f2825eda570d2abd
         with:
-          ai-rulez-version: "5.7.0"
+          ai-rulez-version: "latest"
       - uses: xberg-io/actions/validate-ai-rulez@793d3a4d37a17009d91cce29f2825eda570d2abd
         with:
           expected-config-count: "2"

@@ -65,8 +65,8 @@ Sceptre is written following strict AI engineering practices. That is, its vibe 
 
 ### Conventions
 
-Use `ai-rulez` 5.6.0, the version that CI and the Taskfile pin, to manage agent conventions. Install it with
-`uv tool install ai-rulez==5.6.0`. Edit authored content under
+Use the latest `ai-rulez` release (CI and the Taskfile run `latest`; minimum 5.7.0) to manage agent conventions.
+Install or upgrade it with `uv tool install --upgrade ai-rulez`. Edit authored content under
 `.ai-rulez/`; `AGENTS.md`, `CLAUDE.md` and harness directories are generated outputs.
 The main `config.toml` selects the `plugins` layer through `default_layers`; marketplace and
 plugin settings live separately in `config.plugins.toml`.
