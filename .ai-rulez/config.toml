@@ -8,6 +8,7 @@ presets = ["claude", "codex", "opencode"]
 
 compact = true
 # ~keep adr-immutability and adr-workflow are dropped for the local adr-discipline rule (adrs/**).
+# ~keep readme-standards is always-on for a README that already exists.
 builtins = [
   "!agent-delegation",
   "!ai-governance/agent-workflow",
@@ -16,6 +17,7 @@ builtins = [
   "documentation",
   "!documentation/adr-immutability",
   "!documentation/adr-workflow",
+  "!documentation/readme-standards",
   "default-commands",
 ]
 
