@@ -7,4 +7,5 @@
 * [Mcp Tool Conventions](mcp-tool-conventions.md)
 * [Module Size Cap](module-size-cap.md)
 * [Ocr Pipeline](ocr-pipeline.md)
+* [Python Scripts](python-scripts.md)
 * [Rust Checks](rust-checks.md)
