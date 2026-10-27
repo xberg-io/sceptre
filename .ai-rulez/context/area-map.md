@@ -22,6 +22,6 @@ sceptre is a Rust OCR library, CLI and MCP server reimplementing EasyOCR over ON
 - the corpus submodule (see `.gitmodules`) — `task setup` fetches its `images/**` by sha256 (`adrs/0034`)
 - `adrs/` — architecture decision records (`adr-discipline` rule)
 - `docs-site/`, `docs/` — docs site and assets
-- `skills/`, `plugin/` — published skills, agent plugin
+- `skills/`, `plugin/` — published skills, agent plugin, generated from `plugin/.ai-rulez/` (`generated-artifacts` rule)
 - `scripts/` — release and verification scripts
 - CI runs only on main (ADR 0048): a PR gets no build or test checks. Before calling one ready run `task check` and `task lint`, plus as touched `task python:test`, `task plugin:verify`, `task docs:changelog:check`, `task python:publish:check`.
