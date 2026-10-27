@@ -4,7 +4,7 @@ name = "sceptre"
 description = "Rust reimplementation of EasyOCR — CRAFT detection + gen2 CRNN recognition over ONNX, as a library + CLI + MCP server."
 gitignore = true
 
-presets = ["claude", "codex", "opencode", "pi", "hermes", "gemini", "copilot"]
+presets = ["claude", "codex", "opencode"]
 
 compact = true
 builtins = ["!agent-delegation", "!git-workflow", "documentation", "default-commands"]
@@ -33,12 +33,6 @@ source = 'https://github.com/xberg-io/agent-conventions.git'
 ref = "923818e1ce9b71ebe68306c7a551caeaf7b27106"
 path = "modules/cicd"
 merge_strategy = "local-override"
-
-[[mcp_servers]]
-name = "ai-rulez"
-description = "Manage AI governance config via MCP."
-command = "ai-rulez"
-args = ["mcp"]
 
 [defaults]
 effort = "medium"
