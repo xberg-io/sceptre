@@ -34,8 +34,3 @@ x-ai-rulez:
 - `tracing` → stderr; structured data → stdout. Raw `print_stdout`/`print_stderr` are denied at the workspace level; the CLI opts back in locally with a justified `#[expect(...)]`.
 - Terminal colour uses `anstyle` rendered through `anstream` (honors `NO_COLOR`).
 - Parallelism is Rayon `par_iter` bounded by the single `ConcurrencyConfig` budget.
-
-## Comments
-
-- Prefer Rust doc comments (`///`, `//!`) for explanatory content; they are kept without a `~keep` marker.
-- No session numbers, milestone tags, or progress notes ("Session 1", "M1", "wired later", "TODO next") in comments or `todo!()` messages. Describe what the code does or what behavior is missing.
