@@ -14,7 +14,8 @@ x-ai-rulez:
 
 ## Surface
 
-- The library re-exports a curated flat surface from `lib.rs` (`pub use error::{OcrError, Result}`, `pub use types::*`, the config types), so consumers write `use sceptre::{Reader, OcrConfig, OcrResult}`.
+- Modules are `pub(crate)` except the feature-gated `mcp` and `bench` (ADR 0010). `lib.rs` re-exports an explicit flat list, so consumers write `use sceptre::{Reader, OcrConfig, OcrResult}`.
+- The public engine seam is the `OcrEngine` trait; the stage traits `TextDetector`/`TextRecognizer` stay `pub(crate)`.
 
 ## Errors
 
