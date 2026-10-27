@@ -23,10 +23,12 @@ jobs:
         with:
           ref: ${{ inputs.tag }}
           fetch-depth: 0
+      # ~keep Release paths pin ai-rulez so a new upstream release cannot break a release with no repo
+      # change; CI validation runs latest and flags regeneration first. Bump with the poly hook revision.
       - name: Install ai-rulez
         uses: xberg-io/actions/setup-ai-rulez@v1
         with:
-          ai-rulez-version: "latest"
+          ai-rulez-version: "5.7.0"
       - name: Verify public skill exports
         run: python3 scripts/sync_public_skills.py --check
       - name: Package all supported plugin runtimes
