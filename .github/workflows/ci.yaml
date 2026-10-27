@@ -30,7 +30,7 @@ jobs:
       rust: ${{ steps.filter.outcome == 'success' && steps.filter.outputs.rust || 'true' }}
       python: ${{ steps.filter.outcome == 'success' && steps.filter.outputs.python || 'true' }}
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -60,7 +60,7 @@ jobs:
           fi
           echo "base=${base}" >> "$GITHUB_OUTPUT"
 
-      - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d
+      - uses: dorny/paths-filter@v4
         id: filter
         if: github.event_name != 'workflow_dispatch' && steps.base.outputs.base != ''
         with:
@@ -89,7 +89,7 @@ jobs:
   validate:
     name: Validate
     if: github.ref == 'refs/heads/main' && github.repository == 'xberg-io/sceptre' && github.actor != 'dependabot[bot]'
-    uses: xberg-io/actions/.github/workflows/reusable-validate.yml@793d3a4d37a17009d91cce29f2825eda570d2abd
+    uses: xberg-io/actions/.github/workflows/reusable-validate.yml@v1
     with:
       setup-rust: true
       setup-python: true
@@ -106,8 +106,8 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.repository == 'xberg-io/sceptre' && github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-      - uses: xberg-io/actions/install-task@793d3a4d37a17009d91cce29f2825eda570d2abd
+      - uses: actions/checkout@v7
+      - uses: xberg-io/actions/install-task@v1
       - run: task docs:changelog:check
 
   test:
@@ -141,22 +141,22 @@ jobs:
               features: "ort-bundled,tract,candle,download"
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
 
       - name: Fetch test images
-        uses: xberg-io/actions/fetch-test-documents@793d3a4d37a17009d91cce29f2825eda570d2abd
+        uses: xberg-io/actions/fetch-test-documents@v1
         with:
           include: images/**
 
-      - uses: xberg-io/actions/setup-rust@793d3a4d37a17009d91cce29f2825eda570d2abd
+      - uses: xberg-io/actions/setup-rust@v1
         with:
           components: rustfmt, clippy
           install-llvm-cov: "false"
           cache-key-prefix: rust-test-${{ matrix.variant.label }}
 
-      - uses: xberg-io/actions/install-task@793d3a4d37a17009d91cce29f2825eda570d2abd
+      - uses: xberg-io/actions/install-task@v1
 
       - name: Verify the CLI ONNX Runtime feature matrix
         # Cheap (`cargo tree --locked`: no build, no network) and the only check that a
@@ -171,7 +171,7 @@ jobs:
       # make that true in CI rather than only on a developer machine. ~keep
       - name: Cache Hugging Face models
         if: matrix.variant.label == 'backend-agreement'
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        uses: actions/cache@v6
         with:
           path: ${{ github.workspace }}/.hf
           key: hf-${{ runner.os }}-${{ hashFiles('crates/sceptre/src/models/registry.rs') }}
@@ -223,16 +223,16 @@ jobs:
     env:
       HF_HOME: ${{ github.workspace }}/.hf
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
 
       - name: Fetch test images
-        uses: xberg-io/actions/fetch-test-documents@793d3a4d37a17009d91cce29f2825eda570d2abd
+        uses: xberg-io/actions/fetch-test-documents@v1
         with:
           include: images/**
 
-      - uses: xberg-io/actions/setup-rust@793d3a4d37a17009d91cce29f2825eda570d2abd
+      - uses: xberg-io/actions/setup-rust@v1
         with:
           install-llvm-cov: "false"
           cache-key-prefix: rust-install-${{ matrix.install.label }}
@@ -250,7 +250,7 @@ jobs:
       # default `cargo install` unusable. Only an end-to-end run exercises that path. ~keep
       - name: Cache Hugging Face models
         if: matrix.install.e2e && runner.os == 'Linux'
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        uses: actions/cache@v6
         with:
           path: ${{ github.workspace }}/.hf
           key: hf-${{ runner.os }}-${{ hashFiles('crates/sceptre/src/models/registry.rs') }}
@@ -312,22 +312,22 @@ jobs:
     env:
       HF_HOME: ${{ github.workspace }}/.hf
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
 
       - name: Fetch test images
-        uses: xberg-io/actions/fetch-test-documents@793d3a4d37a17009d91cce29f2825eda570d2abd
+        uses: xberg-io/actions/fetch-test-documents@v1
         with:
           include: images/**
 
-      - uses: xberg-io/actions/setup-rust@793d3a4d37a17009d91cce29f2825eda570d2abd
+      - uses: xberg-io/actions/setup-rust@v1
         with:
           install-llvm-cov: "false"
           cache-key-prefix: rust-parity-${{ matrix.accelerator }}
 
       - name: Cache Hugging Face models
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        uses: actions/cache@v6
         with:
           path: ${{ github.workspace }}/.hf
           # The registry file holds every pinned sha256, so this key is exact and
@@ -337,7 +337,7 @@ jobs:
 
       - name: Build the CLI
         id: build
-        uses: xberg-io/actions/build-rust-cli@793d3a4d37a17009d91cce29f2825eda570d2abd
+        uses: xberg-io/actions/build-rust-cli@v1
         with:
           package-name: sceptre-cli
           binary-name: sceptre
@@ -381,7 +381,7 @@ jobs:
         # output on the CPU legs; result.json is the smoke-test output on the CoreML leg.
         # Kept per matrix leg so a failure on one OS/accelerator does not overwrite another. ~keep
         if: always()
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        uses: actions/upload-artifact@v7
         with:
           name: parity-${{ matrix.os }}-${{ matrix.accelerator }}-${{ github.run_id }}
           path: |
@@ -415,8 +415,8 @@ jobs:
             os: ubuntu-latest
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-      - uses: xberg-io/actions/setup-rust@793d3a4d37a17009d91cce29f2825eda570d2abd
+      - uses: actions/checkout@v7
+      - uses: xberg-io/actions/setup-rust@v1
         with:
           components: clippy
           install-llvm-cov: "false"
@@ -426,7 +426,7 @@ jobs:
         # toolkit is a build-time requirement even with no GPU present. Only the nvcc
         # sub-package is installed; the runtime libraries are never loaded. ~keep
         if: matrix.device == 'cuda'
-        uses: Jimver/cuda-toolkit@b8bf9c6c28f8a92fbb04dcfcaee872e60c57462d
+        uses: Jimver/cuda-toolkit@v0.2.36
         with:
           method: network
           sub-packages: '["nvcc"]'
@@ -453,8 +453,8 @@ jobs:
       github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-      - uses: xberg-io/actions/setup-rust@793d3a4d37a17009d91cce29f2825eda570d2abd
+      - uses: actions/checkout@v7
+      - uses: xberg-io/actions/setup-rust@v1
         with:
           components: clippy
           install-llvm-cov: "false"
@@ -474,8 +474,8 @@ jobs:
       github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-      - uses: taiki-e/install-action@5488ac5a951645ce95062214902ac4b6bc1a1037
+      - uses: actions/checkout@v7
+      - uses: taiki-e/install-action@v2
         with:
           tool: cargo-deny
       - name: cargo deny check
@@ -490,9 +490,9 @@ jobs:
       github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/checkout@v7
 
-      - uses: xberg-io/actions/setup-python-env@793d3a4d37a17009d91cce29f2825eda570d2abd
+      - uses: xberg-io/actions/setup-python-env@v1
         with:
           python-version: "3.13"
           # Plain `uv sync` installs only the default dependency group; the heavy

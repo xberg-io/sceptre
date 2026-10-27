@@ -273,7 +273,7 @@ jobs:
       - uses: xberg-io/actions/install-task@v1
 
       - name: Set up Python for release smoke checks
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        uses: actions/setup-python@v7
         with:
           python-version: "3.11"
 

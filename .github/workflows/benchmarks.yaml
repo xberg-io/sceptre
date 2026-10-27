@@ -52,9 +52,9 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.repository == 'xberg-io/sceptre' && github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/checkout@v7
 
-      - uses: xberg-io/actions/setup-python-env@793d3a4d37a17009d91cce29f2825eda570d2abd
+      - uses: xberg-io/actions/setup-python-env@v1
         with:
           python-version: "3.13"
           install-command: "uv sync"
@@ -73,18 +73,18 @@ jobs:
       (inputs.legs == 'all' || inputs.legs == 'criterion')
     runs-on: ubuntu-24.04-arm
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
 
       # The detect/recognize benches read real corpus images through `bench.rs`, so they need
       # the fetched binaries, not just the submodule's tracked text. ~keep
       - name: Fetch test images
-        uses: xberg-io/actions/fetch-test-documents@793d3a4d37a17009d91cce29f2825eda570d2abd
+        uses: xberg-io/actions/fetch-test-documents@v1
         with:
           include: images/**
 
-      - uses: xberg-io/actions/setup-rust@793d3a4d37a17009d91cce29f2825eda570d2abd
+      - uses: xberg-io/actions/setup-rust@v1
         with:
           install-llvm-cov: "false"
           cache-key-prefix: rust-bench-run
@@ -94,7 +94,7 @@ jobs:
 
       - name: Upload criterion report
         if: always()
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        uses: actions/upload-artifact@v7
         with:
           name: criterion-report-${{ github.run_id }}
           path: target/criterion/**
@@ -122,28 +122,28 @@ jobs:
       HF_HOME: ${{ github.workspace }}/.hf
       BENCHMARK_RUNNER_LABEL: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           submodules: recursive
 
       - name: Fetch test images
-        uses: xberg-io/actions/fetch-test-documents@793d3a4d37a17009d91cce29f2825eda570d2abd
+        uses: xberg-io/actions/fetch-test-documents@v1
         with:
           include: images/**
 
-      - uses: xberg-io/actions/setup-rust@793d3a4d37a17009d91cce29f2825eda570d2abd
+      - uses: xberg-io/actions/setup-rust@v1
         with:
           install-llvm-cov: "false"
           cache-key-prefix: rust-easyocr-benchmark
 
-      - uses: xberg-io/actions/setup-python-env@793d3a4d37a17009d91cce29f2825eda570d2abd
+      - uses: xberg-io/actions/setup-python-env@v1
         with:
           python-version: "3.13"
           install-command: "uv sync --group export"
 
       - name: Cache Hugging Face models
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        uses: actions/cache@v6
         with:
           path: ${{ github.workspace }}/.hf
           key: hf-${{ runner.os }}-${{ hashFiles('crates/sceptre/src/models/registry.rs') }}
@@ -152,7 +152,7 @@ jobs:
         # EasyOCR fetches its own weights into ~/.EasyOCR through its own mechanism, entirely
         # separately from the Hugging Face cache. Cache only one of the two and half the
         # download cost of this job remains. ~keep
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        uses: actions/cache@v6
         with:
           path: ~/.EasyOCR
           key: easyocr-${{ runner.os }}-${{ hashFiles('uv.lock') }}
@@ -161,7 +161,7 @@ jobs:
       # GNU time is not in the runner image, and the shell builtin is not a substitute: the
       # harness needs /usr/bin/time -v for peak RSS and CPU core-seconds. Without it both
       # metrics come back null for both engines and the peak-RSS floor is unmeasurable. ~keep
-      - uses: xberg-io/actions/install-task@cc89740654cef67b752113ddd87d4f0d23dda3f5
+      - uses: xberg-io/actions/install-task@v1
 
       - name: Install GNU time
         run: task python:benchmark:gnu-time:install
@@ -177,7 +177,7 @@ jobs:
 
       - name: Upload the benchmark report
         if: always()
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        uses: actions/upload-artifact@v7
         with:
           name: benchmark-report-${{ github.run_id }}
           path: benchmark-results/
@@ -208,31 +208,31 @@ jobs:
       RUSTFLAGS: "-C target-feature=+fp16"
       SCEPTRE_BACKEND_MATRIX_OUTPUT_DIR: ${{ github.workspace }}/benchmark-results/backends
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
 
       - name: Fetch test images
-        uses: xberg-io/actions/fetch-test-documents@793d3a4d37a17009d91cce29f2825eda570d2abd
+        uses: xberg-io/actions/fetch-test-documents@v1
         with:
           include: images/**
 
-      - uses: xberg-io/actions/setup-rust@793d3a4d37a17009d91cce29f2825eda570d2abd
+      - uses: xberg-io/actions/setup-rust@v1
         with:
           install-llvm-cov: "false"
           cache-key-prefix: rust-backend-matrix-linux-cpu
 
-      - uses: xberg-io/actions/install-task@793d3a4d37a17009d91cce29f2825eda570d2abd
+      - uses: xberg-io/actions/install-task@v1
 
       - name: Cache Hugging Face models
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        uses: actions/cache@v6
         with:
           path: ${{ github.workspace }}/.hf
           key: hf-${{ runner.os }}-${{ hashFiles('crates/sceptre/src/models/registry.rs') }}
 
       - name: Build the CLI
         id: build
-        uses: xberg-io/actions/build-rust-cli@793d3a4d37a17009d91cce29f2825eda570d2abd
+        uses: xberg-io/actions/build-rust-cli@v1
         with:
           package-name: sceptre-cli
           binary-name: sceptre
@@ -251,7 +251,7 @@ jobs:
 
       - name: Upload leg reports
         if: always()
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        uses: actions/upload-artifact@v7
         with:
           name: backend-matrix-linux-cpu-${{ github.run_id }}
           path: benchmark-results/backends/
@@ -272,29 +272,29 @@ jobs:
       SCEPTRE_REQUIRE_MODELS: "1"
       SCEPTRE_BACKEND_MATRIX_OUTPUT_DIR: ${{ github.workspace }}/benchmark-results/backends
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
 
       - name: Fetch test images
-        uses: xberg-io/actions/fetch-test-documents@793d3a4d37a17009d91cce29f2825eda570d2abd
+        uses: xberg-io/actions/fetch-test-documents@v1
         with:
           include: images/**
 
-      - uses: xberg-io/actions/setup-rust@793d3a4d37a17009d91cce29f2825eda570d2abd
+      - uses: xberg-io/actions/setup-rust@v1
         with:
           install-llvm-cov: "false"
           cache-key-prefix: rust-backend-matrix-macos
 
       - name: Cache Hugging Face models
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        uses: actions/cache@v6
         with:
           path: ${{ github.workspace }}/.hf
           key: hf-${{ runner.os }}-${{ hashFiles('crates/sceptre/src/models/registry.rs') }}
 
       - name: Build the CLI
         id: build
-        uses: xberg-io/actions/build-rust-cli@793d3a4d37a17009d91cce29f2825eda570d2abd
+        uses: xberg-io/actions/build-rust-cli@v1
         with:
           package-name: sceptre-cli
           binary-name: sceptre
@@ -314,7 +314,7 @@ jobs:
 
       - name: Upload leg reports
         if: always()
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        uses: actions/upload-artifact@v7
         with:
           name: backend-matrix-macos-${{ github.run_id }}
           path: benchmark-results/backends/
@@ -333,11 +333,11 @@ jobs:
     env:
       CUDA_COMPUTE_CAP: "89"
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
 
-      - uses: xberg-io/actions/setup-rust@793d3a4d37a17009d91cce29f2825eda570d2abd
+      - uses: xberg-io/actions/setup-rust@v1
         with:
           install-llvm-cov: "false"
           cache-key-prefix: rust-backend-matrix-gpu-build
@@ -347,14 +347,14 @@ jobs:
       # the model cache on the GPU runner. ~keep
       - name: Build the model-seeder CLI
         id: build-seeder
-        uses: xberg-io/actions/build-rust-cli@793d3a4d37a17009d91cce29f2825eda570d2abd
+        uses: xberg-io/actions/build-rust-cli@v1
         with:
           package-name: sceptre-cli
           binary-name: sceptre
           extra-cargo-args: --no-default-features --features tract,download
 
       - name: Upload the model-seeder CLI
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        uses: actions/upload-artifact@v7
         with:
           name: backend-matrix-model-seeder
           path: ${{ steps.build-seeder.outputs.binary-path }}
@@ -367,7 +367,7 @@ jobs:
       # profile inherits `dev`. A `profile:` input on the action itself would be the better
       # fix — filed as follow-up against xberg-io/actions, not solved here. ~keep
       - name: Build the GPU backend-matrix test binary
-        uses: xberg-io/actions/build-gpu-test-binary@793d3a4d37a17009d91cce29f2825eda570d2abd
+        uses: xberg-io/actions/build-gpu-test-binary@v1
         env:
           CARGO_PROFILE_DEV_OPT_LEVEL: "3"
           CARGO_PROFILE_DEV_LTO: "false"
@@ -394,7 +394,7 @@ jobs:
             --features ort-dynamic,ort-cuda,tract,candle-cuda,download --no-run -v 2>&1 | tail -40
 
       - name: Upload the GPU test binary
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        uses: actions/upload-artifact@v7
         with:
           name: backend-matrix-gpu-test
           path: backend-matrix-gpu-test
@@ -422,12 +422,12 @@ jobs:
       SCEPTRE_REQUIRE_MODELS: "1"
       SCEPTRE_BACKEND_MATRIX_OUTPUT_DIR: ${{ github.workspace }}/benchmark-results/backends
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
 
       - name: Fetch test images
-        uses: xberg-io/actions/fetch-test-documents@793d3a4d37a17009d91cce29f2825eda570d2abd
+        uses: xberg-io/actions/fetch-test-documents@v1
         with:
           include: images/**
 
@@ -443,12 +443,12 @@ jobs:
       - uses: ./.github/actions/setup-cuda-toolkit
 
       - name: Download the model-seeder CLI
-        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
+        uses: actions/download-artifact@v8
         with:
           name: backend-matrix-model-seeder
 
       - name: Download the GPU backend-matrix test binary
-        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
+        uses: actions/download-artifact@v8
         with:
           name: backend-matrix-gpu-test
 
@@ -459,12 +459,12 @@ jobs:
           chmod +x backend-matrix-gpu-test
 
       - name: Download ONNX Runtime (GPU/CUDA)
-        uses: xberg-io/actions/setup-onnx-runtime-gpu@793d3a4d37a17009d91cce29f2825eda570d2abd
+        uses: xberg-io/actions/setup-onnx-runtime-gpu@v1
         with:
           version: ${{ env.ORT_VERSION }}
 
       - name: Cache Hugging Face models
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        uses: actions/cache@v6
         with:
           path: ${{ github.workspace }}/.hf
           key: hf-${{ runner.os }}-${{ hashFiles('crates/sceptre/src/models/registry.rs') }}
@@ -477,7 +477,7 @@ jobs:
 
       - name: Upload leg reports
         if: always()
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        uses: actions/upload-artifact@v7
         with:
           name: backend-matrix-gpu-${{ github.run_id }}
           path: benchmark-results/backends/
@@ -494,9 +494,9 @@ jobs:
       (inputs.legs == 'all' || inputs.legs == 'backend-matrix')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/checkout@v7
 
-      - uses: xberg-io/actions/setup-python-env@793d3a4d37a17009d91cce29f2825eda570d2abd
+      - uses: xberg-io/actions/setup-python-env@v1
         with:
           python-version: "3.13"
           install-command: "uv sync"
@@ -505,7 +505,7 @@ jobs:
       # `backend-matrix-gpu-test` binary and `backend-matrix-model-seeder`, neither of which
       # is a leg report. Only the report artifacts carry the run id. ~keep
       - name: Download every leg's reports
-        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
+        uses: actions/download-artifact@v8
         with:
           pattern: backend-matrix-*-${{ github.run_id }}
           path: benchmark-results/backends
@@ -519,7 +519,7 @@ jobs:
             --summary "$GITHUB_STEP_SUMMARY"
 
       - name: Upload the combined artifact
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        uses: actions/upload-artifact@v7
         with:
           name: backend-matrix-combined-${{ github.run_id }}
           path: benchmark-results/backends-combined.json
