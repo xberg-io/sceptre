@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import copy
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from pathlib import Path
+import hashlib
+import re
+import subprocess
+from pathlib import Path
 
 import pytest
 from sceptre_rs_tools import release_benchmark as paired
@@ -266,3 +266,68 @@ def test_serial_measurement_preserves_both_reports_and_failure_artifacts(
     hashes = json.loads((args.output / "artifact-sha256.json").read_text())
     assert {"baseline/comparison.json", "candidate/comparison.json", "manifest.json", "gate.json"} <= set(hashes)
     assert all(paired.digest(args.output / name) == checksum for name, checksum in hashes.items())
+
+
+def _fixture_git(*args: str, cwd: Path) -> str:
+    command = [
+        "git",
+        "-c",
+        "user.name=benchmark-fixture",
+        "-c",
+        "user.email=benchmark-fixture@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        *args,
+    ]
+    return subprocess.check_output(command, cwd=cwd, text=True).strip()
+
+
+@pytest.mark.parametrize("unrelated_depth", [False, True])
+def test_release_checkout_retains_configuration_history(tmp_path: Path, unrelated_depth: bool) -> None:
+    root = Path(__file__).resolve().parents[2]
+    workflow = (root / ".github/workflows/benchmarks.yaml").read_text()
+    jobs = dict(
+        re.findall(r"^  ([\w-]+):\n(.*?)(?=^  [\w-]+:|\Z)", workflow.split("jobs:\n", 1)[1], re.MULTILINE | re.DOTALL)
+    )
+    job = jobs["easyocr-benchmark"]
+    if unrelated_depth:
+        job += "\n      - uses: fixture/unrelated@" + "0" * 40 + "\n        with:\n          fetch-depth: 0\n"
+    steps = re.findall(r"^      - .*?(?=^      - |\Z)", job, re.MULTILINE | re.DOTALL)
+    checkouts = [
+        step for step in steps if re.search(r"^(?:      - |        )uses: actions/checkout@", step, re.MULTILINE)
+    ]
+    assert len(checkouts) == 1
+    checkout_inputs = re.search(r"^        with:\n((?:          [^\n]*\n?)*)", checkouts[0], re.MULTILINE)
+    assert checkout_inputs is not None
+    configured_depth = re.search(r"^          fetch-depth: (\d+)\s*$", checkout_inputs[1], re.MULTILINE)
+    depth = int(configured_depth[1]) if configured_depth else 1
+
+    origin = tmp_path / "origin"
+    _fixture_git("init", "--quiet", str(origin), cwd=tmp_path)
+    sources = sorted((root / "crates/sceptre/src/config").glob("*.rs"))
+    sources.append(root / "crates/sceptre-cli/src/overrides.rs")
+    assert len(sources) == 6
+    expected = {}
+    for source in sources:
+        relative = source.relative_to(root)
+        target = origin / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(source.read_bytes())
+        expected[str(relative)] = hashlib.sha256(source.read_bytes()).hexdigest()
+    _fixture_git("add", "--", *expected, cwd=origin)
+    _fixture_git("commit", "--quiet", "-m", "baseline configuration", cwd=origin)
+    baseline = _fixture_git("rev-parse", "HEAD", cwd=origin)
+    (origin / "candidate.txt").write_text("candidate executable revision\n")
+    _fixture_git("add", "--", "candidate.txt", cwd=origin)
+    _fixture_git("commit", "--quiet", "-m", "candidate revision", cwd=origin)
+    checkout = tmp_path / "checkout"
+    clone = ["clone", "--quiet", "--no-local", "--no-tags"]
+    if depth:
+        clone.extend(["--depth", str(depth)])
+    _fixture_git(*clone, origin.as_uri(), str(checkout), cwd=tmp_path)
+
+    assert paired.configuration_manifest(checkout, baseline) == expected
+    changed = sources[0].relative_to(root)
+    (checkout / changed).write_bytes((checkout / changed).read_bytes() + b"\n")
+    with pytest.raises(ValueError, match="configuration defaults differ from baseline: " + re.escape(str(changed))):
+        paired.configuration_manifest(checkout, baseline)
