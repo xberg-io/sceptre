@@ -31,6 +31,6 @@ x-ai-rulez:
 
 ## Output & concurrency
 
-- `tracing` → stderr; structured data → stdout. Raw `print_stdout`/`print_stderr` are denied at the workspace level; the CLI opts back in locally with a justified `#[expect(...)]`.
+- `tracing` → stderr; structured data → stdout. Raw `print_stdout`/`print_stderr` are denied workspace-wide; the CLI passes `anstream::stdout()` as the writer to `output::render_*`, so never add `println!`/`eprintln!`.
 - Terminal colour uses `anstyle` rendered through `anstream` (honors `NO_COLOR`).
 - Parallelism is Rayon `par_iter` bounded by the single `ConcurrencyConfig` budget.
