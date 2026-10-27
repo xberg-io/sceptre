@@ -19,6 +19,7 @@ sceptre is a Rust OCR library, CLI and MCP server reimplementing EasyOCR over ON
 - `tools/` — Rust model export and conversion
 - `python/` — fallback model export, golden fixtures, benchmark harness
 - `benchmarks/published/` — committed benchmark artifact
+- the corpus submodule (see `.gitmodules`) — `task setup` fetches its `images/**` by sha256 (`adrs/0034`)
 - `adrs/` — architecture decision records (`adr-discipline` rule)
 - `docs-site/`, `docs/` — docs site and assets
 - `skills/`, `plugin/` — published skills, agent plugin
