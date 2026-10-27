@@ -1,6 +1,2 @@
 project_doc_max_bytes = 65536
 model_reasoning_effort = "medium"
-
-[mcp_servers.ai-rulez]
-args = ["mcp"]
-command = "ai-rulez"
