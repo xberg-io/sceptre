@@ -1,7 +1,7 @@
 ---
 type: Reference
 title: Check
-description: Run the local lint + test triad before committing
+description: Run the full lint + test gate before a release or a pipeline change
 x-ai-rulez:
   kind: command
   id: check
@@ -14,7 +14,8 @@ x-ai-rulez:
 
 # Check
 
-Run the commit triad. Use this before every commit.
+Run the full gate before a release, when the change touches the pipeline, or when asked. It is not a per-commit
+step: per-commit checks are `poly lint .` and `poly fmt --check .`.
 
 1. `cargo fmt --all`
 2. `cargo clippy --workspace --all-targets --tests -- -D warnings`

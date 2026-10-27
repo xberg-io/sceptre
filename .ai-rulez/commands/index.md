@@ -1,3 +1,3 @@
 # Concepts
 
-* [Check](check.md) - Run the local lint + test triad before committing
+* [Check](check.md) - Run the full lint + test gate before a release or a pipeline change
