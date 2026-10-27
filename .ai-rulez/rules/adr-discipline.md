@@ -3,6 +3,9 @@ type: Decision
 title: Adr Discipline
 paths:
   - "adrs/**"
+  - "crates/**"
+  - "Cargo.toml"
+  - ".github/workflows/**"
 x-ai-rulez:
   kind: rule
   id: adr-discipline
