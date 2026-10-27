@@ -80,6 +80,8 @@ opencode.json
 # Agent harness output outside the ai-rulez managed block: the machine-local overlay,
 # plugin-root manifests, and presets this repository does not enable.
 **/.ai-rulez/.generated-manifest.local.json
+.ai-rulez/config.local.*
+.ai-rulez/local/
 plugin/.ai-rulez/.generated-manifest.json
 .agents/settings.json
 .claude/settings.json
