@@ -26,10 +26,10 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - name: Install ai-rulez
-        uses: xberg-io/actions/setup-ai-rulez@793d3a4d37a17009d91cce29f2825eda570d2abd
+        uses: xberg-io/actions/setup-ai-rulez@v1
         with:
           ai-rulez-version: "latest"
-      - uses: xberg-io/actions/verify-ai-rulez-plugin@793d3a4d37a17009d91cce29f2825eda570d2abd
+      - uses: xberg-io/actions/verify-ai-rulez-plugin@v1
         with:
           config-directory: .ai-rulez
 

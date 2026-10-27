@@ -417,7 +417,7 @@ jobs:
           ref: ${{ needs.meta.outputs.tag }}
           fetch-depth: 0
       - name: Install ai-rulez
-        uses: xberg-io/actions/setup-ai-rulez@v1.27.1
+        uses: xberg-io/actions/setup-ai-rulez@v1
         with:
           ai-rulez-version: "latest"
       - name: Verify public skill exports
@@ -469,7 +469,7 @@ jobs:
           node-version: "24"
           registry-url: "https://registry.npmjs.org/"
       - name: Install ai-rulez
-        uses: xberg-io/actions/setup-ai-rulez@v1.27.1
+        uses: xberg-io/actions/setup-ai-rulez@v1
         with:
           ai-rulez-version: "latest"
       - name: Verify plugin versions and generated resources before publishing
@@ -561,7 +561,7 @@ jobs:
           ref: ${{ inputs.plugins-only && github.sha || needs.meta.outputs.tag }}
           fetch-depth: 0
       - name: Install ai-rulez
-        uses: xberg-io/actions/setup-ai-rulez@v1.27.1
+        uses: xberg-io/actions/setup-ai-rulez@v1
         with:
           ai-rulez-version: "latest"
       - name: Verify plugin versions and generated resources before publishing
