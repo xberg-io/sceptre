@@ -5,14 +5,14 @@ name: sceptre-using-the-mcp-server
 
 <!--
 AI-RULEZ :: GENERATED FILE — DO NOT EDIT
-Content-Hash: blake3:7d6efd29cae36198ce8d4d0b87e144e6a026e5b6abc96ca5ddd92a39c20b3e66
-Source-Hash: blake3:9c178e239df0c920c0243b02d5690efd91aa0fd88e3be58623814b0836264ff2
+Content-Hash: blake3:0c4b7b53db64ffd289b22f94f4678cc5048e115da76008a08c14aecede596b41
+Source-Hash: blake3:5ba6fce721d21bf8c19016b9b5f38557791b36501f70d78b30db765130749cb5
 Schema-Version: v1
 -->
 
 # Using The Mcp Server
 
-Install `cargo install sceptre-cli --features mcp` and put `sceptre` on PATH.
+Install `cargo install sceptre-cli --locked --features mcp` and put `sceptre` on PATH.
 Start a stdio server with `sceptre mcp --lang english`. The plugin config supplies this command.
 Change startup language, backend, threads and orientation options to match the workload.
 For example `sceptre mcp --lang english --detect-orientation` enables rotated-page handling.

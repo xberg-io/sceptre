@@ -11,7 +11,7 @@ x-ai-rulez:
 
 # Sceptre OCR
 
-Install the CLI with MCP support before using the plugin: `cargo install sceptre-cli --features mcp`.
+Install the CLI with MCP support before using the plugin: `cargo install sceptre-cli --locked --features mcp`.
 The server runs locally with `sceptre mcp --lang english`. OCR models download on first use;
 use `sceptre models download --lang english` to prepare them. Select the appropriate language
 with `--lang`; an English server does not select the language automatically.

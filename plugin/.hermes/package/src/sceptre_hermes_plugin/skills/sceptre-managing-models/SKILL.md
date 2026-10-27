@@ -5,8 +5,8 @@ name: sceptre-managing-models
 
 <!--
 AI-RULEZ :: GENERATED FILE — DO NOT EDIT
-Content-Hash: blake3:8c96dd895d636cc85419c33a4767457ad757165f29e9554be0481b89d1220af0
-Source-Hash: blake3:9c178e239df0c920c0243b02d5690efd91aa0fd88e3be58623814b0836264ff2
+Content-Hash: blake3:e9904a95a0c02e2df027f29da22800e7b25cd70ed0f529936f9cea53e34509fb
+Source-Hash: blake3:5ba6fce721d21bf8c19016b9b5f38557791b36501f70d78b30db765130749cb5
 Schema-Version: v1
 -->
 
@@ -18,7 +18,7 @@ use `--all` only when all language models are needed. Do not combine `--all` and
 Models use the Hugging Face hub cache configured by `HF_HUB_CACHE` or `HF_HOME`.
 
 Inspect the chosen runtime with `sceptre env --format json`. The CLI defaults to ONNX Runtime
-and downloading. A pure Rust installation is `cargo install sceptre-cli --no-default-features
+and downloading. A pure Rust installation is `cargo install sceptre-cli --locked --no-default-features
 --features tract,download`; select `--backend tract` when running it.
 MCP support requires the additional `mcp` feature. Do not assume an installed CLI includes MCP.
 For offline library use, provide verified model assets or explicit detector and recognizer paths;

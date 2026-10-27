@@ -5,14 +5,14 @@ name: sceptre
 
 <!--
 AI-RULEZ :: GENERATED FILE — DO NOT EDIT
-Content-Hash: blake3:4480b74da08c9d29de3bb2322b8b84eaf216530468c1741d2daa74d9684c2d79
-Source-Hash: blake3:9c178e239df0c920c0243b02d5690efd91aa0fd88e3be58623814b0836264ff2
+Content-Hash: blake3:3d1435dd001115a28f5b93f14fc0478dc8134b9c67e9361a4ef3adf7b7f22bad
+Source-Hash: blake3:5ba6fce721d21bf8c19016b9b5f38557791b36501f70d78b30db765130749cb5
 Schema-Version: v1
 -->
 
 # Sceptre OCR
 
-Install the CLI with MCP support before using the plugin: `cargo install sceptre-cli --features mcp`.
+Install the CLI with MCP support before using the plugin: `cargo install sceptre-cli --locked --features mcp`.
 The server runs locally with `sceptre mcp --lang english`. OCR models download on first use;
 use `sceptre models download --lang english` to prepare them. Select the appropriate language
 with `--lang`; an English server does not select the language automatically.

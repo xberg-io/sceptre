@@ -17,7 +17,7 @@ use `--all` only when all language models are needed. Do not combine `--all` and
 Models use the Hugging Face hub cache configured by `HF_HUB_CACHE` or `HF_HOME`.
 
 Inspect the chosen runtime with `sceptre env --format json`. The CLI defaults to ONNX Runtime
-and downloading. A pure Rust installation is `cargo install sceptre-cli --no-default-features
+and downloading. A pure Rust installation is `cargo install sceptre-cli --locked --no-default-features
 --features tract,download`; select `--backend tract` when running it.
 MCP support requires the additional `mcp` feature. Do not assume an installed CLI includes MCP.
 For offline library use, provide verified model assets or explicit detector and recognizer paths;

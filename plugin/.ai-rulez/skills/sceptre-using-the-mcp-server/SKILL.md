@@ -11,7 +11,7 @@ x-ai-rulez:
 
 # Using The Mcp Server
 
-Install `cargo install sceptre-cli --features mcp` and put `sceptre` on PATH.
+Install `cargo install sceptre-cli --locked --features mcp` and put `sceptre` on PATH.
 Start a stdio server with `sceptre mcp --lang english`. The plugin config supplies this command.
 Change startup language, backend, threads and orientation options to match the workload.
 For example `sceptre mcp --lang english --detect-orientation` enables rotated-page handling.
