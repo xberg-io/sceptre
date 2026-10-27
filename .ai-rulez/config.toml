@@ -7,7 +7,7 @@ gitignore = true
 presets = ["claude", "codex", "opencode"]
 
 compact = true
-# ~keep adr-immutability is dropped for the more specific local adr-discipline rule (adrs/**).
+# ~keep adr-immutability and adr-workflow are dropped for the local adr-discipline rule (adrs/**).
 builtins = [
   "!agent-delegation",
   "!ai-governance/agent-workflow",
@@ -15,6 +15,7 @@ builtins = [
   "!testing/test-alongside-code",
   "documentation",
   "!documentation/adr-immutability",
+  "!documentation/adr-workflow",
   "default-commands",
 ]
 
