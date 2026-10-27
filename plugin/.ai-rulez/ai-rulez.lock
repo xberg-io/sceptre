@@ -5,13 +5,13 @@ version = 1
 ai_rulez_version = '5.7.0'
 scope = 'all'
 outputs_pinned = true
-tree = 'sha256:17d161daee2a7ea409733b25000d014b8ae5daf53903d8f9b6af40606fb69845'
+tree = 'sha256:28636ce12493ce11b2ab4e25dacfb43b8e4f2461037cc4a05e56c6e1423f02ec'
 
 [[item]]
 kind = 'skill'
 id = 'sceptre'
 path = 'skills/sceptre'
-digest = 'sha256:d07b8fa696a4af529baa22376d412864c78dd6964232c8942b42817c5d1f43fb'
+digest = 'sha256:db310b238eb8486734ff597161ad5b7a2570bf16f7343be30d3bd8e360634630'
 
 [[item]]
 kind = 'skill'
@@ -23,7 +23,7 @@ digest = 'sha256:d23a8689d7b5be672c01e376ea57dd8f72d01618034a540043c9e133f64c3a7
 kind = 'skill'
 id = 'sceptre-managing-models'
 path = 'skills/sceptre-managing-models'
-digest = 'sha256:b0d08e2f61c2db2988d6c61100be91c01953cd5487ddc9681ebeb464284968b7'
+digest = 'sha256:05ad97c8d9430d80129926b74746d2160ebd8471987240109619028428164fe0'
 
 [[item]]
 kind = 'skill'
@@ -41,4 +41,4 @@ digest = 'sha256:591d622c3e3ed5d241f5705ab6d4048d040b609cd1050e4a23dd6c9646416d8
 kind = 'skill'
 id = 'sceptre-using-the-mcp-server'
 path = 'skills/sceptre-using-the-mcp-server'
-digest = 'sha256:f6c8450e061f0e1205791367907bf96e357d46c05c043166c40165783338c012'
+digest = 'sha256:da56569700a86066fcefd68415d6f8086b292c971704c5dce8a71271def2d35f'
