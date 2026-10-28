@@ -51,12 +51,26 @@ jobs:
     name: Published benchmark drift
     if: github.ref == 'refs/heads/main' && github.repository == 'xberg-io/sceptre' && github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
+    env:
+      # uv must use the interpreter mise installed, not download its own. ~keep
+      UV_PYTHON_PREFERENCE: only-system
     steps:
       - uses: actions/checkout@v7
 
       - uses: xberg-io/actions/setup-mise@v1
         with:
           install-args: python uv
+
+      - name: Resolve the mise Python version
+        id: python
+        run: echo "version=$(python3 -c 'import platform; print(platform.python_version())')" >> "$GITHUB_OUTPUT"
+
+      - name: Cache uv downloads
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/uv
+          key: uv-${{ runner.os }}-${{ steps.python.outputs.version }}-${{ hashFiles('uv.lock') }}
+          restore-keys: uv-${{ runner.os }}-${{ steps.python.outputs.version }}-
 
       - name: Sync the Python dev environment
         run: uv sync
@@ -123,6 +137,8 @@ jobs:
     env:
       HF_HOME: ${{ github.workspace }}/.hf
       BENCHMARK_RUNNER_LABEL: ubuntu-latest
+      # uv must use the interpreter mise installed, not download its own. ~keep
+      UV_PYTHON_PREFERENCE: only-system
     steps:
       - uses: actions/checkout@v7
         with:
@@ -143,13 +159,16 @@ jobs:
         with:
           install-args: python uv task
 
-      # The export group pulls torch, so an uncached sync re-downloads gigabytes on every run. ~keep
+      - name: Resolve the mise Python version
+        id: python
+        run: echo "version=$(python3 -c 'import platform; print(platform.python_version())')" >> "$GITHUB_OUTPUT"
+
       - name: Cache uv downloads
         uses: actions/cache@v6
         with:
           path: ~/.cache/uv
-          key: uv-export-${{ runner.os }}-${{ hashFiles('uv.lock') }}
-          restore-keys: uv-export-${{ runner.os }}-
+          key: uv-export-${{ runner.os }}-${{ steps.python.outputs.version }}-${{ hashFiles('uv.lock') }}
+          restore-keys: uv-export-${{ runner.os }}-${{ steps.python.outputs.version }}-
 
       - name: Sync the Python environment with the export group
         run: uv sync --group export
@@ -505,12 +524,26 @@ jobs:
       github.event_name == 'workflow_dispatch' &&
       (inputs.legs == 'all' || inputs.legs == 'backend-matrix')
     runs-on: ubuntu-latest
+    env:
+      # uv must use the interpreter mise installed, not download its own. ~keep
+      UV_PYTHON_PREFERENCE: only-system
     steps:
       - uses: actions/checkout@v7
 
       - uses: xberg-io/actions/setup-mise@v1
         with:
           install-args: python uv
+
+      - name: Resolve the mise Python version
+        id: python
+        run: echo "version=$(python3 -c 'import platform; print(platform.python_version())')" >> "$GITHUB_OUTPUT"
+
+      - name: Cache uv downloads
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/uv
+          key: uv-${{ runner.os }}-${{ steps.python.outputs.version }}-${{ hashFiles('uv.lock') }}
+          restore-keys: uv-${{ runner.os }}-${{ steps.python.outputs.version }}-
 
       - name: Sync the Python dev environment
         run: uv sync
