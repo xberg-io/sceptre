@@ -114,7 +114,7 @@ jobs:
       setup-python: true
       python-version: "3.13"
       # The full Python tooling env uses macOS PyTorch wheels instead of Linux CUDA packages. ~keep
-      runner: macos-latest
+      runner: macos-26
 
   changelog:
     name: Changelog in sync
@@ -142,7 +142,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-26, windows-latest]
         # `candle` on all three because it is the one backend that does not interpret the
         # ONNX graph — its hand-written networks compile per target and are not exercised
         # by the ort or tract lanes. ~keep
@@ -230,7 +230,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-26, windows-latest]
         install:
           # The three provisioning paths a user can actually take. The default must stay
           # self-contained; `ort-dynamic` must remain an additive override that needs no
@@ -307,7 +307,7 @@ jobs:
             accelerator: cpu
             features: "ort-bundled,download"
             cli_features: ""
-          - os: macos-latest
+          - os: macos-26
             accelerator: cpu
             features: "ort-bundled,download"
             cli_features: ""
@@ -320,7 +320,7 @@ jobs:
           # on-device ANE numerics. No DirectML lane: the Windows runner has no GPU, so it
           # would fall back to the WARP software adapter and measure nothing real. No CUDA
           # lane: there is no GPU runner. ~keep
-          - os: macos-latest
+          - os: macos-26
             accelerator: coreml
             features: "ort-bundled,ort-coreml,download"
             # Named through the library (`sceptre/ort-coreml`) rather than the CLI's own
@@ -433,7 +433,7 @@ jobs:
       matrix:
         include:
           - device: metal
-            os: macos-latest
+            os: macos-26
           - device: cuda
             os: ubuntu-latest
     runs-on: ${{ matrix.os }}

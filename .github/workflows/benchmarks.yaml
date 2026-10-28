@@ -296,7 +296,7 @@ jobs:
       github.repository == 'xberg-io/sceptre' && github.actor != 'dependabot[bot]' &&
       github.event_name == 'workflow_dispatch' &&
       (inputs.legs == 'all' || inputs.legs == 'backend-matrix')
-    runs-on: macos-latest
+    runs-on: macos-26
     timeout-minutes: 45
     env:
       HF_HOME: ${{ github.workspace }}/.hf
@@ -336,7 +336,7 @@ jobs:
 
       # bench_candle_metal hard-fails if no Metal device registers (ADR 0032's fail-loud
       # invariant). This is correct behavior, and exactly why the lane is workflow_dispatch
-      # only, not on the weekly schedule, until a first run confirms macos-latest exposes a
+      # only, not on the weekly schedule, until a first run confirms macos-26 exposes a
       # Metal device (ADR 0035, open question #1). ~keep
       - name: Run the backend matrix (ort+coreml, tract, candle+metal)
         run: |

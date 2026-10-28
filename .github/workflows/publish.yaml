@@ -250,7 +250,7 @@ jobs:
           - triple: aarch64-unknown-linux-gnu
             os: ubuntu-24.04-arm
           - triple: aarch64-apple-darwin
-            os: macos-latest
+            os: macos-26
           # No x86_64-apple-darwin: ort's `download-binaries` ships no prebuilt ONNX Runtime
           # for Intel macOS, so a self-contained build is impossible. Apple Silicon covers
           # macOS; Intel-mac users build from source. ~keep

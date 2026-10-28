@@ -107,7 +107,7 @@ CoreML/Metal distinction — stands unchanged.
 | Lane | Runner | `--features` |
 | --- | --- | --- |
 | Linux CPU | `runner-large-arm64` | `ort-bundled,tract,candle,download` |
-| macOS | `macos-latest` | `ort-bundled,ort-coreml,tract,candle-metal,download` |
+| macOS | `macos-26` | `ort-bundled,ort-coreml,tract,candle-metal,download` |
 | GPU build | `ubuntu-latest` | `ort-dynamic,ort-cuda,tract,candle-cuda,download` |
 | GPU run | `runner-gpu-l4` | prebuilt artifact + CUDA runtime libs |
 
@@ -118,7 +118,7 @@ same-host amd64 baseline; without it, any "N times faster" claim about the GPU l
 no same-machine denominator to be N times faster *than*.
 
 Only `runner-large-arm64`, `runner-medium`, `runner-gpu-l4`, `ubuntu-latest`, and
-`macos-latest` are used. `runner-large`, `runner-small`, and `runner-large-spot` are allowed
+`macos-26` are used. `runner-large`, `runner-small`, and `runner-large-spot` are allowed
 by `.github/actionlint.yaml` but have no Terraform node pool or Helm scale-set match in
 `infra/terraform`; a job targeting one sits `Pending` forever rather than failing loudly.
 
@@ -171,7 +171,7 @@ block records the runner label so a future reader can tell which host produced i
 Left unresolved deliberately — to be settled on the first `workflow_dispatch` rather than
 guessed at now:
 
-1. Whether `macos-latest` exposes a Metal device at all. These are VMs, and the old `ci.yaml`
+1. Whether `macos-26` exposes a Metal device at all. These are VMs, and the old `ci.yaml`
    already noted no Neural Engine. ADR 0032's fail-loud invariant means `bench_candle_metal`
    hard-fails if no Metal device registers — correct behavior, but reason enough to keep this
    lane off the weekly schedule until it is verified at least once.
