@@ -76,6 +76,17 @@ project_doc_max_bytes = 65536
 [lock]
 include_outputs = false
 
+[lint]
+# ~keep Generated plugin bundle copies, checked through plugin/.ai-rulez and verify --plugin. Codex never lists them,
+# but AR964 counts every tracked SKILL.md copy toward its skill listing.
+ignore_paths = [
+  "plugin/.cursor-plugin/**",
+  "plugin/.hermes/**",
+  "plugin/.opencode/**",
+  "plugin/.pi/**",
+  "plugin/skills/**",
+]
+
 # Goldziher/ai-rulez#485: ai-rulez reports generated skill copies as duplicates. ~keep
 [[lint.ignore_rules]]
 rules = ["AR701"]
@@ -93,3 +104,5 @@ reason = "The generated harness and plugin copies repeat the source skill descri
 [rules]
 # ~keep Glob-scoped rules stay out of AGENTS.md: rule files for Claude, path-gated skills for Codex.
 scoped_fallback = "skill"
+# ~keep One path-gated skill per directory keeps the Codex skill listing under its budget (AR964).
+scoped_fallback_group = "directory"

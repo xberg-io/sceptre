@@ -43,6 +43,7 @@ __pycache__/
 
 # BEGIN ai-rulez (DO NOT EDIT - managed by ai-rulez)
 .agents/skills/
+.ai-rulez/.config.local.*
 .ai-rulez/.generated-manifest.json
 .claude/agents/
 .claude/rules/adr-discipline.md
