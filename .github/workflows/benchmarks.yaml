@@ -54,10 +54,12 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: xberg-io/actions/setup-python-env@v1
+      - uses: xberg-io/actions/setup-mise@v1
         with:
-          python-version: "3.13"
-          install-command: "uv sync"
+          install-args: python uv
+
+      - name: Sync the Python dev environment
+        run: uv sync
 
       - name: Published benchmark numbers match the committed artifact
         run: uv run python -m sceptre_rs_tools.publish --check
@@ -137,10 +139,20 @@ jobs:
           install-llvm-cov: "false"
           cache-key-prefix: rust-easyocr-benchmark
 
-      - uses: xberg-io/actions/setup-python-env@v1
+      - uses: xberg-io/actions/setup-mise@v1
         with:
-          python-version: "3.13"
-          install-command: "uv sync --group export"
+          install-args: python uv task
+
+      # The export group pulls torch, so an uncached sync re-downloads gigabytes on every run. ~keep
+      - name: Cache uv downloads
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/uv
+          key: uv-export-${{ runner.os }}-${{ hashFiles('uv.lock') }}
+          restore-keys: uv-export-${{ runner.os }}-
+
+      - name: Sync the Python environment with the export group
+        run: uv sync --group export
 
       - name: Cache Hugging Face models
         uses: actions/cache@v6
@@ -161,8 +173,6 @@ jobs:
       # GNU time is not in the runner image, and the shell builtin is not a substitute: the
       # harness needs /usr/bin/time -v for peak RSS and CPU core-seconds. Without it both
       # metrics come back null for both engines and the peak-RSS floor is unmeasurable. ~keep
-      - uses: xberg-io/actions/install-task@v1
-
       - name: Install GNU time
         run: task python:benchmark:gnu-time:install
 
@@ -222,7 +232,9 @@ jobs:
           install-llvm-cov: "false"
           cache-key-prefix: rust-backend-matrix-linux-cpu
 
-      - uses: xberg-io/actions/install-task@v1
+      - uses: xberg-io/actions/setup-mise@v1
+        with:
+          install-args: task
 
       - name: Cache Hugging Face models
         uses: actions/cache@v6
@@ -496,10 +508,12 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: xberg-io/actions/setup-python-env@v1
+      - uses: xberg-io/actions/setup-mise@v1
         with:
-          python-version: "3.13"
-          install-command: "uv sync"
+          install-args: python uv
+
+      - name: Sync the Python dev environment
+        run: uv sync
 
       # The run-id suffix is load-bearing: a bare `backend-matrix-*` also matches the
       # `backend-matrix-gpu-test` binary and `backend-matrix-model-seeder`, neither of which

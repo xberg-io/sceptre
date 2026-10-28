@@ -34,7 +34,9 @@ jobs:
           config-directory: .ai-rulez
 
       - name: Install uv for Hermes contract tests
-        uses: astral-sh/setup-uv@v10.3.2
+        uses: xberg-io/actions/setup-mise@v1
+        with:
+          install-args: uv
       - name: Validate Hermes distribution metadata
         shell: bash
         run: |

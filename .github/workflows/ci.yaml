@@ -73,6 +73,9 @@ jobs:
               - 'Cargo.toml'
               - 'Cargo.lock'
               - 'rustfmt.toml'
+              - 'rust-toolchain.toml'
+              - 'mise.toml'
+              - 'mise.lock'
               - 'deny.toml'
               - '.task/**'
               - 'Taskfile.yaml'
@@ -84,6 +87,8 @@ jobs:
               - 'Taskfile.yaml'
               - 'pyproject.toml'
               - 'uv.lock'
+              - 'mise.toml'
+              - 'mise.lock'
               - '.github/workflows/ci.yaml'
 
   validate:
@@ -107,7 +112,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: xberg-io/actions/install-task@v1
+      - uses: xberg-io/actions/setup-mise@v1
+        with:
+          install-args: task
       - run: task docs:changelog:check
 
   test:
@@ -156,7 +163,9 @@ jobs:
           install-llvm-cov: "false"
           cache-key-prefix: rust-test-${{ matrix.variant.label }}
 
-      - uses: xberg-io/actions/install-task@v1
+      - uses: xberg-io/actions/setup-mise@v1
+        with:
+          install-args: task
 
       - name: Verify the CLI ONNX Runtime feature matrix
         # Cheap (`cargo tree --locked`: no build, no network) and the only check that a
@@ -475,9 +484,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: taiki-e/install-action@v2
+      - uses: xberg-io/actions/setup-mise@v1
         with:
-          tool: cargo-deny
+          install-args: cargo-deny
       - name: cargo deny check
         run: cargo deny check
 
@@ -492,15 +501,14 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: xberg-io/actions/setup-python-env@v1
+      - uses: xberg-io/actions/setup-mise@v1
         with:
-          python-version: "3.13"
-          # Plain `uv sync` installs only the default dependency group; the heavy
-          # torch/export group is optional and must be requested explicitly, so CI
-          # skips it here on purpose. The action's own default additionally passes
-          # `--no-install-project`, which would leave `python -m sceptre_rs_tools...`
-          # invocations broken with ModuleNotFoundError, so it is overridden here. ~keep
-          install-command: "uv sync"
+          install-args: python uv
+
+      # Plain `uv sync` installs only the default dependency group; the heavy torch/export
+      # group is optional and must be requested explicitly, so CI skips it here on purpose. ~keep
+      - name: Sync the Python dev environment
+        run: uv sync
 
       - name: Ruff check
         run: uv run ruff check python
