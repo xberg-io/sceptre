@@ -91,6 +91,14 @@ jobs:
               - 'mise.lock'
               - '.github/workflows/ci.yaml'
 
+  toolchain:
+    name: Toolchain baseline
+    if: github.ref == 'refs/heads/main' && github.repository == 'xberg-io/sceptre' && github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: xberg-io/actions/check-toolchain@v1
+
   validate:
     name: Validate
     if: github.ref == 'refs/heads/main' && github.repository == 'xberg-io/sceptre' && github.actor != 'dependabot[bot]'
