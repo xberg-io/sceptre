@@ -28,8 +28,9 @@ tasks:
       - python3 scripts/sync_plugin_version.py --check
 
   setup:
-    desc: Fetch Rust dependencies, install git hooks, sync the Python dev environment, and fetch the test corpus
+    desc: Install the mise toolchain, fetch Rust dependencies, install git hooks, sync the Python dev environment, and fetch the test corpus
     cmds:
+      - mise install
       - cargo fetch
       - task: governance:hooks:install
       - uv sync
@@ -117,7 +118,7 @@ tasks:
         import tomllib
 
         wanted = "{{.AI_RULEZ_MIN_VERSION}}"
-        upgrade = "uv tool install --upgrade ai-rulez"
+        upgrade = "mise install"
         found = shutil.which("ai-rulez")
         if found is None:
             raise SystemExit("Install ai-rulez " + wanted + " or newer before installing hooks: " + upgrade)

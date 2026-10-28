@@ -8,16 +8,17 @@ Please begin by reading our AI section below, followed by the getting started gu
 
 ## Getting Started
 
-Make sure to have [Git](https://git-scm.com/), [Rust](https://rustup.rs/) stable (via `rustup`) and [Python](https://www.python.org/) 3.10+ with [uv](https://docs.astral.sh/uv/) installed on your machine.
-
-1. Install [Task](https://taskfile.dev/installation/) on your machine.
-2. run:
+Make sure to have [Git](https://git-scm.com/), [rustup](https://rustup.rs/) and [mise](https://mise.jdx.dev/getting-started.html)
+installed, with mise [activated](https://mise.jdx.dev/getting-started.html#activate-mise) in your shell. rustup installs
+the Rust version pinned in `rust-toolchain.toml`; mise installs every other tool at the version pinned in `mise.toml`
+(Task, Python, uv, poly, ai-rulez and the rest).
 
 ```bash
+mise install
 task setup
 ```
 
-This will setup the dependencies, and pre-commit hooks via `poly`.
+This installs the toolchain, the dependencies, and the pre-commit hooks via `poly`.
 
 ## Quick reference
 
@@ -65,8 +66,8 @@ Sceptre is written following strict AI engineering practices. That is, its vibe 
 
 ### Conventions
 
-Use the latest `ai-rulez` release (CI validation and the Taskfile run `latest`; release paths pin 5.7.0;
-minimum 5.7.0) to manage agent conventions. Install or upgrade it with `uv tool install --upgrade ai-rulez`.
+Use the latest `ai-rulez` release (CI validation and the Taskfile run `latest`; release paths and hooks use the
+version pinned in `mise.toml`; minimum 5.7.0) to manage agent conventions. `mise install` installs the pinned one.
 Edit authored content under `.ai-rulez/`; `AGENTS.md`, `CLAUDE.md` and harness directories are generated outputs.
 The main `config.toml` selects the `plugins` layer through `default_layers`; marketplace and
 plugin settings live separately in `config.plugins.toml`.

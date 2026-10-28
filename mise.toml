@@ -1,0 +1,17 @@
+# Versions follow the xberg-io/toolchains baseline named in toolchains.toml. Rust is pinned by
+# rust-toolchain.toml, not here. ~keep
+[settings]
+lockfile = true
+lockfile_platforms = ["linux-x64", "linux-arm64", "macos-arm64", "windows-x64"]
+
+[tools]
+python = "3.13.18"
+uv = "0.13.5"
+node = "24.22.1"
+pnpm = "12.15.0"
+task = "3.54.0"
+"github:Goldziher/poly" = "0.29.0"
+"github:Goldziher/ai-rulez" = "5.7.0"
+cargo-deny = "0.20.2"
+actionlint = "1.7.12"
+lychee = "0.24.2"
