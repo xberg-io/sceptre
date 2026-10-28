@@ -41,3 +41,18 @@ packaging, platform OCR, security, and publish ordering remain separate required
 This amends the source of the comparable host baseline in ADRs 0042 and 0043, retaining their
 numeric thresholds and fail-closed semantics. Existing ordinary benchmark CLI defaults continue
 to use the committed baseline; explicit binary and baseline selectors are additive.
+
+## Amendment: qualify 0.9.0 against published 0.8.2 (2026-10-28)
+
+The 0.9.0 candidate upgrades the public ONNX Runtime Rust dependency. Its paired release
+measurement must use the latest qualified published executable, 0.8.2, rather than retaining
+0.8.1 as the release comparator. Pin this identity explicitly in the release harness; obtain
+the genuine 0.8.2 archive, verify its official release digest and regular executable member,
+and resolve its immutable tag for the configuration-source comparison. Preserve both
+independently observed executable versions and reject a stale 0.8.1 baseline before timing.
+
+This changes only the release comparator. Keep the same host, model, runtime, configuration,
+corpus and artifact identity requirements, the 0.90 throughput floor, the 1.10 RSS ceiling,
+and the existing baseline-derived per-image quality contracts. Retain the historical
+0.8.1-to-0.8.2 regression fixtures and shallow-checkout failure controls. Existing committed
+benchmark reports, public tables and ordinary benchmark defaults remain unchanged.

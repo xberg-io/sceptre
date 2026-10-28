@@ -42,6 +42,10 @@ def test_pair_preserves_independently_observed_versions() -> None:
     assert baseline["metadata"]["environment"]["sceptre_version"] == "0.8.1"
 
 
+def test_release_comparator_uses_latest_qualified_published_version() -> None:
+    assert paired.BASELINE_VERSION == "0.8.2"
+
+
 @pytest.mark.parametrize(
     ("change", "reason"),
     [
@@ -206,15 +210,31 @@ def test_archive_member_selection_accepts_only_known_regular_binary() -> None:
 
 
 @pytest.mark.parametrize("fail_quality", [False, True])
+@pytest.mark.parametrize(
+    "versions",
+    [
+        ("0.8.1", "0.8.2", "0.8.1"),
+        ("0.8.2", "0.9.0", "0.8.2"),
+        ("0.8.2", "0.9.0", "0.8.1"),
+    ],
+)
 def test_serial_measurement_preserves_both_reports_and_failure_artifacts(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, fail_quality: bool
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    fail_quality: bool,
+    versions: tuple[str, str, str],
 ) -> None:
     import argparse
     import json
 
     from sceptre_rs_tools import benchmark
 
+    baseline_version, candidate_version, observed_baseline = versions
     baseline, candidate = scored_pair()
+    baseline["metadata"]["environment"]["sceptre_version"] = observed_baseline
+    candidate["metadata"]["environment"]["sceptre_version"] = candidate_version
+    if baseline_version == "0.8.1":
+        monkeypatch.setattr(paired, "BASELINE_VERSION", baseline_version)
     if fail_quality:
         candidate["records"][0]["sceptre_token_f1"] = 0.8
     old_binary, new_binary = tmp_path / "old", tmp_path / "new"
@@ -228,7 +248,7 @@ def test_serial_measurement_preserves_both_reports_and_failure_artifacts(
         candidate_sha256=paired.digest(new_binary),
         baseline_archive=tmp_path / "archive-fixture",
         candidate_revision="revision-fixture",
-        candidate_version="0.8.2",
+        candidate_version=candidate_version,
         threads=2,
         repeats=2,
     )
@@ -257,11 +277,24 @@ def test_serial_measurement_preserves_both_reports_and_failure_artifacts(
         return report
 
     monkeypatch.setattr(paired, "_measure", measure)
+    if observed_baseline != baseline_version:
+        with pytest.raises(ValueError, match=r"^observed binary version differs before measurement$"):
+            paired.compare(args)
+        assert order == []
+        assert json.loads((args.output / "gate.json").read_text()) == {
+            "passed": False,
+            "error": "observed binary version differs before measurement",
+        }
+        hashes = json.loads((args.output / "artifact-sha256.json").read_text())
+        assert set(hashes) == {"gate.json"}
+        assert hashes["gate.json"] == paired.digest(args.output / "gate.json")
+        return
     assert paired.compare(args) == int(fail_quality)
     assert order == [old_binary, new_binary]
     assert json.loads((args.output / "gate.json").read_text())["passed"] is not fail_quality
     assert (
-        json.loads((args.output / "baseline-published.json").read_text())["environment"]["sceptre_version"] == "0.8.1"
+        json.loads((args.output / "baseline-published.json").read_text())["environment"]["sceptre_version"]
+        == baseline_version
     )
     hashes = json.loads((args.output / "artifact-sha256.json").read_text())
     assert {"baseline/comparison.json", "candidate/comparison.json", "manifest.json", "gate.json"} <= set(hashes)

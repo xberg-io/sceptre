@@ -22,7 +22,7 @@ import tomllib
 from sceptre_rs_tools import benchmark as b
 from sceptre_rs_tools.publish import published_payload
 
-BASELINE_VERSION = "0.8.1"
+BASELINE_VERSION = "0.8.2"
 
 
 def digest(path: Path) -> str:
