@@ -5,10 +5,9 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import tomllib
 import unittest
 from pathlib import Path
-
-import tomllib
 
 
 class MacosLinkTests(unittest.TestCase):
