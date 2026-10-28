@@ -76,6 +76,9 @@ jobs:
               - 'rust-toolchain.toml'
               - 'mise.toml'
               - 'mise.lock'
+              - 'mise.ci.toml'
+              - 'mise.ci.lock'
+              - 'toolchains.toml'
               - 'deny.toml'
               - '.task/**'
               - 'Taskfile.yaml'
@@ -89,6 +92,9 @@ jobs:
               - 'uv.lock'
               - 'mise.toml'
               - 'mise.lock'
+              - 'mise.ci.toml'
+              - 'mise.ci.lock'
+              - 'toolchains.toml'
               - '.github/workflows/ci.yaml'
 
   toolchain:
