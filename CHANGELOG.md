@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-10-28
+
+### Changed
+
+- Upgrade the ONNX Runtime Rust bindings to exactly `2.0.0-rc.15`. Applications using
+  `ort_environment()` with a direct `ort` dependency must also select rc.15. The bundled
+  native runtime remains ONNX Runtime 1.31.0.
+- Use published Sceptre 0.8.2 as the release-benchmark comparator, retaining the existing
+  quality, throughput, memory and artifact-identity gates.
+
 ## [0.8.2] - 2026-10-26
 
 ### Added
