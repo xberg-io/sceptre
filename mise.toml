@@ -32,15 +32,15 @@ run = [
 
 [tasks.build]
 description = "Build the Rust workspace"
-run = [{ task = "rust:build" }]
+run = "cargo build --workspace"
 
 [tasks.test]
 description = "Run the Rust workspace test suite"
-run = [{ task = "rust:test" }]
+run = "cargo test --workspace"
 
 [tasks.bench]
 description = "Run the criterion microbenchmarks for the sceptre hot paths"
-run = [{ task = "rust:bench" }]
+run = "cargo bench -p sceptre --features bench"
 
 [tasks.lint]
 description = "Lint Rust (poly) and Python (ruff) code"
@@ -52,7 +52,13 @@ run = [{ task = "rust:fmt" }, { task = "python:format" }]
 
 [tasks.check]
 description = "Full pre-commit gate (fmt check + clippy + feature matrix + test + poly lint)"
-run = [{ task = "rust:check" }, "poly lint ."]
+run = [
+  "cargo fmt --all --check",
+  { task = "rust:clippy" },
+  { task = "rust:verify:features" },
+  { task = "test" },
+  "poly lint .",
+]
 
 [tasks.update]
 description = "Bump dependencies to latest compatible versions (cargo update + uv lock --upgrade)"
@@ -70,16 +76,25 @@ run = "cargo clean"
 
 [tasks."release:build"]
 description = "Build the release CLI binary (bundled ONNX Runtime) for the current platform"
-run = [{ task = "rust:release:build" }]
+run = "cargo build --release {{vars.release_cli}}"
 
 [tasks."release:package"]
 description = "Build and archive the self-contained release CLI binary for a target triple"
-usage = 'arg "<triple>" help="Rust target triple, e.g. x86_64-apple-darwin"'
-run = [{ task = "rust:release:package {{usage.triple}}" }]
+usage = 'arg "<triple>" help="Rust target triple, e.g. x86_64-unknown-linux-gnu"'
+run = [
+  'cargo build --release {{vars.release_cli}} --target "{{usage.triple}}"',
+  'bash scripts/package-release.sh "{{usage.triple}}"',
+]
 
 [tasks."release:dry-run"]
-description = "Validate that the sceptre library packages cleanly for crates.io, without publishing"
-run = [{ task = "rust:release:dry-run" }]
+description = "Validate that both crates package cleanly for crates.io, without publishing"
+run = [
+  # ort-dynamic (not ort-bundled) avoids downloading the ONNX Runtime during the check. ~keep
+  "cargo publish --dry-run -p sceptre --no-default-features --features ort-dynamic,download",
+  # sceptre-cli resolves `sceptre` from the index, so its dry-run is only possible once the
+  # matching library version is published; the script skips that case loudly. ~keep
+  "bash scripts/dry-run-cli.sh",
+]
 
 [tasks."release:verify:published"]
 description = "Verify an existing published native archive through checksum, MCP and real OCR checks"
@@ -115,14 +130,6 @@ run = ["ai-rulez verify --plugin", "python3 scripts/sync_public_skills.py --chec
 description = "Verify public skill ownership and resource freshness"
 run = ["python3 scripts/tests/test_public_skills.py", "python3 scripts/sync_public_skills.py --check"]
 
-[tasks."rust:build"]
-description = "Build the Rust workspace"
-run = "cargo build --workspace"
-
-[tasks."rust:test"]
-description = "Run the Rust workspace test suite"
-run = "cargo test --workspace"
-
 [tasks."rust:fmt"]
 description = "Format all Rust code"
 run = "cargo fmt --all"
@@ -130,10 +137,6 @@ run = "cargo fmt --all"
 [tasks."rust:clippy"]
 description = "Lint Rust code with clippy (deny warnings)"
 run = "cargo clippy --workspace --all-targets --tests -- -D warnings"
-
-[tasks."rust:bench"]
-description = "Run the criterion microbenchmarks for the sceptre hot paths"
-run = "cargo bench -p sceptre --features bench"
 
 [tasks."rust:ci:clippy"]
 description = "Lint one CI matrix leg's feature set with clippy (deny warnings); the feature set may be empty"
@@ -154,22 +157,6 @@ run = 'cargo build --release --workspace --features "{{usage.features}}"'
 description = "Assert the CLI's ONNX Runtime provisioning feature matrix resolves as intended"
 run = "bash scripts/verify-features.sh"
 
-[tasks."rust:check"]
-description = "Run fmt check, clippy, the feature-matrix gate, and the test suite for the Rust workspace"
-run = ["cargo fmt --all --check", { task = "rust:clippy" }, { task = "rust:verify:features" }, { task = "rust:test" }]
-
-[tasks."rust:release:build"]
-description = "Build the MCP-enabled release CLI binary with a bundled ONNX Runtime"
-run = "cargo build --release {{vars.release_cli}}"
-
-[tasks."rust:release:package"]
-description = "Build and archive the self-contained release CLI binary for a target triple"
-usage = 'arg "<triple>" help="Rust target triple, e.g. x86_64-unknown-linux-gnu"'
-run = [
-  'cargo build --release {{vars.release_cli}} --target "{{usage.triple}}"',
-  'bash scripts/package-release.sh "{{usage.triple}}"',
-]
-
 [tasks."rust:release:smoke"]
 description = "Verify the packaged release version and MCP initialization/tool discovery"
 usage = '''
@@ -181,16 +168,6 @@ run = 'python3 scripts/smoke_release.py --archive "sceptre-{{usage.triple}}.{% i
 [tasks."rust:release:smoke:test"]
 description = "Test the release smoke gate against protocol and archive failure controls"
 run = ["python3 scripts/tests/test_release_smoke.py", "python3 scripts/tests/test_macos_link.py"]
-
-[tasks."rust:release:dry-run"]
-description = "Validate that both crates package cleanly for crates.io, without publishing"
-run = [
-  # ort-dynamic (not ort-bundled) avoids downloading the ONNX Runtime during the check. ~keep
-  "cargo publish --dry-run -p sceptre --no-default-features --features ort-dynamic,download",
-  # sceptre-cli resolves `sceptre` from the index, so its dry-run is only possible once the
-  # matching library version is published; the script skips that case loudly. ~keep
-  "bash scripts/dry-run-cli.sh",
-]
 
 [tasks."python:lint"]
 description = "Lint Python code with ruff"
