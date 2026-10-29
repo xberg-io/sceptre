@@ -115,10 +115,6 @@ run = ["ai-rulez verify --plugin", "python3 scripts/sync_public_skills.py --chec
 description = "Verify public skill ownership and resource freshness"
 run = ["python3 scripts/tests/test_public_skills.py", "python3 scripts/sync_public_skills.py --check"]
 
-[tasks."plugin:hermes:test"]
-description = "Verify the Hermes bridge against a real MCP stdio fixture"
-run = "uv run --no-project --python 3.11 --with mcp==1.28.1 --with PyYAML==6.0.3 python scripts/tests/test_hermes_plugin.py"
-
 [tasks."rust:build"]
 description = "Build the Rust workspace"
 run = "cargo build --workspace"
@@ -196,19 +192,6 @@ run = [
   "bash scripts/dry-run-cli.sh",
 ]
 
-[tasks."tools:build"]
-# The tools/ dev crate is a workspace member excluded from default-members. ~keep
-description = "Build the sceptre-tools dev crate"
-run = "cargo build -p sceptre-tools"
-
-[tasks."tools:run"]
-description = "Run the sceptre-tools dev crate (forwards extra CLI args)"
-run = "cargo run -p sceptre-tools --"
-
-[tasks."python:sync"]
-description = "Sync the Python dev environment via uv"
-run = "uv sync"
-
 [tasks."python:lint"]
 description = "Lint Python code with ruff"
 run = "uv run ruff check python"
@@ -238,12 +221,8 @@ description = "Render test_documents corpus PDFs to deterministic per-page PNGs 
 run = "uv run python -m sceptre_rs_tools.rasterize"
 
 [tasks."python:benchmark"]
-description = "Head-to-head benchmark of sceptre (release CLI) vs upstream EasyOCR over the image corpus (forwards extra CLI args, e.g. --group/--limit/--repeats/--baseline); requires the opt-in export/torch group and a built release binary"
+description = "Head-to-head benchmark of sceptre (release CLI) vs upstream EasyOCR over the image corpus (forwards extra CLI args, e.g. --group/--limit/--repeats/--baseline, or --assert for the regression gate); requires the opt-in export/torch group and a built release binary"
 run = "uv run python -m sceptre_rs_tools.benchmark"
-
-[tasks."python:benchmark:check"]
-description = "Head-to-head benchmark with the regression gate (forwards extra CLI args): fails if sceptre's own warm throughput falls below, or its own peak RSS exceeds, the published baseline for this host (ADR 0042, ADR 0043)"
-run = "uv run python -m sceptre_rs_tools.benchmark --assert"
 
 [tasks."python:publish"]
 description = "Publish the measured numbers from benchmark-results/comparison.json into benchmarks/published/latest.json and the generated tables in the README and docs site; needs no torch and no release binary"
@@ -273,10 +252,6 @@ run = [{ task = "docs:dev" }]
 description = "Install dependencies and build the docs site"
 run = ["pnpm --dir docs-site install --frozen-lockfile", "pnpm --dir docs-site build"]
 
-[tasks."docs:build:strict"]
-description = "Build the docs site the way CI does (astro build fails on errors)"
-run = [{ task = "docs:build" }]
-
 [tasks."docs:changelog"]
 description = "Regenerate the docs changelog page from CHANGELOG.md"
 run = "./scripts/sync-changelog.sh"
@@ -285,14 +260,3 @@ run = "./scripts/sync-changelog.sh"
 description = "Fail if the docs changelog page has drifted from CHANGELOG.md"
 run = "./scripts/sync-changelog.sh --check"
 
-[tasks."docs:preview"]
-description = "Preview the built docs site"
-run = "pnpm --dir docs-site preview"
-
-[tasks."docs:lint:links"]
-description = "Check links with lychee"
-run = "lychee --offline docs-site/src/content/docs README.md"
-
-[tasks."docs:lint:prose"]
-description = "Lint prose with textlint"
-run = "pnpm exec textlint 'docs-site/src/content/docs/**/*.{md,mdx}'"
