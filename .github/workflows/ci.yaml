@@ -14,6 +14,8 @@ permissions:
 
 env:
   CARGO_TERM_COLOR: always
+  # Jobs install only the tools they name in install-args; mise run must not install the rest. ~keep
+  MISE_TASK_RUN_AUTO_INSTALL: "false"
   # The image the parity and end-to-end lanes OCR, fetched from the test_documents submodule. ~keep
   SAMPLE_IMAGE: test_documents/images/english.png
 
@@ -80,14 +82,12 @@ jobs:
               - 'mise.ci.lock'
               - 'toolchains.toml'
               - 'deny.toml'
-              - '.task/**'
-              - 'Taskfile.yaml'
+              - 'mise-tasks/**'
               - '.github/workflows/ci.yaml'
             python:
               - 'python/**'
               - 'scripts/**'
-              - '.task/python.yml'
-              - 'Taskfile.yaml'
+              - 'mise-tasks/python/**'
               - 'pyproject.toml'
               - 'uv.lock'
               - 'mise.toml'
@@ -128,8 +128,9 @@ jobs:
       - uses: actions/checkout@v7
       - uses: xberg-io/actions/setup-mise@v1
         with:
-          install-args: task
-      - run: task docs:changelog:check
+          # The changelog check needs only bash; install no mise tool. ~keep
+          install-args: --dry-run
+      - run: mise run docs:changelog:check
 
   test:
     name: Test (${{ matrix.variant.label }}, ${{ matrix.os }})
@@ -179,7 +180,8 @@ jobs:
 
       - uses: xberg-io/actions/setup-mise@v1
         with:
-          install-args: task
+          # The tasks need only mise and the Rust toolchain; install no mise tool. ~keep
+          install-args: --dry-run
 
       - name: Verify the CLI ONNX Runtime feature matrix
         # Cheap (`cargo tree --locked`: no build, no network) and the only check that a
@@ -208,16 +210,16 @@ jobs:
             --features ort-bundled,download -- models download --all
 
       - name: Clippy
-        run: task rust:ci:clippy FEATURES="${{ matrix.variant.features }}"
+        run: mise run rust:ci:clippy "${{ matrix.variant.features }}"
 
       - name: Test
         env:
           HF_HOME: ${{ github.workspace }}/.hf
           SCEPTRE_REQUIRE_MODELS: ${{ matrix.variant.label == 'backend-agreement' && '1' || '' }}
-        run: task rust:ci:test FEATURES="${{ matrix.variant.features }}"
+        run: mise run rust:ci:test "${{ matrix.variant.features }}"
 
       - name: Build
-        run: task rust:ci:build FEATURES="${{ matrix.variant.features }}"
+        run: mise run rust:ci:build "${{ matrix.variant.features }}"
 
   install:
     name: cargo install (${{ matrix.install.label }}, ${{ matrix.os }})

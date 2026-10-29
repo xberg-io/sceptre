@@ -27,6 +27,8 @@ permissions:
 
 env:
   CARGO_TERM_COLOR: always
+  # Jobs install only the tools they name in install-args; mise run must not install the rest. ~keep
+  MISE_TASK_RUN_AUTO_INSTALL: "false"
 
 jobs:
   plugin-meta:
@@ -271,24 +273,24 @@ jobs:
           install-llvm-cov: "false"
           cache-key-prefix: release-build-${{ matrix.triple }}
 
-      # Install `task` so the workflow calls task targets, not raw cargo, per the
-      # pipeline-standards task-runner rule. The smoke checks run on the Python floor
+      # The workflow calls mise tasks, not raw cargo, per the pipeline-standards task-runner
+      # rule. The smoke checks run on the Python floor
       # (requires-python >=3.11), which mise.ci.toml locks and MISE_PYTHON_VERSION selects. ~keep
       - uses: xberg-io/actions/setup-mise@v1
         with:
-          install-args: python task
+          install-args: python
           config-ref: ${{ github.sha }}
 
       - name: Verify the release smoke gate
-        run: task rust:release:smoke:test
+        run: mise run rust:release:smoke:test
 
       - name: Build and package
         shell: bash
-        run: task release:package TRIPLE=${{ matrix.triple }}
+        run: mise run release:package ${{ matrix.triple }}
 
       - name: Smoke-test the packaged binary
         shell: bash
-        run: task rust:release:smoke TRIPLE=${{ matrix.triple }} VERSION=${{ needs.meta.outputs.version }}
+        run: mise run rust:release:smoke ${{ matrix.triple }} ${{ needs.meta.outputs.version }}
 
       - name: Upload archive to the release
         uses: xberg-io/actions/upload-release-assets@v1

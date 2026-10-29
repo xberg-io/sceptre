@@ -31,6 +31,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       RELEASE_VERSION: ${{ inputs.version }}
+      # The job installs only Python; mise run must not install the rest. ~keep
+      MISE_TASK_RUN_AUTO_INSTALL: "false"
       RELEASE_TRIPLE: ${{ matrix.triple }}
     steps:
       - uses: actions/checkout@v7
@@ -38,9 +40,9 @@ jobs:
           ref: ${{ github.sha }}
       - uses: xberg-io/actions/setup-mise@v1
         with:
-          install-args: python task
+          install-args: python
       - name: Test the published-release verifier
-        run: task release:verify:test
+        run: mise run release:verify:test
       - name: Cache immutable verified model snapshots
         uses: actions/cache@v6
         with:
@@ -51,7 +53,7 @@ jobs:
         env:
           RELEASE_OUTPUT: ${{ runner.temp }}/sceptre-published-proof
           RELEASE_MODEL_CACHE: ${{ runner.temp }}/sceptre-published-models
-        run: task release:verify:published
+        run: mise run release:verify:published
       - name: Preserve actual protocol, runtime and checksum evidence
         if: always()
         uses: actions/upload-artifact@v7

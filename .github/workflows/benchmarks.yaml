@@ -35,6 +35,8 @@ permissions:
 
 env:
   CARGO_TERM_COLOR: always
+  # Jobs install only the tools they name in install-args; mise run must not install the rest. ~keep
+  MISE_TASK_RUN_AUTO_INSTALL: "false"
   # The image the backend matrix and the parity lanes OCR, fetched from the test_documents
   # submodule. ~keep
   SAMPLE_IMAGE: test_documents/images/english.png
@@ -157,7 +159,7 @@ jobs:
 
       - uses: xberg-io/actions/setup-mise@v1
         with:
-          install-args: python uv task
+          install-args: python uv
 
       - name: Resolve the mise Python version
         id: python
@@ -193,16 +195,16 @@ jobs:
       # harness needs /usr/bin/time -v for peak RSS and CPU core-seconds. Without it both
       # metrics come back null for both engines and the peak-RSS floor is unmeasurable. ~keep
       - name: Install GNU time
-        run: task python:benchmark:gnu-time:install
+        run: mise run python:benchmark:gnu-time:install
 
       - name: Build release CLI (bundled ONNX Runtime + on-demand model download)
-        run: task python:benchmark:release:build
+        run: mise run python:benchmark:release:build
 
       - name: Pre-seed every model, serially, before the harness fans out
-        run: task python:benchmark:models:download
+        run: mise run python:benchmark:models:download
 
       - name: Compare published and candidate releases on the same host
-        run: task python:benchmark:release:compare
+        run: mise run python:benchmark:release:compare
 
       - name: Upload the benchmark report
         if: always()
@@ -253,7 +255,7 @@ jobs:
 
       - uses: xberg-io/actions/setup-mise@v1
         with:
-          install-args: task
+          install-args: --dry-run
 
       - name: Cache Hugging Face models
         uses: actions/cache@v6
