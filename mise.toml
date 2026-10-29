@@ -9,9 +9,290 @@ python = "3.13.18"
 uv = "0.13.6"
 node = "26.12.1"
 pnpm = "12.15.0"
-task = "3.54.0"
 "github:Goldziher/poly" = "0.31.2"
 "github:Goldziher/ai-rulez" = "5.9.2"
 cargo-deny = "0.20.2"
 actionlint = "1.7.12"
 lychee = "0.24.2"
+
+[vars]
+# The self-contained release CLI: ort-bundled links ONNX Runtime statically. ~keep
+release_cli = "-p sceptre-cli --no-default-features --features ort-bundled,download,mcp"
+
+[tasks.setup]
+description = "Install the mise toolchain, fetch Rust dependencies, install git hooks, sync the Python dev environment, and fetch the test corpus"
+run = [
+  "mise install",
+  "cargo fetch",
+  { task = "governance:hooks:install" },
+  "uv sync",
+  "git submodule update --init --recursive test_documents",
+  "python3 test_documents/scripts/fetch_corpus.py --include 'images/**'",
+]
+
+[tasks.build]
+description = "Build the Rust workspace"
+run = [{ task = "rust:build" }]
+
+[tasks.test]
+description = "Run the Rust workspace test suite"
+run = [{ task = "rust:test" }]
+
+[tasks.bench]
+description = "Run the criterion microbenchmarks for the sceptre hot paths"
+run = [{ task = "rust:bench" }]
+
+[tasks.lint]
+description = "Lint Rust (poly) and Python (ruff) code"
+run = ["poly lint .", { task = "python:lint" }]
+
+[tasks.format]
+description = "Format Rust (cargo fmt) and Python (ruff) code"
+run = [{ task = "rust:fmt" }, { task = "python:format" }]
+
+[tasks.check]
+description = "Full pre-commit gate (fmt check + clippy + feature matrix + test + poly lint)"
+run = [{ task = "rust:check" }, "poly lint ."]
+
+[tasks.update]
+description = "Bump dependencies to latest compatible versions (cargo update + uv lock --upgrade)"
+run = ["cargo update", "uv lock --upgrade"]
+
+[tasks.upgrade]
+description = "Bump dependencies to latest, including breaking changes"
+# cargo upgrade comes from cargo-edit (cargo install cargo-edit --locked); it is not part of stock
+# cargo. ~keep
+run = ["cargo upgrade --incompatible", "uv lock --upgrade"]
+
+[tasks.clean]
+description = "Remove Rust build artifacts"
+run = "cargo clean"
+
+[tasks."release:build"]
+description = "Build the release CLI binary (bundled ONNX Runtime) for the current platform"
+run = [{ task = "rust:release:build" }]
+
+[tasks."release:package"]
+description = "Build and archive the self-contained release CLI binary for a target triple"
+usage = 'arg "<triple>" help="Rust target triple, e.g. x86_64-apple-darwin"'
+run = [{ task = "rust:release:package {{usage.triple}}" }]
+
+[tasks."release:dry-run"]
+description = "Validate that the sceptre library packages cleanly for crates.io, without publishing"
+run = [{ task = "rust:release:dry-run" }]
+
+[tasks."release:verify:published"]
+description = "Verify an existing published native archive through checksum, MCP and real OCR checks"
+usage = '''
+flag "--version <version>" env="RELEASE_VERSION" required=#true help="Published release version"
+flag "--triple <triple>" env="RELEASE_TRIPLE" required=#true help="Rust target triple of the archive"
+flag "--output <dir>" env="RELEASE_OUTPUT" default="dist/published-runtime-proof" help="Evidence directory"
+flag "--model-cache <dir>" env="RELEASE_MODEL_CACHE" default="dist/published-runtime-models" help="Model cache"
+'''
+run = 'python3 scripts/verify_published_release.py --version "{{usage.version}}" --triple "{{usage.triple}}" --output "{{usage.output}}" --model-cache "{{usage.model_cache}}"'
+
+[tasks."release:verify:test"]
+description = "Test published runtime verification against checksum, protocol and OCR failure controls"
+run = "python3 scripts/tests/test_published_release.py"
+
+[tasks."governance:hooks:install"]
+description = "Provision machine preferences and install reviewed AI governance hooks"
+file = "https://raw.githubusercontent.com/xberg-io/toolchains/v1.4.0/tasks/governance/hooks-install.sh"
+
+[tasks."governance:check"]
+description = "Check materialized local governance outputs against shared sources"
+run = "ai-rulez generate --check --no-local --strict-config"
+
+[tasks."plugin:generate"]
+description = "Generate all native plugin bundles and public skills"
+run = ["ai-rulez generate --plugin", "python3 scripts/sync_public_skills.py"]
+
+[tasks."plugin:verify"]
+description = "Verify native plugin bundles and public skills"
+run = ["ai-rulez verify --plugin", "python3 scripts/sync_public_skills.py --check"]
+
+[tasks."plugin:skills:test"]
+description = "Verify public skill ownership and resource freshness"
+run = ["python3 scripts/tests/test_public_skills.py", "python3 scripts/sync_public_skills.py --check"]
+
+[tasks."plugin:hermes:test"]
+description = "Verify the Hermes bridge against a real MCP stdio fixture"
+run = "uv run --no-project --python 3.11 --with mcp==1.28.1 --with PyYAML==6.0.3 python scripts/tests/test_hermes_plugin.py"
+
+[tasks."rust:build"]
+description = "Build the Rust workspace"
+run = "cargo build --workspace"
+
+[tasks."rust:test"]
+description = "Run the Rust workspace test suite"
+run = "cargo test --workspace"
+
+[tasks."rust:fmt"]
+description = "Format all Rust code"
+run = "cargo fmt --all"
+
+[tasks."rust:clippy"]
+description = "Lint Rust code with clippy (deny warnings)"
+run = "cargo clippy --workspace --all-targets --tests -- -D warnings"
+
+[tasks."rust:bench"]
+description = "Run the criterion microbenchmarks for the sceptre hot paths"
+run = "cargo bench -p sceptre --features bench"
+
+[tasks."rust:ci:clippy"]
+description = "Lint one CI matrix leg's feature set with clippy (deny warnings); the feature set may be empty"
+usage = 'arg "[features]" default="" help="Comma-separated cargo features"'
+run = 'cargo clippy --workspace --all-targets --tests --features "{{usage.features}}" -- -D warnings'
+
+[tasks."rust:ci:test"]
+description = "Run the workspace test suite for one CI matrix leg's feature set; the feature set may be empty"
+usage = 'arg "[features]" default="" help="Comma-separated cargo features"'
+run = 'cargo test --workspace --features "{{usage.features}}"'
+
+[tasks."rust:ci:build"]
+description = "Release-build the workspace for one CI matrix leg's feature set; the feature set may be empty"
+usage = 'arg "[features]" default="" help="Comma-separated cargo features"'
+run = 'cargo build --release --workspace --features "{{usage.features}}"'
+
+[tasks."rust:verify:features"]
+description = "Assert the CLI's ONNX Runtime provisioning feature matrix resolves as intended"
+run = "bash scripts/verify-features.sh"
+
+[tasks."rust:check"]
+description = "Run fmt check, clippy, the feature-matrix gate, and the test suite for the Rust workspace"
+run = ["cargo fmt --all --check", { task = "rust:clippy" }, { task = "rust:verify:features" }, { task = "rust:test" }]
+
+[tasks."rust:release:build"]
+description = "Build the MCP-enabled release CLI binary with a bundled ONNX Runtime"
+run = "cargo build --release {{vars.release_cli}}"
+
+[tasks."rust:release:package"]
+description = "Build and archive the self-contained release CLI binary for a target triple"
+usage = 'arg "<triple>" help="Rust target triple, e.g. x86_64-unknown-linux-gnu"'
+run = [
+  'cargo build --release {{vars.release_cli}} --target "{{usage.triple}}"',
+  'bash scripts/package-release.sh "{{usage.triple}}"',
+]
+
+[tasks."rust:release:smoke"]
+description = "Verify the packaged release version and MCP initialization/tool discovery"
+usage = '''
+arg "<triple>" help="Rust target triple of the packaged archive"
+arg "<version>" help="Expected release version"
+'''
+run = 'python3 scripts/smoke_release.py --archive "sceptre-{{usage.triple}}.{% if usage.triple == "x86_64-pc-windows-msvc" %}zip{% else %}tar.gz{% endif %}" --version "{{usage.version}}"'
+
+[tasks."rust:release:smoke:test"]
+description = "Test the release smoke gate against protocol and archive failure controls"
+run = ["python3 scripts/tests/test_release_smoke.py", "python3 scripts/tests/test_macos_link.py"]
+
+[tasks."rust:release:dry-run"]
+description = "Validate that both crates package cleanly for crates.io, without publishing"
+run = [
+  # ort-dynamic (not ort-bundled) avoids downloading the ONNX Runtime during the check. ~keep
+  "cargo publish --dry-run -p sceptre --no-default-features --features ort-dynamic,download",
+  # sceptre-cli resolves `sceptre` from the index, so its dry-run is only possible once the
+  # matching library version is published; the script skips that case loudly. ~keep
+  "bash scripts/dry-run-cli.sh",
+]
+
+[tasks."tools:build"]
+# The tools/ dev crate is a workspace member excluded from default-members. ~keep
+description = "Build the sceptre-tools dev crate"
+run = "cargo build -p sceptre-tools"
+
+[tasks."tools:run"]
+description = "Run the sceptre-tools dev crate (forwards extra CLI args)"
+run = "cargo run -p sceptre-tools --"
+
+[tasks."python:sync"]
+description = "Sync the Python dev environment via uv"
+run = "uv sync"
+
+[tasks."python:lint"]
+description = "Lint Python code with ruff"
+run = "uv run ruff check python"
+
+[tasks."python:format"]
+description = "Format Python code with ruff"
+run = "uv run ruff format python"
+
+[tasks."python:typecheck"]
+description = "Check every Python tool and test with Pyrefly, including optional export and corpus tooling"
+run = "bash scripts/typecheck.sh"
+
+[tasks."python:test"]
+description = "Run the Python unit tests (pure harness logic; no torch/easyocr needed)"
+run = "uv run pytest python/tests -q"
+
+[tasks."python:export"]
+description = "Primary model-export path (ADR 0025): converts EasyOCR CRAFT + gen2 CRNN checkpoints to the ONNX artifacts hosted on the xberg-io HF org, and (re)writes the charset assets; requires the opt-in export/torch dependency group"
+run = "uv run python -m sceptre_rs_tools.export"
+
+[tasks."python:golden"]
+description = "Regenerate the EasyOCR reference half of the golden parity fixtures, with its provenance block; requires the opt-in export/torch dependency group"
+run = "uv run python -m sceptre_rs_tools.golden"
+
+[tasks."python:rasterize"]
+description = "Render test_documents corpus PDFs to deterministic per-page PNGs for OCR testing (forwards extra CLI args, e.g. --pdf/--dpi/--output-dir); requires the opt-in corpus dependency group (pypdfium2, pillow)"
+run = "uv run python -m sceptre_rs_tools.rasterize"
+
+[tasks."python:benchmark"]
+description = "Head-to-head benchmark of sceptre (release CLI) vs upstream EasyOCR over the image corpus (forwards extra CLI args, e.g. --group/--limit/--repeats/--baseline); requires the opt-in export/torch group and a built release binary"
+run = "uv run python -m sceptre_rs_tools.benchmark"
+
+[tasks."python:benchmark:check"]
+description = "Head-to-head benchmark with the regression gate (forwards extra CLI args): fails if sceptre's own warm throughput falls below, or its own peak RSS exceeds, the published baseline for this host (ADR 0042, ADR 0043)"
+run = "uv run python -m sceptre_rs_tools.benchmark --assert"
+
+[tasks."python:publish"]
+description = "Publish the measured numbers from benchmark-results/comparison.json into benchmarks/published/latest.json and the generated tables in the README and docs site; needs no torch and no release binary"
+run = "uv run python -m sceptre_rs_tools.publish"
+
+[tasks."python:publish:check"]
+description = "Fail if the committed benchmark tables no longer match benchmarks/published/latest.json; the drift gate CI runs on main"
+run = "uv run python -m sceptre_rs_tools.publish --check"
+
+[tasks."python:benchmark:release:build"]
+description = "Build the exact bundled-runtime release candidate used for paired measurements"
+run = "cargo build --release --locked {{vars.release_cli}}"
+
+[tasks."python:benchmark:models:download"]
+description = "Populate immutable model caches before timing either release"
+run = "./target/release/sceptre models download --all"
+
+[tasks."docs:dev"]
+description = "Run the docs site in dev mode"
+run = ["pnpm --dir docs-site install", "pnpm --dir docs-site dev"]
+
+[tasks."docs:serve"]
+description = "Serve the docs site locally with live reload"
+run = [{ task = "docs:dev" }]
+
+[tasks."docs:build"]
+description = "Install dependencies and build the docs site"
+run = ["pnpm --dir docs-site install --frozen-lockfile", "pnpm --dir docs-site build"]
+
+[tasks."docs:build:strict"]
+description = "Build the docs site the way CI does (astro build fails on errors)"
+run = [{ task = "docs:build" }]
+
+[tasks."docs:changelog"]
+description = "Regenerate the docs changelog page from CHANGELOG.md"
+run = "./scripts/sync-changelog.sh"
+
+[tasks."docs:changelog:check"]
+description = "Fail if the docs changelog page has drifted from CHANGELOG.md"
+run = "./scripts/sync-changelog.sh --check"
+
+[tasks."docs:preview"]
+description = "Preview the built docs site"
+run = "pnpm --dir docs-site preview"
+
+[tasks."docs:lint:links"]
+description = "Check links with lychee"
+run = "lychee --offline docs-site/src/content/docs README.md"
+
+[tasks."docs:lint:prose"]
+description = "Lint prose with textlint"
+run = "pnpm exec textlint 'docs-site/src/content/docs/**/*.{md,mdx}'"

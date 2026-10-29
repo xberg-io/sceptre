@@ -71,6 +71,9 @@ remove_fixme = false
 remove_docs = false
 use_default_ignores = true
 preserve_patterns = [
+  # mise reads file-task metadata from #MISE and #USAGE comments. ~keep
+  "MISE ",
+  "USAGE ",
   "SAFETY",
   "HACK",
   "WORKAROUND",
@@ -253,7 +256,7 @@ cargo = true
 [hooks.pre-commit.commands.pyrefly]
 run = "bash scripts/typecheck.sh"
 workspace = true
-files = "{python/**,scripts/**,pyproject.toml,uv.lock,.task/python.yml,Taskfile.yaml,poly.toml}"
+files = "{python/**,scripts/**,pyproject.toml,uv.lock,mise.toml,poly.toml}"
 
 [[hooks.sources]]
 id = "ai-rulez"
