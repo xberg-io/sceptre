@@ -110,26 +110,6 @@ run = 'python3 scripts/verify_published_release.py --version "{{usage.version}}"
 description = "Test published runtime verification against checksum, protocol and OCR failure controls"
 run = "python3 scripts/tests/test_published_release.py"
 
-[tasks."governance:hooks:install"]
-description = "Provision machine preferences and install reviewed AI governance hooks"
-file = "https://raw.githubusercontent.com/xberg-io/toolchains/v1.5.0/tasks/governance/hooks-install.sh"
-
-[tasks."governance:check"]
-description = "Check materialized local governance outputs against shared sources"
-run = "ai-rulez generate --check --no-local --strict-config"
-
-[tasks."plugin:generate"]
-description = "Generate all native plugin bundles and public skills"
-run = ["ai-rulez generate --plugin", "python3 scripts/sync_public_skills.py"]
-
-[tasks."plugin:verify"]
-description = "Verify native plugin bundles and public skills"
-run = ["ai-rulez verify --plugin", "python3 scripts/sync_public_skills.py --check"]
-
-[tasks."plugin:skills:test"]
-description = "Verify public skill ownership and resource freshness"
-run = ["python3 scripts/tests/test_public_skills.py", "python3 scripts/sync_public_skills.py --check"]
-
 [tasks."rust:fmt"]
 description = "Format all Rust code"
 run = "cargo fmt --all"
@@ -217,18 +197,6 @@ run = "cargo build --release --locked {{vars.release_cli}}"
 description = "Populate immutable model caches before timing either release"
 run = "./target/release/sceptre models download --all"
 
-[tasks."docs:dev"]
-description = "Run the docs site in dev mode"
-run = ["pnpm --dir docs-site install", "pnpm --dir docs-site dev"]
-
-[tasks."docs:serve"]
-description = "Serve the docs site locally with live reload"
-run = [{ task = "docs:dev" }]
-
-[tasks."docs:build"]
-description = "Install dependencies and build the docs site"
-run = ["pnpm --dir docs-site install --frozen-lockfile", "pnpm --dir docs-site build"]
-
 [tasks."docs:changelog"]
 description = "Regenerate the docs changelog page from CHANGELOG.md"
 run = "./scripts/sync-changelog.sh"
@@ -237,3 +205,5 @@ run = "./scripts/sync-changelog.sh"
 description = "Fail if the docs changelog page has drifted from CHANGELOG.md"
 run = "./scripts/sync-changelog.sh --check"
 
+[task_config]
+includes = ["mise-tasks", "mise-tasks/shared.toml"]
