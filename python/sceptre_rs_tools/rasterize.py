@@ -101,7 +101,7 @@ def render_pdf(pdf_file: Path, output_dir: Path, dpi: int = DEFAULT_DPI) -> list
         raise ImportError(
             "sceptre_rs_tools.rasterize needs the optional 'corpus' dependency group "
             "(pypdfium2, pillow). Install it with `uv sync --group corpus`, then re-run "
-            "`task python:rasterize`."
+            "`mise run python:rasterize`."
         )
 
     output_dir.mkdir(parents=True, exist_ok=True)

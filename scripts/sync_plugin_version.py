@@ -4,7 +4,7 @@
 ``plugin/`` from ``plugin/.ai-rulez/config.toml``'s ``[plugin].version``. This script
 keeps that single source pinned to the crate version in ``Cargo.toml`` (the repo's
 version source of truth), the same way ``alef sync-versions`` pins the alef-managed
-binding manifests. Run via ``task version:sync`` (which then regenerates the bundles);
+binding manifests. Run via ``mise run version:set`` (which then regenerates the bundles);
 freshness of the generated bundles themselves is enforced by ``ai-rulez verify
 --plugin`` in CI, so this script only touches the config source.
 

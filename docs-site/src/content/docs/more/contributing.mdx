@@ -20,13 +20,13 @@ Clone the repository and run the setup task:
 ```sh
 git clone https://github.com/xberg-io/sceptre.git
 cd sceptre
-task setup
+mise run setup
 ```
 
 Run the same gate CI enforces before every push:
 
 ```sh
-task check
+mise run check
 ```
 
 That runs `cargo fmt --all --check`, `cargo clippy --workspace --all-targets --tests -- -D warnings`,

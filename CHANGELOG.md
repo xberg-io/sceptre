@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Run the repository tasks with mise instead of go-task: `mise run <task>` replaces `task <task>`
+  under the same task names, and task arguments are positional (`mise run version:set X.Y.Z`,
+  `mise run release:package <triple>`). `Taskfile.yaml` and `.task/` are gone.
+
 ## [0.9.0] - 2026-10-28
 
 ### Changed

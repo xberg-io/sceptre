@@ -1662,7 +1662,7 @@ def check_rss_ceiling(
         return [
             (
                 f"{ceiling_of} unmeasurable: no committed baseline at {PUBLISHED_RELATIVE_PATH}; "
-                "measure this host and run `task python:publish`"
+                "measure this host and run `mise run python:publish`"
             )
         ]
     baseline_host = published_host(published)
@@ -1715,7 +1715,7 @@ def check_warm_throughput_floor(
         return [
             (
                 f"{floor_of} unmeasurable: no committed baseline at {PUBLISHED_RELATIVE_PATH}; "
-                "measure this host and run `task python:publish`"
+                "measure this host and run `mise run python:publish`"
             )
         ]
     baseline_host = published_host(published)

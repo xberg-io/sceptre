@@ -33,11 +33,11 @@ __pycache__/
 *.pth
 
 # Raw comparative benchmark output (machine- and load-specific; reproduce via
-# `task python:benchmark`). The distilled, published numbers ARE committed, under
+# `mise run python:benchmark`). The distilled, published numbers ARE committed, under
 # benchmarks/published/ — see ADR 0030.
 /benchmark-results
 
-# Local PDF-rasterization output (reproduce via `task python:rasterize`); not published to
+# Local PDF-rasterization output (reproduce via `mise run python:rasterize`); not published to
 # the test_documents bucket by this repo, see ADR 0034 and sceptre_rs_tools/rasterize.py.
 /rasterized-pages
 

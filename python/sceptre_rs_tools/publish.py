@@ -328,7 +328,7 @@ def _provenance_line(payload: dict) -> str:
         f"Measured with sceptre {sceptre} ({backend}/{accelerator}, ONNX Runtime {onnxruntime}) "
         f"against EasyOCR {easyocr} (torch {torch}) on {host}, over "
         f"{measured if measured is not None else '—'} of {total if total is not None else '—'} "
-        "corpus entries. Regenerate with `task python:benchmark` then `task python:publish`."
+        "corpus entries. Regenerate with `mise run python:benchmark` then `mise run python:publish`."
     )
     # break_on_hyphens would split a runner label such as `runner-medium` across lines. ~keep
     return "\n".join(textwrap.wrap(line, width=PROSE_LINE_WIDTH, break_long_words=False, break_on_hyphens=False))
@@ -379,7 +379,7 @@ def check_docs(root: Path) -> int:
     if not artifact.is_file():
         print(
             f"sceptre_rs_tools.publish: no published artifact at {PUBLISHED_RELATIVE_PATH}. "
-            "Run `task python:benchmark` then `task python:publish` and commit the result.",
+            "Run `mise run python:benchmark` then `mise run python:publish` and commit the result.",
             file=sys.stderr,
         )
         return 1
@@ -398,7 +398,7 @@ def check_docs(root: Path) -> int:
             print(f"sceptre_rs_tools.publish: {path.relative_to(root)} is out of date", file=sys.stderr)
         print(
             f"\nThe committed benchmark tables no longer match {PUBLISHED_RELATIVE_PATH}. "
-            "Run `task python:publish` and commit the result.",
+            "Run `mise run python:publish` and commit the result.",
             file=sys.stderr,
         )
         return 1
@@ -413,7 +413,7 @@ def publish(root: Path, source: Path, *, check: bool) -> int:
 
     if not source.is_file():
         print(
-            f"sceptre_rs_tools.publish: no benchmark report at {source}. Run `task python:benchmark` first.",
+            f"sceptre_rs_tools.publish: no benchmark report at {source}. Run `mise run python:benchmark` first.",
             file=sys.stderr,
         )
         return 1

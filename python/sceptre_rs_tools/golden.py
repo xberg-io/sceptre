@@ -136,7 +136,7 @@ def generate() -> int:
         print(
             "sceptre_rs_tools.golden: the reference generator needs the optional 'export' "
             "dependency group (torch, easyocr). Install it with `uv sync --group export`, "
-            "then re-run `task py:golden`.",
+            "then re-run `mise run python:golden`.",
             file=sys.stderr,
         )
         return 1

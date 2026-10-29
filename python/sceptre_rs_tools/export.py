@@ -230,7 +230,7 @@ def run(out_dir: Path, only: list[str] | None, skip_craft: bool, write_assets: b
         print(
             "sceptre_rs_tools.export: the exporter needs the optional 'export' dependency group "
             "(torch, easyocr, onnx, onnxruntime, numpy). Install it with `uv sync --group export`, "
-            "then re-run `task py:export`.",
+            "then re-run `mise run python:export`.",
             file=sys.stderr,
         )
         return 1

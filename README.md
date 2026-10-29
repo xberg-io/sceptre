@@ -172,7 +172,7 @@ CRAFT detector both engines share, so its ratio narrows toward parity as page si
 [benchmarks page](https://docs.sceptre.xberg.io/reference/benchmarks/) for the full methodology.
 
 The table below is generated from [`benchmarks/published/latest.json`](benchmarks/published/latest.json)
-by `task python:publish`; CI fails if the two drift apart. Do not edit it by hand.
+by `mise run python:publish`; CI fails if the two drift apart. Do not edit it by hand.
 
 <!-- generated:benchmark-headline:start -->
 
@@ -183,8 +183,8 @@ by `task python:publish`; CI fails if the two drift apart. Do not edit it by han
 | sceptre (cold CLI run) | 0.21 (~1.8×) | 4.5 GB | 0.569 | 0.358 |
 
 Measured with sceptre 0.6.0 (ort/cpu, ONNX Runtime 1.28.0) against EasyOCR 1.7.2 (torch 2.13.0+cu130) on
-runner-medium (Linux/x86_64), over 40 of 43 corpus entries. Regenerate with `task python:benchmark` then `task
-python:publish`.
+runner-medium (Linux/x86_64), over 40 of 43 corpus entries. Regenerate with `mise run python:benchmark` then
+`mise run python:publish`.
 
 <!-- generated:benchmark-headline:end -->
 
@@ -218,12 +218,12 @@ transfer. `candle` is a compatibility and deployment option, not a fast one — 
 several times slower than `ort` on the CPU (see [ADR 0031](adrs/0031-hand-written-candle-networks.md)).
 Re-run the parity harness on your own target before relying on them.
 
-`cargo bench` covers the internal hot paths; the head-to-head harness (`task python:benchmark`)
+`cargo bench` covers the internal hot paths; the head-to-head harness (`mise run python:benchmark`)
 re-measures and writes the gitignored `benchmark-results/comparison.{json,md}`. Use
 `--group labeled --limit 3 --repeats 1` for a fast inner-loop run, `--baseline <prior.json>` to see
 per-image deltas, and `--assert` for the regression gate (see
-[ADR 0021](adrs/0021-benchmark-methodology-and-gate.md)). `task python:publish` then distils that
-report into the committed artifact and regenerates the table above; `task python:publish:check` is
+[ADR 0021](adrs/0021-benchmark-methodology-and-gate.md)). `mise run python:publish` then distils that
+report into the committed artifact and regenerates the table above; `mise run python:publish:check` is
 the drift gate CI runs (see [ADR 0030](adrs/0030-published-benchmark-artifact-and-drift-gate.md)).
 Parity fixtures live under
 [`crates/sceptre/tests/data/golden/`](crates/sceptre/tests/data/golden/).
@@ -311,12 +311,12 @@ cache remain separate requirements.
 ## Development
 
 ```sh
-task setup    # fetch deps, install git hooks
-task check    # cargo fmt + clippy -D warnings + test + poly lint
-task bench    # criterion microbenchmarks (--features bench)
+mise run setup  # fetch deps, install git hooks
+mise run check  # cargo fmt + clippy -D warnings + test + poly lint
+mise run bench  # criterion microbenchmarks (--features bench)
 ```
 
-Run `task python:typecheck` to check all Python tooling with Pyrefly. This synchronizes
+Run `mise run python:typecheck` to check all Python tooling with Pyrefly. This synchronizes
 the locked optional export and corpus dependencies, including PyTorch and EasyOCR.
 
 Coding conventions are generated from `.ai-rulez/` into `CLAUDE.md` / `AGENTS.md` — edit the source,

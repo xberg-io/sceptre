@@ -105,7 +105,7 @@ version changes, or the sceptre pipeline output intentionally changes.
    - download the CRAFT + gen2 models into the Hugging Face cache.
 2. EasyOCR reference (`easyocr` side), via the Python fallback tool:
    - `uv sync --group export`
-   - `task python:golden` (runs `python -m sceptre_rs_tools.golden`)
+   - `mise run python:golden` (runs `python -m sceptre_rs_tools.golden`)
 3. Sceptre snapshot (`sceptre` side), via the Rust tool:
    - `cargo run -p sceptre-tools --features ort -- snapshot`
 

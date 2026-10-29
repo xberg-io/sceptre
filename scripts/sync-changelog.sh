@@ -29,7 +29,7 @@ FRONTMATTER
 
 if [ "${1:-}" = "--check" ]; then
 	if ! diff -u "$TARGET" <(render) >/dev/null; then
-		echo "error: $TARGET is stale; run 'task docs:changelog'" >&2
+		echo "error: $TARGET is stale; run 'mise run docs:changelog'" >&2
 		diff -u "$TARGET" <(render) >&2 || true
 		exit 1
 	fi
