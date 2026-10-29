@@ -38,5 +38,5 @@ The pipeline reimplements EasyOCR's "latest version" path: the CRAFT detector pl
 ## Parity
 
 - Fixtures are `crates/sceptre/tests/data/golden/<image>.json` (`tier2_golden.rs`, ADR 0016). The `easyocr` half is compared fuzzily (bag-of-words F1, per-line box IoU >= 0.5), the `sceptre` half on exact text.
-- Never hand-edit a fixture: regenerate the owning half with `task python:golden` (after `uv sync --group export`) or `cargo run -p sceptre-tools --features ort -- snapshot`.
+- Never hand-edit a fixture: regenerate the owning half with `mise run python:golden` (after `uv sync --group export`) or `cargo run -p sceptre-tools --features ort -- snapshot`.
 - Perf changes in `detect/` and `recognize/` keep arithmetic and evaluation order bit-identical to the reference (ADR 0019): no `unsafe`, no nightly, no `target-cpu`.

@@ -31,4 +31,4 @@ A Cargo workspace: an rlib core, a thin CLI, and the dev-only `tools/` crate (no
 
 - `main.rs` (thin), `cli.rs` (clap + dispatch), `overrides.rs` (flags → `OcrConfig`), `output.rs` (text/JSON rendering), `timing.rs` (`--timings`), `style.rs` (anstyle palette).
 
-Root config: `poly.toml`, `rustfmt.toml`, `deny.toml`, `Taskfile.yaml` + `.task/`.
+Root config: `poly.toml`, `rustfmt.toml`, `deny.toml`, `mise.toml` + `mise-tasks/`.
