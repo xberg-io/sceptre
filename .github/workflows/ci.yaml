@@ -14,8 +14,6 @@ permissions:
 
 env:
   CARGO_TERM_COLOR: always
-  # Jobs install only the tools they name in install-args; mise run must not install the rest. ~keep
-  MISE_TASK_RUN_AUTO_INSTALL: "false"
   # The image the parity and end-to-end lanes OCR, fetched from the test_documents submodule. ~keep
   SAMPLE_IMAGE: test_documents/images/english.png
 
@@ -129,7 +127,7 @@ jobs:
       - uses: xberg-io/actions/setup-mise@v1
         with:
           # The changelog check needs only bash; install no mise tool. ~keep
-          install-args: --dry-run
+          install: "false"
       - run: mise run docs:changelog:check
 
   test:
@@ -181,7 +179,7 @@ jobs:
       - uses: xberg-io/actions/setup-mise@v1
         with:
           # The tasks need only mise and the Rust toolchain; install no mise tool. ~keep
-          install-args: --dry-run
+          install: "false"
 
       - name: Verify the CLI ONNX Runtime feature matrix
         # Cheap (`cargo tree --locked`: no build, no network) and the only check that a

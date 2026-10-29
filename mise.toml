@@ -97,7 +97,7 @@ run = "python3 scripts/tests/test_published_release.py"
 
 [tasks."governance:hooks:install"]
 description = "Provision machine preferences and install reviewed AI governance hooks"
-file = "https://raw.githubusercontent.com/xberg-io/toolchains/v1.4.0/tasks/governance/hooks-install.sh"
+file = "https://raw.githubusercontent.com/xberg-io/toolchains/v1.5.0/tasks/governance/hooks-install.sh"
 
 [tasks."governance:check"]
 description = "Check materialized local governance outputs against shared sources"

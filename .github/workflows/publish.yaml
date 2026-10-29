@@ -27,8 +27,6 @@ permissions:
 
 env:
   CARGO_TERM_COLOR: always
-  # Jobs install only the tools they name in install-args; mise run must not install the rest. ~keep
-  MISE_TASK_RUN_AUTO_INSTALL: "false"
 
 jobs:
   plugin-meta:

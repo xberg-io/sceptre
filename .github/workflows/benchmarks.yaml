@@ -35,8 +35,6 @@ permissions:
 
 env:
   CARGO_TERM_COLOR: always
-  # Jobs install only the tools they name in install-args; mise run must not install the rest. ~keep
-  MISE_TASK_RUN_AUTO_INSTALL: "false"
   # The image the backend matrix and the parity lanes OCR, fetched from the test_documents
   # submodule. ~keep
   SAMPLE_IMAGE: test_documents/images/english.png
@@ -255,7 +253,7 @@ jobs:
 
       - uses: xberg-io/actions/setup-mise@v1
         with:
-          install-args: --dry-run
+          install: "false"
 
       - name: Cache Hugging Face models
         uses: actions/cache@v6
