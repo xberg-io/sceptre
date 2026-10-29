@@ -12,7 +12,7 @@ includes:
 
 vars:
   # Tasks and CI run the latest ai-rulez release; hooks use the one on PATH, which must be at least this. ~keep
-  AI_RULEZ_MIN_VERSION: "5.7.0"
+  AI_RULEZ_MIN_VERSION: "5.9.2"
   AI_RULEZ: "uvx ai-rulez@latest"
 
 tasks:

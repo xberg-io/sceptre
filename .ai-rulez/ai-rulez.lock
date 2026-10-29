@@ -2,9 +2,9 @@
 # Refresh it with `ai-rulez lock`; `ai-rulez generate --locked` fails when it is stale.
 
 version = 1
-ai_rulez_version = '5.8.0'
+ai_rulez_version = '5.9.2'
 scope = 'all'
-tree = 'sha256:7f6eb3876d3318af956cd54d712bc772455e0f739b1166d91c9b81f8bb6d07fb'
+tree = 'sha256:ea1e41071346995044c9de89ff3629d53ee2d6ddba46b913f37c1d2e1aa7f649'
 
 [[include]]
 name = 'xberg-cicd'
@@ -128,145 +128,145 @@ digest = 'sha256:2700d984ba10baa2e16ed19b48cc8fd5f7351776f2ce03f6712394d3912f91c
 name = 'plugin.hermes.package.src.sceptre_hermes_plugin.skills.sceptre'
 source = 'plugin/.hermes/package/src/sceptre_hermes_plugin/skills/sceptre'
 commit = ''
-digest = 'sha256:fb020dfd943eb8f7e7e6751c2ea3f4a2ccceb1a46e7dfb608d166231d6b6ef64'
+digest = 'sha256:a0ab180458d2d96b4d3e000e06f2513a7436905e775be871e9ef6c86ca9396aa'
 
 [[served]]
 name = 'plugin.hermes.package.src.sceptre_hermes_plugin.skills.sceptre-integrating-rust'
 source = 'plugin/.hermes/package/src/sceptre_hermes_plugin/skills/sceptre-integrating-rust'
 commit = ''
-digest = 'sha256:32b8a1dcd1a8dd1861f719a004f8d93c3d4b5f003e78e96dc0c99577f22af078'
+digest = 'sha256:a51ef333cf9bae5c68cae6d96eaaba32834eb7d06290b29322308188cb5f6bae'
 
 [[served]]
 name = 'plugin.hermes.package.src.sceptre_hermes_plugin.skills.sceptre-managing-models'
 source = 'plugin/.hermes/package/src/sceptre_hermes_plugin/skills/sceptre-managing-models'
 commit = ''
-digest = 'sha256:0d6b77a5c9ec15a7237243382c103c2964244bfc3f6dabf2cf49b66cd6730dd8'
+digest = 'sha256:d46675854f11c97fbd54e8aa04bb7aab3cd01d53375b1ebedb81a4df0b973497'
 
 [[served]]
 name = 'plugin.hermes.package.src.sceptre_hermes_plugin.skills.sceptre-ocr-images'
 source = 'plugin/.hermes/package/src/sceptre_hermes_plugin/skills/sceptre-ocr-images'
 commit = ''
-digest = 'sha256:f3a21c07b6e30a16815064d5e4bf23e5e863d473e7367619d851bd4111221b22'
+digest = 'sha256:134c97b137239a196564c4c67051d922e6412cf13afbee48a9247a7b958c3e2e'
 
 [[served]]
 name = 'plugin.hermes.package.src.sceptre_hermes_plugin.skills.sceptre-tuning-ocr'
 source = 'plugin/.hermes/package/src/sceptre_hermes_plugin/skills/sceptre-tuning-ocr'
 commit = ''
-digest = 'sha256:c72242f13c51fe0bce68fc5e921633df37b9902114dd59a445d3adcab0de67b8'
+digest = 'sha256:d868719ba7370fe5ce9ed14700e69a6123991b716a5082354938b587c4e1b91b'
 
 [[served]]
 name = 'plugin.hermes.package.src.sceptre_hermes_plugin.skills.sceptre-using-the-mcp-server'
 source = 'plugin/.hermes/package/src/sceptre_hermes_plugin/skills/sceptre-using-the-mcp-server'
 commit = ''
-digest = 'sha256:061d79e287682dbe82f6c3df3f8170ca1a44e8acbb03a2929d0154e8826d0ee8'
+digest = 'sha256:ae1bd7141f92214b27be321b97f61cc2dcc22d0efff9df9d33a308864e32f137'
 
 [[served]]
 name = 'plugin.hermes.plugins.sceptre.skills.sceptre'
 source = 'plugin/.hermes/plugins/sceptre/skills/sceptre'
 commit = ''
-digest = 'sha256:07dcfdfd080b190067e82765c1d3bfbca882d4b1220f60143c1f8a629880a4c8'
+digest = 'sha256:92a70ec4f8c34a83cd794e5469563eb62e620a4e2303752006bbc5861cf2f20e'
 
 [[served]]
 name = 'plugin.hermes.plugins.sceptre.skills.sceptre-integrating-rust'
 source = 'plugin/.hermes/plugins/sceptre/skills/sceptre-integrating-rust'
 commit = ''
-digest = 'sha256:1dce3de8760faccc3357ab2625c2f325087c2115024c2c3c6c9e504d6fe6a546'
+digest = 'sha256:7b061f842d306f0fe9dae41bb47532d68ec274bc850a155b71af9e9c59b1df06'
 
 [[served]]
 name = 'plugin.hermes.plugins.sceptre.skills.sceptre-managing-models'
 source = 'plugin/.hermes/plugins/sceptre/skills/sceptre-managing-models'
 commit = ''
-digest = 'sha256:431098986fe300893d7e90709dcfcc342c931f28a93448210ec2f42caffe9b93'
+digest = 'sha256:f917fb8fdbc1fcb7f8018fba20a9487633a54f4ee7f180c7c7c0da6d64afd9aa'
 
 [[served]]
 name = 'plugin.hermes.plugins.sceptre.skills.sceptre-ocr-images'
 source = 'plugin/.hermes/plugins/sceptre/skills/sceptre-ocr-images'
 commit = ''
-digest = 'sha256:4234b8eb8923b72d1daab5a8edd56f308e1f719bba503b310d9c2212abec40b9'
+digest = 'sha256:ed1028094a622c09463a8060a41e92b1db9e8ba36699e0ce678d13240c59425c'
 
 [[served]]
 name = 'plugin.hermes.plugins.sceptre.skills.sceptre-tuning-ocr'
 source = 'plugin/.hermes/plugins/sceptre/skills/sceptre-tuning-ocr'
 commit = ''
-digest = 'sha256:b8112f60cd4310a49cbe8ee292c72b94c77f78cdb2c761960453244208444ee9'
+digest = 'sha256:500b030e6f32bc18623389574451957228e031a3a45af32f9f1431065e495801'
 
 [[served]]
 name = 'plugin.hermes.plugins.sceptre.skills.sceptre-using-the-mcp-server'
 source = 'plugin/.hermes/plugins/sceptre/skills/sceptre-using-the-mcp-server'
 commit = ''
-digest = 'sha256:88e7b921de1c74a8326629a9e5039e556b5cf6486e7d43e96f9890cdd4621f79'
+digest = 'sha256:0898929600300fc49cd526786d2cea30988a4f76090d962ee7f68e71243d67aa'
 
 [[served]]
 name = 'plugin.opencode.skills.sceptre'
 source = 'plugin/.opencode/skills/sceptre'
 commit = ''
-digest = 'sha256:c613b9883d2aeac4432fa69633aa7b3ec1c29ba64ecac3aa41ec20b8ffc55b55'
+digest = 'sha256:97b6f0078d5e85064b865f2b276734a661e3821ea62b43590f584a58c89a1647'
 
 [[served]]
 name = 'plugin.opencode.skills.sceptre-integrating-rust'
 source = 'plugin/.opencode/skills/sceptre-integrating-rust'
 commit = ''
-digest = 'sha256:d2c2f518af410f8b1f1f173e89503cf8c825ff5ef7910eed7fba24bbc5fa4e23'
+digest = 'sha256:bcc35e749a9a748d8f3fdc3b02c52309dc03a8e029cc2aa72d6b0b8e78c66a7c'
 
 [[served]]
 name = 'plugin.opencode.skills.sceptre-managing-models'
 source = 'plugin/.opencode/skills/sceptre-managing-models'
 commit = ''
-digest = 'sha256:ea144f239bccf53c0b8a98e89e1fc76c6fb94ae495a713886a84ebe829f8a6ec'
+digest = 'sha256:814577f4f6af416f304ef5ca49a76282b7499328622e3d9d4c6d37b885d91c67'
 
 [[served]]
 name = 'plugin.opencode.skills.sceptre-ocr-images'
 source = 'plugin/.opencode/skills/sceptre-ocr-images'
 commit = ''
-digest = 'sha256:b80cca1f585a7373ecde84708e28d6e9fd401ce94ff11b2852a6f7a948069770'
+digest = 'sha256:93b25830459a1f9f57f87b7387b29aa8065af83280cb3dbb0b6099e27da7cab0'
 
 [[served]]
 name = 'plugin.opencode.skills.sceptre-tuning-ocr'
 source = 'plugin/.opencode/skills/sceptre-tuning-ocr'
 commit = ''
-digest = 'sha256:1c2d997ebb06a4349d9252b635608b02283ac4548dde1baa3c71c8cd8cc33f89'
+digest = 'sha256:c2d36eebf08621680cd82311216eda68738a3bdd06e5d35ef58da26af4ec841f'
 
 [[served]]
 name = 'plugin.opencode.skills.sceptre-using-the-mcp-server'
 source = 'plugin/.opencode/skills/sceptre-using-the-mcp-server'
 commit = ''
-digest = 'sha256:5e1c9adf8de05dd0601dfdbb94f9d1e6185326a039e5f875277c6d7fb9b36fd7'
+digest = 'sha256:299eb59b4735871a9795557d63ee442ba8a6eb3c8b28720bc914acaee1153c10'
 
 [[served]]
 name = 'plugin.skills.sceptre'
 source = 'plugin/skills/sceptre'
 commit = ''
-digest = 'sha256:c31631bef8b77cf374deb6b591a0b06e6075e901c61a77de60d4e94f0df78f37'
+digest = 'sha256:01457f2d78d1752df60df33fa7e8a6850b601021d8619972f23bdab4f503b05e'
 
 [[served]]
 name = 'plugin.skills.sceptre-integrating-rust'
 source = 'plugin/skills/sceptre-integrating-rust'
 commit = ''
-digest = 'sha256:17e4be5c0a95d80f29edd6b306624606a57530898b2f2317e967f1d4d6cd536f'
+digest = 'sha256:d2acfa83c5a02c1fb19327c06e800b4575e88db9ecd2c39e81b9845e4d0e4e88'
 
 [[served]]
 name = 'plugin.skills.sceptre-managing-models'
 source = 'plugin/skills/sceptre-managing-models'
 commit = ''
-digest = 'sha256:865c6b9838581f25bba3fdef26b18402bfed291b2d90f0d9d48c380aa61a26e7'
+digest = 'sha256:20be72b8294ff39b58f2738c3783eebb9df301d44611dc75f19a90562e4c79a8'
 
 [[served]]
 name = 'plugin.skills.sceptre-ocr-images'
 source = 'plugin/skills/sceptre-ocr-images'
 commit = ''
-digest = 'sha256:330590fb3bbb450e5094761f214bb42fa53e64348e37f952d819b1f33d37b1c4'
+digest = 'sha256:978c425be18899f9b012fed5df88ce5c587362324ad45a877b1767c930a205b0'
 
 [[served]]
 name = 'plugin.skills.sceptre-tuning-ocr'
 source = 'plugin/skills/sceptre-tuning-ocr'
 commit = ''
-digest = 'sha256:32f20fcdbe6cdc97cbbeeefb28857a9791ea37bbf95747d76f8091bdd0decb5c'
+digest = 'sha256:3f0e579bd58ad4168a8dfcf1e64acdd7bcc3c4e23a1e63c665bf05d13765bf15'
 
 [[served]]
 name = 'plugin.skills.sceptre-using-the-mcp-server'
 source = 'plugin/skills/sceptre-using-the-mcp-server'
 commit = ''
-digest = 'sha256:e3e7a0cfed1505f11d25e5b745f1d2c08ef3df220833d7b146dd313866c3d91c'
+digest = 'sha256:2fcbacd071c78740ed182d9f44f3353c8b606ce25eb1403c7442193f21daa6ee'
 
 [[served]]
 name = 'poly-lint-format'
@@ -284,25 +284,25 @@ digest = 'sha256:eac7dfc698c0fbdf8fd4d45f2f29f05d89775cb5d4e81f78aee07e77ec45972
 name = 'sceptre'
 source = 'skills/sceptre'
 commit = ''
-digest = 'sha256:5240aebed3402eb77f96cda0f4cabd367479c634360cdbc4cae1a4d5bac3ac55'
+digest = 'sha256:3e248a9a85bd0c7109d0367541de086ba3eed9cdba0b2a88ecc231627bd64653'
 
 [[served]]
 name = 'sceptre-integrating-rust'
 source = 'skills/sceptre-integrating-rust'
 commit = ''
-digest = 'sha256:768b5401b76fb19aa5b699ee6231b40bca17f2545daa79a61c63387e81c4b0f0'
+digest = 'sha256:fa3b7980919c6e960f17006cacf115ac6c763e8b4d34d3281a4930c841666730'
 
 [[served]]
 name = 'sceptre-managing-models'
 source = 'skills/sceptre-managing-models'
 commit = ''
-digest = 'sha256:71bb2155bcac5a29a86e53fd8eb45daffb780a16afdb3b8385d992165be80146'
+digest = 'sha256:764f5337de98a9734d7c38afcde08749086708702d3bfe707999d2cc6871337a'
 
 [[served]]
 name = 'sceptre-ocr-images'
 source = 'skills/sceptre-ocr-images'
 commit = ''
-digest = 'sha256:8c4a5f089e1840e66377c09b9aecb61f6e1583a406b8ce8b695485fb10e37552'
+digest = 'sha256:89a5a373d16d4016ff301501674f041ae04e56af24bde720acd8411296d89e56'
 
 [[served]]
 name = 'sceptre-release'
@@ -314,13 +314,13 @@ digest = 'sha256:d5e4355039b671c428c32bf4829206161f0968b94341bfac3110df92ae41d95
 name = 'sceptre-tuning-ocr'
 source = 'skills/sceptre-tuning-ocr'
 commit = ''
-digest = 'sha256:2e871f6b9727ea80dd9eebb763a2fa0cdc519427681e22742e762dfa48fa4d90'
+digest = 'sha256:6b70958f113f735384968288a926b737ac4eeb3f67358b44f1657bb92d218b5f'
 
 [[served]]
 name = 'sceptre-using-the-mcp-server'
 source = 'skills/sceptre-using-the-mcp-server'
 commit = ''
-digest = 'sha256:e6018c45409cb7ab86d8571a8a4984a6f4a73cdd81122888939b49d4fe00255a'
+digest = 'sha256:84324d881c0ae50ca6199662d26438509314ce85fc55fd0017d10b7f55e81f1e'
 
 [[served]]
 name = 'scoop-distribution'
