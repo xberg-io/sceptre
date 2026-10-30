@@ -1,7 +1,7 @@
 ---
 status: accepted
 date: 2026-08-07
-deciders: Na'aman Hirschfeld
+decision-makers: ["Na'aman Hirschfeld"]
 ---
 
 # Opt-in CTC beam-search decoding, greedy stays default

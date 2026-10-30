@@ -1,7 +1,7 @@
 ---
 status: accepted
 date: 2026-08-21
-deciders: Na'aman Hirschfeld
+decision-makers: ["Na'aman Hirschfeld"]
 ---
 
 # Row-aware reading order across detection buckets

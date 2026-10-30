@@ -1,7 +1,7 @@
 ---
 status: accepted
 date: 2026-08-01
-deciders: Na'aman Hirschfeld
+decision-makers: ["Na'aman Hirschfeld"]
 ---
 
 # Parity harness: dual golden fixtures, HF-cache model resolution, and the test corpus

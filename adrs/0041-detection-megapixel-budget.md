@@ -1,7 +1,7 @@
 ---
 status: accepted
 date: 2026-08-08
-deciders: Na'aman Hirschfeld
+decision-makers: ["Na'aman Hirschfeld"]
 ---
 
 # Opt-in megapixel budget for detection, `canvas_size` default unchanged

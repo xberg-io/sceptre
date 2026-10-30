@@ -1,7 +1,7 @@
 ---
 status: accepted
 date: 2026-08-03
-deciders: Na'aman Hirschfeld
+decision-makers: ["Na'aman Hirschfeld"]
 supersedes: "0020"
 ---
 

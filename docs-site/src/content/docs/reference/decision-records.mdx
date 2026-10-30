@@ -12,8 +12,9 @@ index of that log.
 
 * One decision per file, named `NNNN-kebab-title.md` and numbered sequentially from `0000`.
 * Front matter carries `status` (`proposed`, `accepted`, `rejected`, `deprecated` or `superseded`),
-  the `date` the decision was made and its deciders. A superseded ADR names its successor in
-  `superseded-by`; a partial change is a new ADR that lists what it `amends`.
+  the `date` the decision was made and its `decision-makers`. A superseded ADR names its successor
+  in `superseded-by` and the successor names it in `supersedes`; a partial change is a new ADR that
+  lists what it `amends`.
 * An accepted ADR is never edited. Reversing or changing a decision means adding a new ADR that
   supersedes or amends the old one.
 * `adrlint lint` and `adrlint format --check` check the log against MADR, configured by

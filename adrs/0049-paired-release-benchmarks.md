@@ -1,7 +1,7 @@
 ---
 status: accepted
 date: 2026-10-27
-deciders: Na'aman Hirschfeld
+decision-makers: ["Na'aman Hirschfeld"]
 amends: ["0042", "0043"]
 ---
 

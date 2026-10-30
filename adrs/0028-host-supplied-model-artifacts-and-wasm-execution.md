@@ -1,7 +1,7 @@
 ---
 status: accepted
 date: 2026-08-04
-deciders: Na'aman Hirschfeld
+decision-makers: ["Na'aman Hirschfeld"]
 ---
 
 # Host-supplied model artifacts and sequential browser-WASM execution

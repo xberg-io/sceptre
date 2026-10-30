@@ -1,7 +1,7 @@
 ---
 status: accepted
 date: 2026-07-31
-deciders: Na'aman Hirschfeld
+decision-makers: ["Na'aman Hirschfeld"]
 ---
 
 # Public `OcrEngine` seam, internal DTO boundaries, and encapsulation lockdown

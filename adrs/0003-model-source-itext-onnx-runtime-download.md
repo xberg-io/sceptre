@@ -1,7 +1,7 @@
 ---
 status: superseded
 date: 2026-07-31
-deciders: Na'aman Hirschfeld
+decision-makers: ["Na'aman Hirschfeld"]
 superseded-by: "0025"
 ---
 
