@@ -1,7 +1,7 @@
 ---
-status: proposed
+status: accepted
 date: 2026-10-27
-
+deciders: Na'aman Hirschfeld
 ---
 
 # Measure a published release and candidate on the same hosted machine

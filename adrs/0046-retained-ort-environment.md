@@ -1,6 +1,7 @@
 ---
 status: accepted
 date: 2026-10-14
+deciders: Na'aman Hirschfeld
 ---
 
 # Retain one ONNX Runtime environment per process

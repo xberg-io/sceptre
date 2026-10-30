@@ -1,7 +1,8 @@
 ---
-status: superseded by 0033
+status: superseded
 date: 2026-08-03
 deciders: Na'aman Hirschfeld
+superseded-by: "0033"
 ---
 
 # Documentation site, social assets, and CI docs deployment

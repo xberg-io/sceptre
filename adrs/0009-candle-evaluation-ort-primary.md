@@ -1,7 +1,8 @@
 ---
-status: superseded by 0031
+status: superseded
 date: 2026-07-31
 deciders: Na'aman Hirschfeld
+superseded-by: "0031"
 ---
 
 # Backend evaluation: `ort` primary, `candle` deferred off the critical path

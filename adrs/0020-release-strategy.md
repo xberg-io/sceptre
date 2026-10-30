@@ -1,7 +1,8 @@
 ---
-status: superseded by 0023
+status: superseded
 date: 2026-08-01
 deciders: Na'aman Hirschfeld
+superseded-by: "0023"
 ---
 
 # Release strategy: tag-triggered multi-platform build with crates.io dry-run

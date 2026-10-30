@@ -2,6 +2,7 @@
 status: superseded
 date: 2026-07-31
 deciders: Na'aman Hirschfeld
+superseded-by: "0026"
 ---
 
 # Scope to gen2 recognizers + CRAFT
