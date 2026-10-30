@@ -111,6 +111,7 @@ jobs:
       setup-rust: true
       setup-python: true
       python-version: "3.13"
+      check-adrs: true
       # The full Python tooling env uses macOS PyTorch wheels instead of Linux CUDA packages. ~keep
       runner: macos-26
 
