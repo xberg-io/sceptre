@@ -7,9 +7,17 @@ description: >-
 Architecturally significant decisions — a dependency or backend choice, a pipeline algorithm, a
 public API shape, a model source, a build/target strategy — are recorded as
 [MADR](https://adr.github.io/madr/)-format Architecture Decision Records under
-[`adrs/`](https://github.com/xberg-io/sceptre/tree/main/adrs) in the repository. Each ADR carries a
-`status`, a `date`, and `deciders`. ADRs are immutable once accepted: reversing a decision means
-adding a new ADR that supersedes the old one, not rewriting it.
+[`adrs/`](https://github.com/xberg-io/sceptre/tree/main/adrs) in the repository. This page is the
+index of that log.
+
+* One decision per file, named `NNNN-kebab-title.md` and numbered sequentially from `0000`.
+* Front matter carries `status` (`proposed`, `accepted`, `rejected`, `deprecated` or `superseded`),
+  the `date` the decision was made and its deciders. A superseded ADR names its successor in
+  `superseded-by`; a partial change is a new ADR that lists what it `amends`.
+* An accepted ADR is never edited. Reversing or changing a decision means adding a new ADR that
+  supersedes or amends the old one.
+* `adrlint lint` and `adrlint format --check` check the log against MADR, configured by
+  `.adrlint.toml`. Add the new row to this page in the same change as the ADR.
 
 | ADR | Title | Status |
 |---|---|---|
@@ -47,3 +55,23 @@ adding a new ADR that supersedes the old one, not rewriting it.
 | [0031](https://github.com/xberg-io/sceptre/blob/main/adrs/0031-hand-written-candle-networks.md) | Hand-written `candle` networks as the GPU and no-C++-runtime backend | Accepted |
 | [0032](https://github.com/xberg-io/sceptre/blob/main/adrs/0032-per-backend-accelerator-support.md) | Per-backend accelerator support (amends ADR 0029) | Accepted |
 | [0033](https://github.com/xberg-io/sceptre/blob/main/adrs/0033-org-migration-docs-domain-and-shared-theme.md) | Docs on `docs.sceptre.xberg.io` with the shared `@xberg-io/docs-theme` | Accepted |
+| [0034](https://github.com/xberg-io/sceptre/blob/main/adrs/0034-test-documents-corpus-via-content-addressed-fetch.md) | Test corpus via the `test_documents` submodule, content-addressed fetch (supersedes ADR 0016 corpus decision) | Accepted |
+| [0035](https://github.com/xberg-io/sceptre/blob/main/adrs/0035-backend-accelerator-benchmark-matrix.md) | Backend × accelerator benchmark matrix (amends ADR 0032) | Accepted |
+| [0036](https://github.com/xberg-io/sceptre/blob/main/adrs/0036-opt-in-ctc-beam-search-decoding.md) | Opt-in CTC beam-search decoding, greedy stays default | Accepted |
+| [0037](https://github.com/xberg-io/sceptre/blob/main/adrs/0037-opt-in-whole-page-orientation-pre-pass.md) | Opt-in whole-page orientation pre-pass, disabled by default | Accepted |
+| [0038](https://github.com/xberg-io/sceptre/blob/main/adrs/0038-orientation-requires-two-agreeing-scores.md) | Orientation applies only when two independent scores agree (amends ADR 0037) | Accepted |
+| [0039](https://github.com/xberg-io/sceptre/blob/main/adrs/0039-opencv-faithful-min-area-rect.md) | OpenCV-faithful min-area-rect fitting (supersedes ADR 0013's min-area-rect step) | Accepted |
+| [0040](https://github.com/xberg-io/sceptre/blob/main/adrs/0040-models-hosted-under-the-xberg-io-hf-org.md) | Model artifacts hosted under the `xberg-io` Hugging Face org (amends ADR 0025) | Accepted |
+| [0041](https://github.com/xberg-io/sceptre/blob/main/adrs/0041-detection-megapixel-budget.md) | Opt-in megapixel budget for detection, `canvas_size` default unchanged | Accepted |
+| [0042](https://github.com/xberg-io/sceptre/blob/main/adrs/0042-host-scoped-benchmark-floors.md) | Host-scoped benchmark floors | Accepted |
+| [0043](https://github.com/xberg-io/sceptre/blob/main/adrs/0043-host-scoped-self-referential-speed-floor.md) | Host-scoped self-referential speed floor | Accepted |
+| [0044](https://github.com/xberg-io/sceptre/blob/main/adrs/0044-single-ci-check-workflow.md) | Single CI check workflow | Accepted |
+| [0045](https://github.com/xberg-io/sceptre/blob/main/adrs/0045-row-aware-detection-reading-order.md) | Row-aware reading order across detection buckets | Accepted |
+| [0046](https://github.com/xberg-io/sceptre/blob/main/adrs/0046-retained-ort-environment.md) | Retain one ONNX Runtime environment per process | Accepted |
+| [0047](https://github.com/xberg-io/sceptre/blob/main/adrs/0047-macos-bundled-ort-compiler-runtime.md) | Link the macOS compiler runtime for bundled ONNX Runtime | Accepted |
+| [0048](https://github.com/xberg-io/sceptre/blob/main/adrs/0048-main-only-ci-qualification.md) | Qualify reviewed changes on main | Accepted |
+| [0049](https://github.com/xberg-io/sceptre/blob/main/adrs/0049-paired-release-benchmarks.md) | Measure a published release and candidate on the same hosted machine | Accepted |
+| [0050](https://github.com/xberg-io/sceptre/blob/main/adrs/0050-mise-tasks-and-the-toolchain-baseline.md) | mise tasks and the toolchain baseline | Accepted |
+| [0051](https://github.com/xberg-io/sceptre/blob/main/adrs/0051-actions-major-tag-pins-and-macos-26-runners.md) | GitHub Actions on major-tag pins and macOS runners on macos-26 | Accepted |
+| [0052](https://github.com/xberg-io/sceptre/blob/main/adrs/0052-shared-agent-governance-from-agent-conventions.md) | Shared agent governance from agent-conventions modules | Accepted |
+| [0053](https://github.com/xberg-io/sceptre/blob/main/adrs/0053-agent-plugin-and-public-skills-distribution.md) | Agent plugin and public skills distribution | Accepted |

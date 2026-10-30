@@ -240,7 +240,9 @@ Three stages behind one `Reader`, mirroring EasyOCR's latest pipeline:
    `tract` (pure Rust), or `candle` (hand-written networks over the same ONNX weights, able to run
    on Metal or CUDA). `config`, `types`, and geometry stay backend-agnostic.
 
-Design decisions live as [MADR records under `adrs/`](adrs/); conventions live in `.ai-rulez/`.
+Design decisions live as [MADR records under `adrs/`](adrs/), indexed on the
+[Decision records](https://docs.sceptre.xberg.io/reference/decision-records/) page; conventions
+live in `.ai-rulez/`.
 
 ## Scope
 
