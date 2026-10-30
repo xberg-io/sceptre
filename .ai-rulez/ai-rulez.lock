@@ -4,7 +4,7 @@
 version = 1
 ai_rulez_version = '5.9.2'
 scope = 'all'
-tree = 'sha256:cc15cff8a1556529dcbdbcc472206d8aa3d557d3a28403df274e5906c5660d1c'
+tree = 'sha256:9be85be9494f30564694b9a8a0b86d03e86612e682550fa2454d4823491f7c11'
 
 [[include]]
 name = 'xberg-cicd'
@@ -49,13 +49,13 @@ digest = 'sha256:a1a929c5d6ae0250616ccac332501fe1d899136513ef1f8425d010572a27740
 [[served]]
 name = 'agent-coordination'
 source = 'include:xberg-core/skills/agent-coordination/SKILL.md'
-commit = 'b09c32e0871b8927199a77c1132c820e8f5a58d8'
+commit = 'a8ed32b44b161605dbc8b934a417ff136178a980'
 digest = 'sha256:24e1e82ac9008a98e08275e25263f1b59447205d04ed0865a1e1328be76d22f3'
 
 [[served]]
 name = 'basemind-tools'
 source = 'include:xberg-core/skills/basemind-tools/SKILL.md'
-commit = 'b09c32e0871b8927199a77c1132c820e8f5a58d8'
+commit = 'a8ed32b44b161605dbc8b934a417ff136178a980'
 digest = 'sha256:ff5cf13e1d705a00567e6ea1f4e4ea2774fd8d7e780f53586bb41727a10c4478'
 
 [[served]]
@@ -91,14 +91,14 @@ digest = 'sha256:fbc7d452c7171e71341578b6c7a56fc2c87031c0ce15d35884bc3260e04ff68
 [[served]]
 name = 'feature-flag-conventions'
 source = 'include:xberg-languages/skills/feature-flag-conventions/SKILL.md'
-commit = 'b09c32e0871b8927199a77c1132c820e8f5a58d8'
+commit = 'a8ed32b44b161605dbc8b934a417ff136178a980'
 digest = 'sha256:72ab88042d36374449285381c76935c2032bbd9b5f552d18f4e1c19f120b093c'
 
 [[served]]
 name = 'github-workflow-conventions'
 source = 'include:xberg-cicd/skills/github-workflow-conventions/SKILL.md'
-commit = 'b09c32e0871b8927199a77c1132c820e8f5a58d8'
-digest = 'sha256:c2447f22b656836ec6ecf13e68426f7860160152844f5301a84ce1b87df918ad'
+commit = 'a8ed32b44b161605dbc8b934a417ff136178a980'
+digest = 'sha256:da5cc78cc74784665baff33403f831ce4e5afe6fb4c87eb8fa1409d034fcebc1'
 
 [[served]]
 name = 'incremental-approach'
@@ -115,13 +115,13 @@ digest = 'sha256:5cb87728d1449fadda6d8557501fcc0823509c60a37058ce4d2dda123296f67
 [[served]]
 name = 'mise-tasks'
 source = 'include:xberg-core/skills/mise-tasks/SKILL.md'
-commit = 'b09c32e0871b8927199a77c1132c820e8f5a58d8'
-digest = 'sha256:54f742c941db624fc04c0763384848caba6bc477b36514e2767166de9acd3ae3'
+commit = 'a8ed32b44b161605dbc8b934a417ff136178a980'
+digest = 'sha256:31534b5c6a3277702ec20250ac3791d5a55c3d2e7ed288f81afe7100bd6ae68a'
 
 [[served]]
 name = 'mise-toolchains'
 source = 'include:xberg-core/skills/mise-toolchains/SKILL.md'
-commit = 'b09c32e0871b8927199a77c1132c820e8f5a58d8'
+commit = 'a8ed32b44b161605dbc8b934a417ff136178a980'
 digest = 'sha256:70ac84a345c190d8fcb4560f85535058c201d4fb9e80b7ae1226c91622472585'
 
 [[served]]
@@ -140,157 +140,157 @@ digest = 'sha256:2700d984ba10baa2e16ed19b48cc8fd5f7351776f2ce03f6712394d3912f91c
 name = 'plugin.hermes.package.src.sceptre_hermes_plugin.skills.sceptre'
 source = 'plugin/.hermes/package/src/sceptre_hermes_plugin/skills/sceptre'
 commit = ''
-digest = 'sha256:a0ab180458d2d96b4d3e000e06f2513a7436905e775be871e9ef6c86ca9396aa'
+digest = 'sha256:a44fc573fb05e356efd1b74732357dde054fd8d783d750cc915212b2e63fda5e'
 
 [[served]]
 name = 'plugin.hermes.package.src.sceptre_hermes_plugin.skills.sceptre-integrating-rust'
 source = 'plugin/.hermes/package/src/sceptre_hermes_plugin/skills/sceptre-integrating-rust'
 commit = ''
-digest = 'sha256:a51ef333cf9bae5c68cae6d96eaaba32834eb7d06290b29322308188cb5f6bae'
+digest = 'sha256:4bdd6a2797fcfecd1fbff1bb732558003c5689a58af38aab40504f03de256345'
 
 [[served]]
 name = 'plugin.hermes.package.src.sceptre_hermes_plugin.skills.sceptre-managing-models'
 source = 'plugin/.hermes/package/src/sceptre_hermes_plugin/skills/sceptre-managing-models'
 commit = ''
-digest = 'sha256:d46675854f11c97fbd54e8aa04bb7aab3cd01d53375b1ebedb81a4df0b973497'
+digest = 'sha256:ebcb27ad8eb5508639bd2a93e938d5b29fdfe120e6e5930bb91e720f448476cb'
 
 [[served]]
 name = 'plugin.hermes.package.src.sceptre_hermes_plugin.skills.sceptre-ocr-images'
 source = 'plugin/.hermes/package/src/sceptre_hermes_plugin/skills/sceptre-ocr-images'
 commit = ''
-digest = 'sha256:134c97b137239a196564c4c67051d922e6412cf13afbee48a9247a7b958c3e2e'
+digest = 'sha256:d08ce2358aa656bbf372595c86fea91181a30fbd99148e022943dedbe578de52'
 
 [[served]]
 name = 'plugin.hermes.package.src.sceptre_hermes_plugin.skills.sceptre-tuning-ocr'
 source = 'plugin/.hermes/package/src/sceptre_hermes_plugin/skills/sceptre-tuning-ocr'
 commit = ''
-digest = 'sha256:d868719ba7370fe5ce9ed14700e69a6123991b716a5082354938b587c4e1b91b'
+digest = 'sha256:0fcc08ee399cf0588d5c6fd8c95b0d046a9db41daf3030331e8a959738e7e7c2'
 
 [[served]]
 name = 'plugin.hermes.package.src.sceptre_hermes_plugin.skills.sceptre-using-the-mcp-server'
 source = 'plugin/.hermes/package/src/sceptre_hermes_plugin/skills/sceptre-using-the-mcp-server'
 commit = ''
-digest = 'sha256:ae1bd7141f92214b27be321b97f61cc2dcc22d0efff9df9d33a308864e32f137'
+digest = 'sha256:ff2b0d378ef1675cae6fb22e333dd2bcfc43f98a685fb2c9e2ef484a13dab792'
 
 [[served]]
 name = 'plugin.hermes.plugins.sceptre.skills.sceptre'
 source = 'plugin/.hermes/plugins/sceptre/skills/sceptre'
 commit = ''
-digest = 'sha256:92a70ec4f8c34a83cd794e5469563eb62e620a4e2303752006bbc5861cf2f20e'
+digest = 'sha256:ef748bc7a7ca97fbc99e6c64efc95bf79935c6a198a39dca489cfa48bb75f3cb'
 
 [[served]]
 name = 'plugin.hermes.plugins.sceptre.skills.sceptre-integrating-rust'
 source = 'plugin/.hermes/plugins/sceptre/skills/sceptre-integrating-rust'
 commit = ''
-digest = 'sha256:7b061f842d306f0fe9dae41bb47532d68ec274bc850a155b71af9e9c59b1df06'
+digest = 'sha256:278b5d4971de222c1af380277028fe2e90ffd2ae33b4d3e530366dfb4db84aa4'
 
 [[served]]
 name = 'plugin.hermes.plugins.sceptre.skills.sceptre-managing-models'
 source = 'plugin/.hermes/plugins/sceptre/skills/sceptre-managing-models'
 commit = ''
-digest = 'sha256:f917fb8fdbc1fcb7f8018fba20a9487633a54f4ee7f180c7c7c0da6d64afd9aa'
+digest = 'sha256:b084d06ed7aefbea08ce2e2213198045a7254a99cb100da8436eb42985eed5ce'
 
 [[served]]
 name = 'plugin.hermes.plugins.sceptre.skills.sceptre-ocr-images'
 source = 'plugin/.hermes/plugins/sceptre/skills/sceptre-ocr-images'
 commit = ''
-digest = 'sha256:ed1028094a622c09463a8060a41e92b1db9e8ba36699e0ce678d13240c59425c'
+digest = 'sha256:b7447ec4aba0128294d5f8fa8b5f710ad89ba3133179e975746ccde3900e3f22'
 
 [[served]]
 name = 'plugin.hermes.plugins.sceptre.skills.sceptre-tuning-ocr'
 source = 'plugin/.hermes/plugins/sceptre/skills/sceptre-tuning-ocr'
 commit = ''
-digest = 'sha256:500b030e6f32bc18623389574451957228e031a3a45af32f9f1431065e495801'
+digest = 'sha256:07bd2221135f4c9f7ca477668fae66b1c4c420ab6d20bd5d4f00221d3bfe02d9'
 
 [[served]]
 name = 'plugin.hermes.plugins.sceptre.skills.sceptre-using-the-mcp-server'
 source = 'plugin/.hermes/plugins/sceptre/skills/sceptre-using-the-mcp-server'
 commit = ''
-digest = 'sha256:0898929600300fc49cd526786d2cea30988a4f76090d962ee7f68e71243d67aa'
+digest = 'sha256:49a2b28a55109237eda903a025008436e534d352a8a6424f70627763fda07c75'
 
 [[served]]
 name = 'plugin.opencode.skills.sceptre'
 source = 'plugin/.opencode/skills/sceptre'
 commit = ''
-digest = 'sha256:97b6f0078d5e85064b865f2b276734a661e3821ea62b43590f584a58c89a1647'
+digest = 'sha256:5e0eb89d42871f82867a244eeef25cb955b093273a1147f34368449affde0357'
 
 [[served]]
 name = 'plugin.opencode.skills.sceptre-integrating-rust'
 source = 'plugin/.opencode/skills/sceptre-integrating-rust'
 commit = ''
-digest = 'sha256:bcc35e749a9a748d8f3fdc3b02c52309dc03a8e029cc2aa72d6b0b8e78c66a7c'
+digest = 'sha256:90e73afbc9909cb8ca01124f856aae4b8b4dbb5d7e2ad40f4e7690d8ff7c4417'
 
 [[served]]
 name = 'plugin.opencode.skills.sceptre-managing-models'
 source = 'plugin/.opencode/skills/sceptre-managing-models'
 commit = ''
-digest = 'sha256:814577f4f6af416f304ef5ca49a76282b7499328622e3d9d4c6d37b885d91c67'
+digest = 'sha256:6d8f86331a543542c42ec680fd4c1f084e3dc5954c8642b3160b62b783eee178'
 
 [[served]]
 name = 'plugin.opencode.skills.sceptre-ocr-images'
 source = 'plugin/.opencode/skills/sceptre-ocr-images'
 commit = ''
-digest = 'sha256:93b25830459a1f9f57f87b7387b29aa8065af83280cb3dbb0b6099e27da7cab0'
+digest = 'sha256:3c12e71b8bbde052a69472812fc2ae93dc15dfeb50e53b97680edf94667fba9c'
 
 [[served]]
 name = 'plugin.opencode.skills.sceptre-tuning-ocr'
 source = 'plugin/.opencode/skills/sceptre-tuning-ocr'
 commit = ''
-digest = 'sha256:c2d36eebf08621680cd82311216eda68738a3bdd06e5d35ef58da26af4ec841f'
+digest = 'sha256:6d023b3d7c1682d5539d06052dcd0cbfdc31db9f8f1df1fcd43c356b4dbdee53'
 
 [[served]]
 name = 'plugin.opencode.skills.sceptre-using-the-mcp-server'
 source = 'plugin/.opencode/skills/sceptre-using-the-mcp-server'
 commit = ''
-digest = 'sha256:299eb59b4735871a9795557d63ee442ba8a6eb3c8b28720bc914acaee1153c10'
+digest = 'sha256:6e226fed56a34501209b90e24ad5f9325fdd4c6fdb715712e203c901f4df0448'
 
 [[served]]
 name = 'plugin.skills.sceptre'
 source = 'plugin/skills/sceptre'
 commit = ''
-digest = 'sha256:01457f2d78d1752df60df33fa7e8a6850b601021d8619972f23bdab4f503b05e'
+digest = 'sha256:1854d05ecfcb18bd4967cbb6b2dfd7d19f527c87cc1f809546207dcd79eb470d'
 
 [[served]]
 name = 'plugin.skills.sceptre-integrating-rust'
 source = 'plugin/skills/sceptre-integrating-rust'
 commit = ''
-digest = 'sha256:d2acfa83c5a02c1fb19327c06e800b4575e88db9ecd2c39e81b9845e4d0e4e88'
+digest = 'sha256:1bc25a9cf6356bd540d9c6481e067996e665ecaf30fdb02813b5ff035052c575'
 
 [[served]]
 name = 'plugin.skills.sceptre-managing-models'
 source = 'plugin/skills/sceptre-managing-models'
 commit = ''
-digest = 'sha256:20be72b8294ff39b58f2738c3783eebb9df301d44611dc75f19a90562e4c79a8'
+digest = 'sha256:3025b3f6f19b571a6b56ad78c749010d7a10988456518137ca80097cedef91af'
 
 [[served]]
 name = 'plugin.skills.sceptre-ocr-images'
 source = 'plugin/skills/sceptre-ocr-images'
 commit = ''
-digest = 'sha256:978c425be18899f9b012fed5df88ce5c587362324ad45a877b1767c930a205b0'
+digest = 'sha256:958e5f97a7325fe396517a04b5b19514a463a8a621bf5c0c0ddef95cab4a6951'
 
 [[served]]
 name = 'plugin.skills.sceptre-tuning-ocr'
 source = 'plugin/skills/sceptre-tuning-ocr'
 commit = ''
-digest = 'sha256:3f0e579bd58ad4168a8dfcf1e64acdd7bcc3c4e23a1e63c665bf05d13765bf15'
+digest = 'sha256:2f1ee2b7ec47374fb50db2b0c4997cf6871d1bcf0f6d99f5d8cc0ac6f97dfd47'
 
 [[served]]
 name = 'plugin.skills.sceptre-using-the-mcp-server'
 source = 'plugin/skills/sceptre-using-the-mcp-server'
 commit = ''
-digest = 'sha256:2fcbacd071c78740ed182d9f44f3353c8b606ce25eb1403c7442193f21daa6ee'
+digest = 'sha256:608d3566f8794ec910d428c418a99328b214af86da04a45729ecff988ab83eff'
 
 [[served]]
 name = 'poly-lint-format'
 source = 'include:xberg-core/skills/poly-lint-format/SKILL.md'
-commit = 'b09c32e0871b8927199a77c1132c820e8f5a58d8'
+commit = 'a8ed32b44b161605dbc8b934a417ff136178a980'
 digest = 'sha256:772854a122a129565f974e6c5ae84ef1169f7bc4f3a2068bfdc56b548c161697'
 
 [[served]]
 name = 'release-workflow'
 source = 'include:xberg-core/skills/release-workflow/SKILL.md'
-commit = 'b09c32e0871b8927199a77c1132c820e8f5a58d8'
-digest = 'sha256:06f25cb150b837b13100b02fec046d41b5fabc8304980ba53a44754c263390ed'
+commit = 'a8ed32b44b161605dbc8b934a417ff136178a980'
+digest = 'sha256:e8e9204217e11d47cc1fc8d941dfacd105c9e528d738c298868fd8d987966893'
 
 [[served]]
 name = 'sceptre'
@@ -337,7 +337,7 @@ digest = 'sha256:84324d881c0ae50ca6199662d26438509314ce85fc55fd0017d10b7f55e81f1
 [[served]]
 name = 'scoop-distribution'
 source = 'include:xberg-cicd/skills/scoop-distribution/SKILL.md'
-commit = 'b09c32e0871b8927199a77c1132c820e8f5a58d8'
+commit = 'a8ed32b44b161605dbc8b934a417ff136178a980'
 digest = 'sha256:6e9b84f5dbda314cf743a4e92178642674143d36d8b7ceef2eab6cb057581c07'
 
 [[served]]
@@ -349,7 +349,7 @@ digest = 'sha256:7ab2b543dc6608f204c957fedfc55ae902d22fda9dc8a52252330ff9b1406ff
 [[served]]
 name = 'tdd-workflow'
 source = 'include:xberg-core/skills/tdd-workflow/SKILL.md'
-commit = 'b09c32e0871b8927199a77c1132c820e8f5a58d8'
+commit = 'a8ed32b44b161605dbc8b934a417ff136178a980'
 digest = 'sha256:8651ec0982657585e697dd493effee488ec008a92362636b2262db859ab30afc'
 
 [[served]]
@@ -361,19 +361,19 @@ digest = 'sha256:f406604437e2998fc756a0a5b6a08cd832b871c188f76ee5ecbfef33184e965
 [[served]]
 name = 'tracing-conventions'
 source = 'include:xberg-languages/skills/tracing-conventions/SKILL.md'
-commit = 'b09c32e0871b8927199a77c1132c820e8f5a58d8'
+commit = 'a8ed32b44b161605dbc8b934a417ff136178a980'
 digest = 'sha256:6b41c52c1e88c3251b6c85f5196b0cd536a41f63ad5ba0862485d569259457e0'
 
 [[served]]
 name = 'verification-harness'
 source = 'include:xberg-core/skills/verification-harness/SKILL.md'
-commit = 'b09c32e0871b8927199a77c1132c820e8f5a58d8'
+commit = 'a8ed32b44b161605dbc8b934a417ff136178a980'
 digest = 'sha256:52ffa5fdd63293f4d0325b3f51a187d07eba9b69e2341da62c4603e2798dd948'
 
 [[served]]
 name = 'xberg-brand-and-docs'
 source = 'include:xberg-docs-sites/skills/xberg-brand-and-docs/SKILL.md'
-commit = 'b09c32e0871b8927199a77c1132c820e8f5a58d8'
+commit = 'a8ed32b44b161605dbc8b934a417ff136178a980'
 digest = 'sha256:8cbcbbfc52e0443832bcaefec2c99ffb8755deb5a36b2bb720c6daf4c4078316'
 
 [[item]]
