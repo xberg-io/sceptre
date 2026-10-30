@@ -2,7 +2,7 @@
 status: accepted
 date: 2026-08-03
 decision-makers: ["Na'aman Hirschfeld"]
-supersedes: "0002"
+amends: ["0002"]
 ---
 
 # Extend gen2 scope to Telugu and Kannada
@@ -48,7 +48,7 @@ Chinese) remain out of scope, unchanged from ADR 0002.
   existed for these scripts before.
 * Bad: two more models to export, host, and keep parity-tested.
 
-## Supersedes
+## Amends
 
-Supersedes [ADR 0002](0002-scope-gen2-recognizers-and-craft.md) (widens its enumerated recognizer
+Amends [ADR 0002](0002-scope-gen2-recognizers-and-craft.md) (widens its enumerated recognizer
 list from six to eight). The gen1-out-of-scope decision is carried forward unchanged.

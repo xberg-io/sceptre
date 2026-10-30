@@ -1,8 +1,7 @@
 ---
-status: superseded
+status: accepted
 date: 2026-07-31
 decision-makers: ["Na'aman Hirschfeld"]
-superseded-by: "0026"
 ---
 
 # Scope to gen2 recognizers + CRAFT

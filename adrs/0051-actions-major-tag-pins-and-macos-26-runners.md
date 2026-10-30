@@ -2,7 +2,7 @@
 status: accepted
 date: 2026-10-28
 decision-makers: ["Na'aman Hirschfeld"]
-amends: ["0031", "0035"]
+amends: ["0020", "0031", "0035"]
 ---
 
 # GitHub Actions on major-tag pins and macOS runners on macos-26
@@ -45,7 +45,8 @@ The organization-wide rules are
 [org ADR-0009 (macOS runners macos-26 only)](https://github.com/xberg-io/agent-conventions/blob/main/adrs/0009-macos-runners-macos-26-only.md).
 This ADR records how sceptre applies them.
 
-This amends ADR 0035's runner assignment, whose `macos-26` text 39e3bad wrote in place, and
+This amends ADR 0020's release build matrix, which named `macos-latest` and whose build ADR 0023
+kept unchanged; that build now runs on `macos-26`. It also amends ADR 0035's runner assignment, whose `macos-26` text 39e3bad wrote in place, and
 ADR 0031: the `macos-latest` measurements it quotes are historical and stay as recorded, and new
 macOS measurements run on `macos-26`.
 

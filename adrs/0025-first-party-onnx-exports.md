@@ -2,8 +2,7 @@
 status: accepted
 date: 2026-08-03
 decision-makers: ["Na'aman Hirschfeld"]
-supersedes: "0003"
-amends: ["0008", "0011"]
+amends: ["0003", "0008", "0011"]
 ---
 
 # First-party ONNX exports on the `sceptre-ocr` Hugging Face org
@@ -69,9 +68,11 @@ control and reproducible exports we can re-run.
 * Neutral: fresh exports produce different bytes than itextresearch's, so pins and the `sceptre`
   snapshot side of the golden fixtures are regenerated.
 
-## Supersedes
+## Amends
 
-Supersedes [ADR 0003](0003-model-source-itext-onnx-runtime-download.md). See also the status notes
+Amends [ADR 0003](0003-model-source-itext-onnx-runtime-download.md). The runtime-download,
+sha256-verification, and HF-cache mechanics (and ADR 0017) are unchanged; only the source and
+export ownership change. See also the status notes
 on [ADR 0008](0008-uv-taskfile-tools-infra.md) (export path ordering) and
 [ADR 0011](0011-repointable-registry-owner.md) (repo-name change beyond the owner override).
 

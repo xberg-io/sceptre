@@ -1,8 +1,7 @@
 ---
-status: superseded
+status: accepted
 date: 2026-08-01
 decision-makers: ["Na'aman Hirschfeld"]
-superseded-by: "0023"
 ---
 
 # Release strategy: tag-triggered multi-platform build with crates.io dry-run
