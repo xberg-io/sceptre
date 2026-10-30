@@ -35,7 +35,7 @@ This installs the toolchain, the dependencies, and the pre-commit hooks via `pol
 
 Sceptre processes user-supplied images and documents, and crosses into native libraries and models to do it. Crafted input must fail gracefully rather than panic, and model files must only be loaded from paths the caller controls.
 
-Architectural decisions are recorded as ADRs under `adrs/`. If your change alters an interface or a runtime assumption, add or update one in the same PR.
+Architectural decisions are recorded as ADRs under `adrs/`. If your change alters an interface or a runtime assumption, add a new ADR in the same PR; never edit an accepted one, supersede or amend it with a new ADR instead.
 
 ## Commit guidelines
 

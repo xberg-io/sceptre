@@ -4,7 +4,7 @@
 version = 1
 ai_rulez_version = '5.9.2'
 scope = 'all'
-tree = 'sha256:fee21e1a3c32a19b30a0fa79c46ffca25a4a80232ba839f3808996f9c7209dc1'
+tree = 'sha256:51fd64a94e76d1810f8ac82d92f41a58651b3808396dc385f47b41ab2ea77af3'
 
 [[include]]
 name = 'xberg-cicd'
@@ -392,7 +392,7 @@ digest = 'sha256:5cf14ac17afea2016ea1bbb20359101abf82003df9d9d55fa0dc1d69f0e1a71
 kind = 'rule'
 id = 'adr-discipline'
 path = 'rules/adr-discipline.md'
-digest = 'sha256:f616b267a6775c9c7cf08fbf0825328c4765af121c9b973678bc3ee8bed5c74b'
+digest = 'sha256:db93092eb69b0296b84db4c0013bed9215d6ce618bc08042ff1d001b773edfdd'
 
 [[item]]
 kind = 'rule'
