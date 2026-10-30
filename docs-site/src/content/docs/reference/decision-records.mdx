@@ -56,17 +56,17 @@ index of that log.
 | [0031](https://github.com/xberg-io/sceptre/blob/main/adrs/0031-hand-written-candle-networks.md) | Hand-written `candle` networks as the GPU and no-C++-runtime backend | Accepted |
 | [0032](https://github.com/xberg-io/sceptre/blob/main/adrs/0032-per-backend-accelerator-support.md) | Per-backend accelerator support (amends ADR 0029) | Accepted |
 | [0033](https://github.com/xberg-io/sceptre/blob/main/adrs/0033-org-migration-docs-domain-and-shared-theme.md) | Docs on `docs.sceptre.xberg.io` with the shared `@xberg-io/docs-theme` | Accepted |
-| [0034](https://github.com/xberg-io/sceptre/blob/main/adrs/0034-test-documents-corpus-via-content-addressed-fetch.md) | Test corpus via the `test_documents` submodule, content-addressed fetch (supersedes ADR 0016 corpus decision) | Accepted |
-| [0035](https://github.com/xberg-io/sceptre/blob/main/adrs/0035-backend-accelerator-benchmark-matrix.md) | Backend × accelerator benchmark matrix (amends ADR 0032) | Accepted |
+| [0034](https://github.com/xberg-io/sceptre/blob/main/adrs/0034-test-documents-corpus-via-content-addressed-fetch.md) | Test corpus: the `test_documents` submodule via content-addressed fetch, not vendored fixtures | Accepted |
+| [0035](https://github.com/xberg-io/sceptre/blob/main/adrs/0035-backend-accelerator-benchmark-matrix.md) | Backend x accelerator benchmark matrix (amends ADR 0032) | Accepted |
 | [0036](https://github.com/xberg-io/sceptre/blob/main/adrs/0036-opt-in-ctc-beam-search-decoding.md) | Opt-in CTC beam-search decoding, greedy stays default | Accepted |
 | [0037](https://github.com/xberg-io/sceptre/blob/main/adrs/0037-opt-in-whole-page-orientation-pre-pass.md) | Opt-in whole-page orientation pre-pass, disabled by default | Accepted |
-| [0038](https://github.com/xberg-io/sceptre/blob/main/adrs/0038-orientation-requires-two-agreeing-scores.md) | Orientation applies only when two independent scores agree (amends ADR 0037) | Accepted |
-| [0039](https://github.com/xberg-io/sceptre/blob/main/adrs/0039-opencv-faithful-min-area-rect.md) | OpenCV-faithful min-area-rect fitting (supersedes ADR 0013's min-area-rect step) | Accepted |
-| [0040](https://github.com/xberg-io/sceptre/blob/main/adrs/0040-models-hosted-under-the-xberg-io-hf-org.md) | Model artifacts hosted under the `xberg-io` Hugging Face org (amends ADR 0025) | Accepted |
+| [0038](https://github.com/xberg-io/sceptre/blob/main/adrs/0038-orientation-requires-two-agreeing-scores.md) | A rotation is applied only when two independent scores agree (amends ADR 0037) | Accepted |
+| [0039](https://github.com/xberg-io/sceptre/blob/main/adrs/0039-opencv-faithful-min-area-rect.md) | OpenCV-faithful min-area-rect fitting (supersedes ADR 0013's min-area-rect half) | Accepted |
+| [0040](https://github.com/xberg-io/sceptre/blob/main/adrs/0040-models-hosted-under-the-xberg-io-hf-org.md) | Model artifacts move to the `xberg-io` Hugging Face org (amends ADR 0025) | Accepted |
 | [0041](https://github.com/xberg-io/sceptre/blob/main/adrs/0041-detection-megapixel-budget.md) | Opt-in megapixel budget for detection, `canvas_size` default unchanged | Accepted |
-| [0042](https://github.com/xberg-io/sceptre/blob/main/adrs/0042-host-scoped-benchmark-floors.md) | Host-scoped benchmark floors | Accepted |
-| [0043](https://github.com/xberg-io/sceptre/blob/main/adrs/0043-host-scoped-self-referential-speed-floor.md) | Host-scoped self-referential speed floor | Accepted |
-| [0044](https://github.com/xberg-io/sceptre/blob/main/adrs/0044-single-ci-check-workflow.md) | Single CI check workflow | Accepted |
+| [0042](https://github.com/xberg-io/sceptre/blob/main/adrs/0042-host-scoped-benchmark-floors.md) | Host-scoped absolute benchmark floors (amends ADR 0021) | Accepted |
+| [0043](https://github.com/xberg-io/sceptre/blob/main/adrs/0043-host-scoped-self-referential-speed-floor.md) | Host-scoped, self-referential warm-speed floor (amends ADR 0021) | Accepted |
+| [0044](https://github.com/xberg-io/sceptre/blob/main/adrs/0044-single-ci-check-workflow.md) | One CI check workflow, gated by a paths filter | Accepted |
 | [0045](https://github.com/xberg-io/sceptre/blob/main/adrs/0045-row-aware-detection-reading-order.md) | Row-aware reading order across detection buckets | Accepted |
 | [0046](https://github.com/xberg-io/sceptre/blob/main/adrs/0046-retained-ort-environment.md) | Retain one ONNX Runtime environment per process | Accepted |
 | [0047](https://github.com/xberg-io/sceptre/blob/main/adrs/0047-macos-bundled-ort-compiler-runtime.md) | Link the macOS compiler runtime for bundled ONNX Runtime | Accepted |
