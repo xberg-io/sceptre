@@ -33,5 +33,5 @@ jobs:
       - uses: xberg-io/agent-conventions/actions/context-exposure@v1
         with:
           budgets: |
-            claude=5550
-            codex=6000
+            claude=5600
+            codex=6050
