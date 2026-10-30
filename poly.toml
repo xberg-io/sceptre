@@ -53,6 +53,9 @@ exclude = [
   "test_documents/**",
   "**/pnpm-lock.yaml",
   "/skills/**",
+  # adrlint owns ADR Markdown with its own rumdl config and content-hash lock; poly would
+  # double-report and its lock-unaware formatter would break locks. ~keep
+  "/adrs/**",
 ]
 
 [lint.markdown.rumdl]
@@ -221,6 +224,7 @@ lint = { exclude = [
   "test_documents/**",
   "**/pnpm-lock.yaml",
   "/.ai-rulez/.generated-manifest.json",
+  "/adrs/**",
 ] }
 fmt = { exclude = [
   "**/*.lock",
@@ -237,6 +241,7 @@ fmt = { exclude = [
   "test_documents/**",
   "**/pnpm-lock.yaml",
   "/.ai-rulez/.generated-manifest.json",
+  "/adrs/**",
 ] }
 commit = { stages = ["commit-msg"] }
 file_safety = { exclude = [
