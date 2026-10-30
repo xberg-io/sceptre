@@ -31,8 +31,10 @@ end-to-end: export them ourselves and host them under an org we manage.
 
 ## Decision Outcome
 
-Chosen option: **build a first-party `.pth → ONNX` export pipeline and host the exports under the
-`sceptre-ocr` Hugging Face org**, superseding ADR 0003's third-party source.
+Chosen option: "build a first-party `.pth → ONNX` export pipeline and host the exports under the
+`sceptre-ocr` Hugging Face org", superseding ADR 0003's third-party source, because we want
+sceptre to own its models end-to-end, with availability, provenance, and licensing under our
+control and reproducible exports we can re-run.
 
 * The export pipeline is implemented in the Python `sceptre_rs_tools` package (torch + easyocr +
   onnx, in the opt-in `export` dependency group). It loads each EasyOCR network, runs

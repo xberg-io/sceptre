@@ -12,9 +12,16 @@ Running the same CI matrices on each evolving pull request and again on main con
 before changes are ready. The maintainer requested local review and re-review of updated pull
 requests, followed by one qualification pass on ready main.
 
+## Considered Options
+
+* Run the same CI matrices on each evolving pull request and again on main (status quo).
+* Review and re-review pull requests locally, followed by one qualification pass on ready main.
+
 ## Decision Outcome
 
-Remove pull-request triggers from CI, documentation deployment, plugin checks, governance checks
+Chosen option: "one qualification pass on ready main", because running the same CI matrices on each
+evolving pull request and again on main consumes runners before changes are ready. Remove
+pull-request triggers from CI, documentation deployment, plugin checks, governance checks
 and benchmark checks. Restrict pushes and all jobs in these workflows to `refs/heads/main`,
 including manual benchmark dispatches. Retain path filtering, fail-open change detection, every
 quality gate, and the existing weekly benchmark schedule on main. A superseding main push can

@@ -85,6 +85,10 @@ that can be broken by someone else's changelog.
 
 ## Decision Outcome
 
+Chosen option: "absolute, host-scoped, self-referential floor on sceptre's own warm throughput",
+because a gate must fail for the reason it names, and two floors that answer the same question
+should have the same shape, so a reader learns the rule once.
+
 1. **The speed gate is absolute and self-referential.** `--assert` requires this run's sceptre
    warm/batch throughput to be at least `SCEPTRE_THROUGHPUT_FLOOR_FACTOR` (0.90) times the
    `headline.sceptre_warm.throughput_img_s` carried by the committed

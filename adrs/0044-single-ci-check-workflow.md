@@ -41,8 +41,10 @@ concurrency-group boilerplate three times over.
 
 ## Decision Outcome
 
-**Merge `ci-rust.yaml`, `ci-lint.yaml`, and `ci-python.yaml` into a single `ci.yaml`.** `validate`
-and `changelog` (from `ci-lint.yaml`) run unconditionally, exactly as before. The six Rust jobs and
+Chosen option: "merge `ci-rust.yaml`, `ci-lint.yaml`, and `ci-python.yaml` into a single
+`ci.yaml`", because CI status should read as one signal for one product, not require summing
+across files. `validate` and `changelog` (from `ci-lint.yaml`) run unconditionally, exactly as
+before. The six Rust jobs and
 the `python` job each gain `needs: changes` and an `if:` that ANDs the existing guard with
 `needs.changes.outputs.{rust,python} == 'true'`.
 

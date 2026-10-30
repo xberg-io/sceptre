@@ -57,8 +57,10 @@ one exists.
 
 ## Decision Outcome
 
-Chosen: `crates/sceptre/tests/backend_matrix.rs`, one `#[ignore]`d test per backend/accelerator
-leg, gated behind `SCEPTRE_REQUIRE_MODELS` exactly like `backend_agreement.rs`, aggregated by
+Chosen option: "an `#[ignore]`d integration test, run explicitly with `--ignored`", because it is a
+test binary, which is exactly what `build-gpu-test-binary@v1` knows how to extract and ship to
+`runner-gpu-l4`: `crates/sceptre/tests/backend_matrix.rs`, one `#[ignore]`d test per
+backend/accelerator leg, gated behind `SCEPTRE_REQUIRE_MODELS` exactly like `backend_agreement.rs`, aggregated by
 `python/sceptre_rs_tools/backend_matrix.py` into a workflow artifact and
 `$GITHUB_STEP_SUMMARY`. It runs from a new `.github/workflows/benchmarks.yaml`, which also
 re-homes the `bench` (criterion) and `benchmark`/`benchmark-drift` (EasyOCR head-to-head) jobs
@@ -152,7 +154,7 @@ which **does** change the numbers the published figures and `--assert` floors we
 on. The first scheduled run on the new runner is deliberate re-baselining, and its provenance
 block records the runner label so a future reader can tell which host produced it.
 
-## Consequences
+### Consequences
 
 * Good: choosing a backend or accelerator is now an answerable question with a number behind
   it, refreshed by CI rather than hand-measured once per ADR.

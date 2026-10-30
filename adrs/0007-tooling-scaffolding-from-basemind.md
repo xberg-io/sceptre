@@ -11,9 +11,15 @@ deciders: Na'aman Hirschfeld
 We need a lint/format/supply-chain/CI toolchain from day one. A sibling project,
 basemind, already has a mature setup worth reusing rather than reinventing.
 
+## Considered Options
+
+* Adapt basemind's tooling scaffolding.
+* Reinvent the lint/format/supply-chain/CI toolchain from scratch.
+
 ## Decision Outcome
 
-Chosen option: **adapt basemind's tooling scaffolding**. We copy and trim
+Chosen option: "adapt basemind's tooling scaffolding", because basemind already has a mature setup
+worth reusing rather than reinventing. We copy and trim
 `poly.toml` (polylint driving fmt/clippy/typos/markdown/deny plus the `uncomment`
 hook and the pinned `ai-rulez` hook source), `rustfmt.toml` (`max_width = 120`),
 `deny.toml` (license allowlist), the `.gitignore` structure (including the

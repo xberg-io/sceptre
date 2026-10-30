@@ -30,9 +30,10 @@ re-litigating a well-solved problem.
 
 ## Decision Outcome
 
-Chosen: an **Astro + Starlight** site under `website/`, mirroring `basemind`'s stack
+Chosen option: "an **Astro + Starlight** site under `website/`, mirroring `basemind`'s stack
 (`@astrojs/starlight`, `starlight-llms-txt`, `sharp`, npm, Node 22), deployed to **GitHub Pages at the
-project path `https://goldziher.github.io/sceptre`**.
+project path `https://goldziher.github.io/sceptre`**", because the sibling `basemind` repository
+already runs a proven documentation stack and reusing it avoids re-litigating a well-solved problem.
 
 * Because the site is served from a sub-path, `astro.config.mjs` sets `base: "/sceptre"`, and a small
   in-repo `rehype` plugin prefixes that base onto root-absolute internal links authored in Markdown

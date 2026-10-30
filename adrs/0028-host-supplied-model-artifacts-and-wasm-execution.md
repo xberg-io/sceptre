@@ -30,7 +30,9 @@ browser WASM cannot assume shared-memory threads.
 
 ## Decision Outcome
 
-Chosen: **one `ModelProvider` returning `ModelArtifact::{Path, Bytes}`.**
+Chosen option: "one `ModelProvider` returning `ModelArtifact::{Path, Bytes}`", because it keeps
+one model-execution pipeline for path-backed and memory-backed artifacts and lets WASM and mobile
+hosts fetch, cache, and verify model assets outside Rust.
 
 * The default provider returns cached paths. `VerifiedModelProvider` accepts public
   `ModelDescriptor`/byte pairs, verifies each SHA-256 pin, and returns memory artifacts.

@@ -42,7 +42,9 @@ it can be added without breaking the encapsulation lockdown or existing consumer
 
 ## Decision Outcome
 
-Chosen: **defaulted `OcrEngine` methods plus free provisioning functions.**
+Chosen option: "defaulted `OcrEngine` methods plus free provisioning functions", because the
+defaulted methods are non-breaking (defaults derive from `recognize`) and the free functions
+match the "config in, data out" shape and need no `Reader`.
 
 * `OcrEngine` gains two methods with default bodies, so every existing implementor keeps
   compiling unchanged and `FallbackEngine` inherits correct fallback behavior for free (the

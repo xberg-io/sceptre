@@ -35,8 +35,10 @@ crates.io.
 
 ## Decision Outcome
 
-Chosen option: **tag-triggered (`v*`) multi-platform build plus a crates.io
-dry-run**, no real publish until an explicit decision.
+Chosen option: "tag-triggered (`v*`) multi-platform build plus a crates.io
+dry-run", no real publish until an explicit decision, because release must be prepared and
+validated in CI without any real publish, and turning on a real publish later must be a
+minimal, low-risk change.
 
 * `.github/workflows/release.yaml` triggers on `v*` tags (and `workflow_dispatch`).
   A `build` matrix over `ubuntu-latest`, `macos-latest`, and `windows-latest` runs

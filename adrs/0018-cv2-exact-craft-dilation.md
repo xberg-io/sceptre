@@ -23,9 +23,17 @@ lines and dropping per-line box-IoU parity below threshold (observed on `french.
 grouping itself (`detect::group`) is a faithful port of `group_text_box`; the divergence was
 purely this box geometry.
 
+## Considered Options
+
+* Keep ADR 0013's `imageproc` approximation, `dilate(Norm::LInf, radius)` with
+  `radius = niter / 2`.
+* Replace the `imageproc` dilation with a small custom dilation that reproduces OpenCV exactly.
+
 ## Decision Outcome
 
-Replace the imageproc dilation with a small custom dilation that reproduces OpenCV exactly:
+Chosen option: "replace the imageproc dilation with a small custom dilation that reproduces OpenCV
+exactly", because the approximation matches EasyOCR only for **even** `niter`. Replace the
+imageproc dilation with a small custom dilation that reproduces OpenCV exactly:
 `dst(x, y) = max` over kernel offsets `(i, j) ∈ [0, 1 + niter)` of `src(x + i − anchor, y + j −
 anchor)`, with OpenCV's default center anchor `anchor = (1 + niter) / 2` (integer division) and
 out-of-buffer neighbours treated as background (`BORDER_CONSTANT`). The kernel is symmetric for

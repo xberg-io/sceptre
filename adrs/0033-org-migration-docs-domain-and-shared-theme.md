@@ -46,7 +46,8 @@ that a maintenance tax and predicted that a custom domain would remove it.
 
 ## Decision Outcome
 
-Chosen option: **`docs.sceptre.xberg.io` on the shared `@xberg-io/docs-theme`.**
+Chosen option: "`docs.sceptre.xberg.io` on the shared `@xberg-io/docs-theme`", because it
+matches every other xberg.io repo with one documentation system across the organization.
 
 * `website/` becomes **`docs-site/`**, the directory name the shared tooling and the reusable deploy
   workflow expect. The move preserves git history.

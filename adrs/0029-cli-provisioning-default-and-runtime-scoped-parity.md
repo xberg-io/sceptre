@@ -60,6 +60,11 @@ looks exactly like success.
 
 ## Decision Outcome
 
+Chosen option: "`default = ["ort-bundled", "download"]`; `Accelerator` defaulting to `Cpu`, with
+explicit opt-in and fail-fast registration", because `cargo install sceptre-cli` must produce a
+binary that runs, with no follow-up steps, and a requested accelerator that does not take must be
+an error, not a quiet CPU run.
+
 **Provisioning:** the CLI ships `default = ["ort-bundled", "download"]`, and additionally
 exposes `tract`. This works *because* features are additive rather than in spite of it:
 `ort-dynamic` implies `ort/load-dynamic`, which implies `ort-sys/disable-linking`, and the

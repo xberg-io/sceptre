@@ -63,6 +63,11 @@ floor calibrated against them — are not comparable at all (ADR 0035).
 
 ## Decision Outcome
 
+Chosen option: "replace it with an absolute, self-referential ceiling on sceptre's own peak RSS;
+median of per-image ratios; per `(os, arch, runner label)`; fail the gate", because a gate must
+fail for the reason it names, absolute figures are comparable only within one host class, and
+unmeasurable must read as failure, never as success.
+
 1. **The memory gate is absolute and self-referential.** `--assert` requires this run's sceptre
    warm/batch peak RSS to be at most `SCEPTRE_RSS_CEILING_FACTOR` (1.10) times the
    `headline.sceptre_warm.peak_rss_mb` carried by the committed

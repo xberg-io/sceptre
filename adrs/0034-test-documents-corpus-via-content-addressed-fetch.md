@@ -48,7 +48,10 @@ resolution.
 
 ## Decision Outcome
 
-Adopt the new `test_documents` submodule. `.gitmodules` points `test_documents` at
+Chosen option: "adopt the new, LFS-free `test_documents` submodule (content-addressed via
+`corpus.lock.json` + `fetch_corpus.py`)", because it does not vendor binaries in this repository
+and matches the org-wide `test_documents` submodule + `TEST_DOCUMENTS_DIR` idiom instead of a
+bespoke, sceptre-only layout. `.gitmodules` points `test_documents` at
 `https://github.com/xberg-io/test_documents.git`, matching `xberg`/`xberg-enterprise`
 exactly. The vendored `crates/sceptre/tests/data/{images,ground_truth}/` directories and the
 `exclude` entries they required in `crates/sceptre/Cargo.toml` are removed;

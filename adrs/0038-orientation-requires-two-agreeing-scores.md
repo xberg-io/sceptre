@@ -33,11 +33,28 @@ discrimination problem, not a calibration problem.
 * The rule has to be explainable from what the two heads actually measure, not fitted to
   five images.
 
-## Decision
+## Considered Options
 
-**A non-zero rotation is applied only when the combined region+link score and the
-link-only score independently select the same rotation, each clearing
-`orientation_margin`. Otherwise the page is left as given.**
+**An absolute floor on the winning score.** `invoice_image`'s winning score is 0.00163,
+roughly 7× below the lowest true-positive winning score of 0.01167, so a floor near 0.005
+rejects it with no risk to any true positive. It does not generalize: the other four false
+positives score 0.017–0.12, squarely inside normal-content range, so a floor catches one
+of five. The agreement rule subsumes it, and stacking both would add a magic constant that
+earns nothing.
+
+**Weighting or ratioing the two heads instead of intersecting them.** Scoring link mass
+alone fixes three of five false positives but newly flips `textocr_scene_03` (+14% on link
+mass), and scoring the link/region ratio fixes three but *loses* the `ocr_test_rotated_180`
+true positive, whose ratio margin is 4.78% — under the 5% gate. Every single-series
+formula tried trades one failure mode for the other; only requiring both to agree avoids
+the trade.
+
+## Decision Outcome
+
+Chosen option: "a non-zero rotation is applied only when the combined region+link score and
+the link-only score independently select the same rotation, each clearing
+`orientation_margin`; otherwise the page is left as given", because requiring consensus
+rejects both failure modes without inventing a new statistic.
 
 The two heads fail in opposite directions, which is what makes the conjunction work:
 
@@ -61,36 +78,7 @@ false positives (link picks `Deg0` for `financial_table_1` and
 the link score's lead is 4.16%, under the margin. Both rejection paths are load-bearing;
 neither alone is sufficient.
 
-## Considered and rejected
-
-**An absolute floor on the winning score.** `invoice_image`'s winning score is 0.00163,
-roughly 7× below the lowest true-positive winning score of 0.01167, so a floor near 0.005
-rejects it with no risk to any true positive. It does not generalize: the other four false
-positives score 0.017–0.12, squarely inside normal-content range, so a floor catches one
-of five. The agreement rule subsumes it, and stacking both would add a magic constant that
-earns nothing.
-
-**Weighting or ratioing the two heads instead of intersecting them.** Scoring link mass
-alone fixes three of five false positives but newly flips `textocr_scene_03` (+14% on link
-mass), and scoring the link/region ratio fixes three but *loses* the `ocr_test_rotated_180`
-true positive, whose ratio margin is 4.78% — under the 5% gate. Every single-series
-formula tried trades one failure mode for the other; only requiring both to agree avoids
-the trade.
-
-## Unexplained
-
-All five false positives, plus the `cord_receipt_04` near-miss, selected `Deg270` as their
-single highest-scoring rotation — under a uniform null that is about a 0.4% coincidence.
-A preprocessing artifact is ruled out: `Deg90` and `Deg270` produce identical padded canvas
-dimensions, so top-left-anchored padding cannot make the two asymmetric, and the scorer is
-exactly rotation-equivariant (a rotated variant's score set is a cyclic shift of the
-original's). The pattern correlates with dense periodic structure — table and receipt rule
-lines, `kannada.png`'s loopy strokes — which is consistent with a directional response
-asymmetry in CRAFT's learned weights, but the mechanism inside the network was not pinned
-down. The agreement rule makes it harmless without explaining it, which is worth stating
-plainly rather than leaving implied.
-
-## Consequences
+### Consequences
 
 Over the 23 orientation-labeled images (the five vertical-Japanese pages are excluded —
 they are a writing-direction problem no rotation fixes, per ADR 0037):
@@ -120,6 +108,19 @@ above the 5% default margin.
   unmeasured rather than zero.
 * Bad: the conjunction is validated on one corpus. A future image that fools both heads in
   the same direction is not protected against, and nothing here detects that case.
+
+## Unexplained
+
+All five false positives, plus the `cord_receipt_04` near-miss, selected `Deg270` as their
+single highest-scoring rotation — under a uniform null that is about a 0.4% coincidence.
+A preprocessing artifact is ruled out: `Deg90` and `Deg270` produce identical padded canvas
+dimensions, so top-left-anchored padding cannot make the two asymmetric, and the scorer is
+exactly rotation-equivariant (a rotated variant's score set is a cyclic shift of the
+original's). The pattern correlates with dense periodic structure — table and receipt rule
+lines, `kannada.png`'s loopy strokes — which is consistent with a directional response
+asymmetry in CRAFT's learned weights, but the mechanism inside the network was not pinned
+down. The agreement rule makes it harmless without explaining it, which is worth stating
+plainly rather than leaving implied.
 
 ## Related
 

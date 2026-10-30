@@ -52,8 +52,10 @@ the hand-written `candle` path as the fallback despite its cost.
 
 ## Decision Outcome
 
-Chosen option: **hand-write CRAFT and the gen2 CRNN against `candle_nn`**, with weights
-read from the same ONNX files the other backends load.
+Chosen option: "hand-write CRAFT and the gen2 CRNN against `candle_nn`", with weights
+read from the same ONNX files the other backends load, because it delivers GPU execution that
+does not depend on the ONNX Runtime provisioning matrix and a native backend with no C++
+runtime to ship, load, or match to a provider.
 
 * **No new artifacts.** `prost` alone has no build script, so ~6 ONNX messages are declared
   by hand and decoded with prost's wire reader. No `protoc`, no codegen, no second weight

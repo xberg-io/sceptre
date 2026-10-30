@@ -30,8 +30,10 @@ This ADR records the public API shape and the encapsulation model chosen for tha
 
 ## Decision Outcome
 
-Chosen option: **the public `OcrEngine` trait seam with internal stage traits and DTOs, and
-a crate-wide encapsulation lockdown.**
+Chosen option: "the public `OcrEngine` trait seam with internal stage traits and DTOs, and
+a crate-wide encapsulation lockdown", because it gives a single, obvious extension point for
+callers who want a different engine or fallbacks, decoupled pipeline stages that can be
+reimplemented without churning the public API, and a minimal, curated public surface.
 
 * **Public seam.** `OcrEngine::recognize(&Image, &ReadOptions) -> Result<OcrResult>` is the
   one extension point. `FallbackEngine` is a public combinator that tries engines in order,

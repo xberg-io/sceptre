@@ -34,8 +34,9 @@ would change a confidence and fail the golden check. We also enforce
 
 ## Decision Outcome
 
-Chosen option: **compiler autovectorization of contiguous-slice loops with the
-arithmetic and evaluation order held identical to the reference.** The bit-identical
+Chosen option: "compiler autovectorization of contiguous-slice loops with the
+arithmetic and evaluation order held identical to the reference", because output must stay
+bit-identical, with no `unsafe`, no nightly, no `target-cpu` pinning. The bit-identical
 rule governs all future perf work in the numeric paths.
 
 Applied to three hot paths:

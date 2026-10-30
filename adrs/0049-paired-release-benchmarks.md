@@ -13,9 +13,19 @@ PR #8 intentionally moved the CPU benchmark to `ubuntu-latest`, but retained the
 Returning to an unavailable private runner or changing its old measurements' host labels would
 not qualify a release on the hosted infrastructure.
 
+## Considered Options
+
+* Keep the committed `runner-medium` measurements as the baseline for the hosted `ubuntu-latest`
+  benchmark (status quo, rejected by ADRs 0042 and 0043).
+* Return to the unavailable private runner.
+* Change the old measurements' host labels.
+* Measure a published release and the candidate on the same hosted machine.
+
 ## Decision Outcome
 
-Run the genuine published 0.8.1 executable and the final release candidate serially in the same
+Chosen option: "measure a published release and the candidate on the same hosted machine", because
+returning to an unavailable private runner or changing its old measurements' host labels would not
+qualify a release on the hosted infrastructure. Run the genuine published 0.8.1 executable and the final release candidate serially in the same
 ready-main job, using the current harness. Bind the old executable to its official GitHub release
 asset digest and regular archive member; record the independent candidate hash, source revision
 and observed version. Retain both raw reports and a manifest with artifact hashes.

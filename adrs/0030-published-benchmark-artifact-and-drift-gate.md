@@ -53,7 +53,10 @@ by a human, at some point, from some machine. The consequences were all realized
 
 ## Decision Outcome
 
-Chosen: **option 4**. `sceptre_rs_tools.publish` distils a comparison report into
+Chosen option: "commit a small, stable-schema artifact distilled from the report, generate the
+tables from that, and gate on drift", because a published figure must carry the runtime that
+produced it, or not be publishable, and numbers must have exactly one authoritative location.
+`sceptre_rs_tools.publish` distils a comparison report into
 `benchmarks/published/latest.json` — a committed, versioned artifact carrying the headline figures
 and the `environment` provenance block — then renders the headline table from that artifact into
 every marked region in the README and the docs site.

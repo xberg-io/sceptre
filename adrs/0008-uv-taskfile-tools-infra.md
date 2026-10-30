@@ -14,9 +14,17 @@ recurring dev tasks. They need a permanent, reproducible home in the repo rather
 ad-hoc scripts. The reference conversion path lives in Python EasyOCR (torch), but the
 project is Rust-first and we prefer to keep tooling in Rust where practical.
 
+## Considered Options
+
+* Keep model export, conversion and golden-fixture generation in ad-hoc scripts.
+* Scaffold both paths now, defer the logic: a Rust `tools/` crate as the preferred path and a
+  uv-managed Python package as the fallback.
+
 ## Decision Outcome
 
-Chosen option: **scaffold both paths now, defer the logic**.
+Chosen option: "scaffold both paths now, defer the logic", because these recurring dev tasks need a
+permanent, reproducible home in the repo rather than ad-hoc scripts, and the project is Rust-first
+while the reference conversion path lives in Python EasyOCR (torch).
 
 * A Rust `tools/` crate (`sceptre-tools`, `publish = false`) is the preferred model
   export/conversion path (candle-based). It is a workspace member but excluded from

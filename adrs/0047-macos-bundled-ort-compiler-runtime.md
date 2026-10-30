@@ -25,6 +25,10 @@ Rust library consumers with the same failure.
 
 ## Decision Outcome
 
+Chosen option: "restore compiler-runtime linkage at the core crate's build boundary", because a
+release-task linker flag would repair the distributed executable while leaving Rust library
+consumers with the same failure.
+
 For a macOS target with `ort-bundled` and without `ort-dynamic`, the library build
 script asks `CC` (or `clang`) for `libclang_rt.osx.a`, validates the returned archive,
 and emits its native search directory and static link directive. Failures identify

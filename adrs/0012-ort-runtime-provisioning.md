@@ -33,8 +33,9 @@ after v2.0.0-rc.11, so `download-binaries` has no artifact there.
 
 ## Decision Outcome
 
-Chosen option: **mirror xberg — a provisioning-agnostic `ort` feature plus two selectable
-provisioning features**, none enabled by default:
+Chosen option: "mirror xberg — a provisioning-agnostic `ort` feature plus two selectable
+provisioning features", none enabled by default, because provisioning must not be an implicit
+default and the caller picks per target:
 
 * `ort` — compiles the backend against the `ort` API; provisioning-agnostic.
 * `ort-bundled = ["ort", "ort?/download-binaries", "ort?/tls-rustls"]` — fetches a prebuilt

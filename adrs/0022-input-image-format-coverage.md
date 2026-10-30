@@ -33,9 +33,9 @@ where to draw the line.
 
 ## Decision Outcome
 
-Enable the **pure-Rust** decoders `bmp`, `gif`, `tiff`, `webp`, and `pnm` alongside
-`png`/`jpeg`. These cover the common raster containers in the test corpus, add no C
-dependency, and keep the `tract` WASM/Android path intact.
+Chosen option: "enable the **pure-Rust** decoders `bmp`, `gif`, `tiff`, `webp`, and `pnm`
+alongside `png`/`jpeg`", because these cover the common raster containers in the test corpus,
+add no C dependency, and keep the `tract` WASM/Android path intact.
 
 **HEIF, AVIF, and the JPEG 2000 family (`jp2`/`j2k`/`jpx`/`jpm`/`mj2`/`j2c`) stay
 unsupported.** Their only mature decoders are C libraries that would break the pure-Rust

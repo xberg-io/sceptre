@@ -36,7 +36,9 @@ different cache.
 
 ## Decision Outcome
 
-Chosen option: **adopt `hf-hub`'s native hub cache in the library**. Downloads go
+Chosen option: "adopt `hf-hub`'s native hub cache in the library", because the library,
+CLI, snapshot tool, and harness then share one cache store, and `hf-hub` owns atomic download,
+revisions, and layout. Downloads go
 through `HFClientSync`'s `download_file().send()`, which populates the hub cache
 and returns the on-disk snapshot path (a cache hit returns the path without
 re-downloading). A dependency-free `std`-only resolver

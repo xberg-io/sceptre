@@ -20,7 +20,8 @@ files in parallel is error-prone and drifts.
 
 ## Decision Outcome
 
-Chosen option: **ai-rulez**. `.ai-rulez/` (config, rules, context, commands) is
+Chosen option: "ai-rulez", because it gives one edit point and harness files stay
+consistent and regenerable. `.ai-rulez/` (config, rules, context, commands) is
 the source of truth; `ai-rulez generate` produces `CLAUDE.md`, `AGENTS.md`,
 `.mcp.json`, and `.claude/` / `.codex/` agents, commands, and skills, all
 gitignored. `builtins = ["rust", "cicd", "documentation", "default-commands"]`

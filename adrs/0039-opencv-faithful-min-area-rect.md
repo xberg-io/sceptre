@@ -63,9 +63,11 @@ a real, if usually small, extra source of over-large boxes independent of the ro
 
 ## Decision Outcome
 
-Chosen option: a small in-crate rotating-calipers implementation
-(`crates/sceptre/src/detect/min_area_rect.rs`) that reuses `imageproc::geometry::convex_hull`
-(unaffected by this bug) and then, for the hull's minimum-area rectangle:
+Chosen option: "a small in-crate rotating-calipers implementation"
+(`crates/sceptre/src/detect/min_area_rect.rs`), because the convex hull step itself has no
+rounding bug, so only the calipers + corner-selection step needs reimplementing. It reuses
+`imageproc::geometry::convex_hull` (unaffected by this bug) and then, for the hull's
+minimum-area rectangle:
 
 * tests **every** hull edge, including the closing one `imageproc` omits;
 * keeps the winning rectangle's corners as `f64` for the whole computation;

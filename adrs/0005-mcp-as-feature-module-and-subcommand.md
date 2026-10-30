@@ -20,8 +20,9 @@ surface.
 
 ## Decision Outcome
 
-Chosen option: **feature-gated `mcp` module + `sceptre mcp` subcommand**,
-mirroring the xberg pattern. `rmcp`/`tokio`/`schemars` are optional dependencies
+Chosen option: "feature-gated `mcp` module + `sceptre mcp` subcommand", mirroring the
+xberg pattern, because it gives one binary to build and distribute and no duplicated wiring.
+`rmcp`/`tokio`/`schemars` are optional dependencies
 enabled only by the feature, so default builds stay lean. One binary ships both
 the CLI and the server.
 

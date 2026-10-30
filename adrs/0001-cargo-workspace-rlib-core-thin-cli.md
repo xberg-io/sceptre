@@ -26,8 +26,9 @@ the entry points thin.
 
 ## Decision Outcome
 
-Chosen option: **workspace with an rlib core and a thin CLI**, mirroring the
-xberg design. `[workspace.package]`, `[workspace.dependencies]`,
+Chosen option: "workspace with an rlib core and a thin CLI", mirroring the xberg design,
+because binaries should only orchestrate and dependency, lint, and profile management is
+centralized. `[workspace.package]`, `[workspace.dependencies]`,
 `[workspace.lints]`, and tuned `[profile.*]` live at the root; members inherit
 with `.workspace = true`. The CLI depends only on the core plus argument
 parsing and never contains OCR logic.

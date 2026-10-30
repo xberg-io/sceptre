@@ -32,7 +32,8 @@ dependency order, and idempotent across release re-runs.
 
 ## Decision Outcome
 
-Publish for real from the tag-triggered release workflow using **trusted publishing**. The
+Chosen option: "publish for real from the tag-triggered release workflow using **trusted
+publishing**", because no long-lived `CARGO_REGISTRY_TOKEN` is stored as a GitHub secret. The
 `publish-dry-run` job is replaced by a `publish-crates` job that:
 
 * Requests `id-token: write` and calls `rust-lang/crates-io-auth-action@v1`, which exchanges

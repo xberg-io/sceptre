@@ -29,9 +29,26 @@ organization as everything around them.
   only the owner segment of a repo id so a mirror or air-gapped copy stays a one-setting change.
 * Names must stay unambiguous inside a shared, multi-project org.
 
-## Decision
+## Considered Options
 
-**The nine model repos move to the `xberg-io` Hugging Face org, each prefixed with `sceptre-`:**
+**A single bundled `xberg-io/sceptre-onnx-models` repo** holding all nine ONNX files, matching the
+`paddleocr-onnx-models` / `layout-models` convention used elsewhere in the org. Rejected on two
+counts. It cannot be done as a server-side move, so it would mean re-uploading ~215 MB and
+breaking the digest-verified continuity of the existing repos. More importantly it would collapse
+`ModelEntry::hf_repo` to a single shared constant, so the ADR 0011 override would no longer select
+a per-model location and the on-disk cache layout (one hub directory per repo) would change for
+every user. The per-model repos also let a consumer fetch exactly one language rather than the
+whole family.
+
+**Leaving the repos on `sceptre-ocr` and mirroring into `xberg-io`.** Two copies of the same bytes
+drift, and it doubles the surface that has to be kept in sync at each re-export. The org-count
+problem this ADR exists to solve would remain.
+
+## Decision Outcome
+
+Chosen option: "the nine model repos move to the `xberg-io` Hugging Face org, each prefixed with
+`sceptre-`", because a sceptre-only org is one more namespace to administer, with its own
+membership and access story:
 
 | before | after |
 |---|---|
@@ -48,22 +65,7 @@ The exports themselves are untouched — same bytes, same sha256 pins, same char
 changes *where the artifacts live*, not what they are or how they are produced; ADR 0025's export
 pipeline, provenance story, and licensing all stand.
 
-## Considered and rejected
-
-**A single bundled `xberg-io/sceptre-onnx-models` repo** holding all nine ONNX files, matching the
-`paddleocr-onnx-models` / `layout-models` convention used elsewhere in the org. Rejected on two
-counts. It cannot be done as a server-side move, so it would mean re-uploading ~215 MB and
-breaking the digest-verified continuity of the existing repos. More importantly it would collapse
-`ModelEntry::hf_repo` to a single shared constant, so the ADR 0011 override would no longer select
-a per-model location and the on-disk cache layout (one hub directory per repo) would change for
-every user. The per-model repos also let a consumer fetch exactly one language rather than the
-whole family.
-
-**Leaving the repos on `sceptre-ocr` and mirroring into `xberg-io`.** Two copies of the same bytes
-drift, and it doubles the surface that has to be kept in sync at each re-export. The org-count
-problem this ADR exists to solve would remain.
-
-## Consequences
+### Consequences
 
 * Good: one org, one set of access controls, consistent with the rest of the stack.
 * Good: published 0.2.0–0.4.0 keep working. Hugging Face serves a redirect from a moved repo, and

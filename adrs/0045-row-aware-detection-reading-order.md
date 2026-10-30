@@ -36,9 +36,10 @@ top row was emitted as `东`, `西`, `愚园路` rather than the left-to-right o
 
 ## Decision Outcome
 
-Sort regions by vertical center, scan them into rows, and place a region in the current row only
-when its center is within half the shorter of its height and the row's minimum height from the
-row's mean center. Sort each completed row by left edge.
+Chosen option: "sort regions by vertical center, scan them into rows, and place a region in the
+current row only when its center is within half the shorter of its height and the row's minimum
+height from the row's mean center", because the shorter height bounds row membership without
+allowing a tall box to bridge neighboring rows. Sort each completed row by left edge.
 
 ### Consequences
 

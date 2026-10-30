@@ -47,8 +47,9 @@ and a user who knows one backend will reasonably type the wrong one on the other
 
 ## Decision Outcome
 
-Chosen option: **a per-backend support table**, `Backend::hardware_accelerators()`, with
-`validate_accelerator` consulting it instead of testing for `ort`.
+Chosen option: "a per-backend support table", `Backend::hardware_accelerators()`, with
+`validate_accelerator` consulting it instead of testing for `ort`, because backend/accelerator
+validity is a matrix, not a single privileged backend.
 
 | Backend | Hardware accelerators |
 | --- | --- |

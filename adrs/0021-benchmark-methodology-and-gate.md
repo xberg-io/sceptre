@@ -44,6 +44,12 @@ and mixed undecodable-format failures into the results as opaque skips.
 
 ## Decision Outcome
 
+Chosen option: "run both engines each as a fresh subprocess under `/usr/bin/time` for identical
+whole-process peak RSS; run both at their native multi-threaded default; add absolute
+CER/WER/token-F1 against ground truth; an opt-in `--assert` gate with fixed floors run on demand
+and on a schedule", because RSS and speed numbers must be like-for-like, and regressions in speed,
+memory, or quality must fail loudly.
+
 * **RSS + warm timing:** both engines run as a fresh subprocess per language group under
   `/usr/bin/time`, loading their model/Reader once and processing every image (the warm/batch
   axis). Peak RSS is captured identically for both; EasyOCR's figure legitimately includes the

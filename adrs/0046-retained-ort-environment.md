@@ -22,8 +22,10 @@ A runtime-information probe can also consume the single initialization before OC
 
 ## Decision Outcome
 
-Retain one environment in a synchronized initialization cell and use it for model
-sessions and runtime probes. Keep the helper internal to `inference`, gated by the
+Chosen option: "retain one environment in a synchronized initialization cell and use it
+for model sessions and runtime probes", because ort's environment builder permits only one
+successful initialization per process, including after the original environment has been
+dropped. Keep the helper internal to `inference`, gated by the
 ort feature. Initialization failures retain their operation context and can be retried.
 Session execution and accelerator registration remain per session, and concurrency
 continues to use the existing `ConcurrencyConfig` budget.

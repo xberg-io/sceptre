@@ -32,7 +32,9 @@ data rather than left open.
 
 ## Decision Outcome
 
-Chosen option: **`ort`-primary, `candle` deferred off the critical path.** The spike found
+Chosen option: "`ort`-primary, `candle` deferred off the critical path", because `ort` loads
+the real models unchanged, is the fastest measured, and has no reimplementation or parity risk.
+The spike found
 `candle` is neither loadable nor competitive for these models today:
 
 * **`candle-onnx` cannot load either model** (measured on `candle` 0.9.2, gaps confirmed

@@ -59,7 +59,9 @@ cap by hand.
 
 ## Decision Outcome
 
-Chosen: **`DetectionConfig::max_megapixels: Option<f32>`, default `None`.**
+Chosen option: "`DetectionConfig::max_megapixels: Option<f32>`, default `None`", because it
+bounds the actual measured driver of peak memory directly, defaults to `None` so it cannot move
+today's output, and composes rather than replaces the existing knob.
 
 When set, it further constrains the resize target that `canvas_size` and `mag_ratio`
 already compute, so the *padded* (multiple-of-32) input area — the quantity the RSS fit

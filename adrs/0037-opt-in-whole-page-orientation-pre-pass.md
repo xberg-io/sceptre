@@ -55,8 +55,10 @@ The question is how to decide which way is up, and whether to do it by default.
 
 ## Decision Outcome
 
-Chosen: **reuse CRAFT via a four-rotation probe, exposed as opt-in
-`DetectionConfig::detect_orientation`, defaulting to `false`.**
+Chosen option: "reuse CRAFT via a four-rotation probe, exposed as opt-in
+`DetectionConfig::detect_orientation`, defaulting to `false`", because it needs no new model, no
+new backend work, and no registry change, and default output is bit-for-bit unchanged, so ADR
+0021's parity gate and the tier-2 golden fixtures are unaffected.
 
 The pre-pass lives in `crates/sceptre/src/detect/orientation.rs` and runs inside
 `CraftDetector::detect`, so the engine and the `TextDetector` seam are untouched. Each
