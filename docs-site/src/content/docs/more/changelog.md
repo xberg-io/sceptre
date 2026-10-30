@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Refresh compatible Rust dependencies and require rmcp 3.8 for MCP support.
+
 - Cover release packaging, CLI publication dry-runs, Python typechecking, feature resolution, and changelog
   synchronization with offline Bats contracts; pin and verify the shared helper library in CI (#20).
 
