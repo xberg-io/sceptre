@@ -171,6 +171,7 @@ jobs:
         with:
           include: images/**
 
+      # ~keep rust is a mise lock gap (rustup script install); rust-toolchain.toml pins it.
       - uses: xberg-io/actions/setup-rust@v1
         with:
           components: rustfmt, clippy
@@ -256,6 +257,7 @@ jobs:
         with:
           include: images/**
 
+      # ~keep rust is a mise lock gap (rustup script install); rust-toolchain.toml pins it.
       - uses: xberg-io/actions/setup-rust@v1
         with:
           install-llvm-cov: "false"
@@ -345,6 +347,7 @@ jobs:
         with:
           include: images/**
 
+      # ~keep rust is a mise lock gap (rustup script install); rust-toolchain.toml pins it.
       - uses: xberg-io/actions/setup-rust@v1
         with:
           install-llvm-cov: "false"
@@ -440,6 +443,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v7
+      # ~keep rust is a mise lock gap (rustup script install); rust-toolchain.toml pins it.
       - uses: xberg-io/actions/setup-rust@v1
         with:
           components: clippy
@@ -478,6 +482,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+      # ~keep rust is a mise lock gap (rustup script install); rust-toolchain.toml pins it.
       - uses: xberg-io/actions/setup-rust@v1
         with:
           components: clippy

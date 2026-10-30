@@ -265,6 +265,7 @@ jobs:
         with:
           ref: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || '' }}
 
+      # ~keep rust is a mise lock gap (rustup script install); rust-toolchain.toml pins it.
       - uses: xberg-io/actions/setup-rust@v1
         with:
           target: ${{ matrix.triple }}
@@ -384,6 +385,7 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || '' }}
 
+      # ~keep rust is a mise lock gap (rustup script install); rust-toolchain.toml pins it.
       - uses: xberg-io/actions/setup-rust@v1
         with:
           install-llvm-cov: "false"
@@ -418,6 +420,7 @@ jobs:
         with:
           ref: ${{ needs.meta.outputs.tag }}
           fetch-depth: 0
+      # ~keep ai-rulez runs at its latest release, never a mise pin (org ADR-0015).
       - name: Install ai-rulez
         uses: xberg-io/actions/setup-ai-rulez@v1
       - name: Verify public skill exports
@@ -469,6 +472,7 @@ jobs:
         with:
           install-args: node
           config-ref: ${{ github.sha }}
+      # ~keep ai-rulez runs at its latest release, never a mise pin (org ADR-0015).
       - name: Install ai-rulez
         uses: xberg-io/actions/setup-ai-rulez@v1
       - name: Verify plugin versions and generated resources before publishing
@@ -564,6 +568,7 @@ jobs:
         with:
           install-args: python uv
           config-ref: ${{ github.sha }}
+      # ~keep ai-rulez runs at its latest release, never a mise pin (org ADR-0015).
       - name: Install ai-rulez
         uses: xberg-io/actions/setup-ai-rulez@v1
       - name: Verify plugin versions and generated resources before publishing

@@ -100,6 +100,7 @@ jobs:
         with:
           include: images/**
 
+      # ~keep rust is a mise lock gap (rustup script install); rust-toolchain.toml pins it.
       - uses: xberg-io/actions/setup-rust@v1
         with:
           install-llvm-cov: "false"
@@ -150,6 +151,7 @@ jobs:
         with:
           include: images/**
 
+      # ~keep rust is a mise lock gap (rustup script install); rust-toolchain.toml pins it.
       - uses: xberg-io/actions/setup-rust@v1
         with:
           install-llvm-cov: "false"
@@ -246,6 +248,7 @@ jobs:
         with:
           include: images/**
 
+      # ~keep rust is a mise lock gap (rustup script install); rust-toolchain.toml pins it.
       - uses: xberg-io/actions/setup-rust@v1
         with:
           install-llvm-cov: "false"
@@ -312,6 +315,7 @@ jobs:
         with:
           include: images/**
 
+      # ~keep rust is a mise lock gap (rustup script install); rust-toolchain.toml pins it.
       - uses: xberg-io/actions/setup-rust@v1
         with:
           install-llvm-cov: "false"
@@ -368,6 +372,7 @@ jobs:
         with:
           submodules: recursive
 
+      # ~keep rust is a mise lock gap (rustup script install); rust-toolchain.toml pins it.
       - uses: xberg-io/actions/setup-rust@v1
         with:
           install-llvm-cov: "false"
@@ -391,6 +396,7 @@ jobs:
           path: ${{ steps.build-seeder.outputs.binary-path }}
           retention-days: 1
 
+      # ~keep the CUDA toolkit is a system SDK from NVIDIA's apt repo; mise has no locked build of it.
       - uses: ./.github/actions/setup-cuda-toolkit
 
       # build-gpu-test-binary@v1 runs `cargo test --no-run` with no --release and no profile
@@ -471,6 +477,7 @@ jobs:
           echo "GPU detected:"
           nvidia-smi --query-gpu=name,driver_version,memory.total --format=csv,noheader
 
+      # ~keep the CUDA toolkit is a system SDK from NVIDIA's apt repo; mise has no locked build of it.
       - uses: ./.github/actions/setup-cuda-toolkit
 
       - name: Download the model-seeder CLI
