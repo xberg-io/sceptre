@@ -16,7 +16,7 @@ sceptre is a Rust OCR library, CLI and MCP server reimplementing EasyOCR over ON
 - `crates/sceptre/src/{detect,recognize,models}/` — detection, recognition, model provisioning (`ocr-pipeline` rule)
 - `crates/sceptre/src/mcp/` — MCP server (`mcp-tool-conventions` rule)
 - `crates/sceptre-cli/` — command-line binary
-- `python/sceptre_rs_tools/` — primary model export (`mise run python:export`, ADR 0025), EasyOCR golden half (`mise run python:golden`), benchmark harness
+- `python/sceptre_rs_tools/` — primary model export (`uv run python -m sceptre_rs_tools.export`, ADR 0025), EasyOCR golden half (`mise run python:golden`), benchmark harness
 - `tools/` — `sceptre-tools` dev crate: sceptre golden half (`snapshot`); its export subcommand is unimplemented
 - `benchmarks/published/` — committed benchmark artifact
 - the corpus submodule (see `.gitmodules`) — `mise run setup` fetches its `images/**` by sha256 (`adrs/0034`)

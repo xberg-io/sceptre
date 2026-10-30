@@ -313,7 +313,7 @@ cache remain separate requirements.
 ```sh
 mise run setup  # fetch deps, install git hooks
 mise run check  # cargo fmt + clippy -D warnings + test + poly lint
-mise run bench  # criterion microbenchmarks (--features bench)
+cargo bench -p sceptre --features bench  # criterion microbenchmarks
 ```
 
 Run `mise run python:typecheck` to check all Python tooling with Pyrefly. This synchronizes

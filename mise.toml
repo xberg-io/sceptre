@@ -38,10 +38,6 @@ run = "cargo build --workspace"
 description = "Run the Rust workspace test suite"
 run = "cargo test --workspace"
 
-[tasks.bench]
-description = "Run the criterion microbenchmarks for the sceptre hot paths"
-run = "cargo bench -p sceptre --features bench"
-
 [tasks.lint]
 description = "Lint Rust (poly) and Python (ruff) code"
 run = ["poly lint .", { task = "python:lint" }]
@@ -73,10 +69,6 @@ run = ["cargo upgrade --incompatible", "uv lock --upgrade"]
 [tasks.clean]
 description = "Remove Rust build artifacts"
 run = "cargo clean"
-
-[tasks."release:build"]
-description = "Build the release CLI binary (bundled ONNX Runtime) for the current platform"
-run = "cargo build --release {{vars.release_cli}}"
 
 [tasks."release:package"]
 description = "Build and archive the self-contained release CLI binary for a target triple"
@@ -164,10 +156,6 @@ run = "bash scripts/typecheck.sh"
 [tasks."python:test"]
 description = "Run the Python unit tests (pure harness logic; no torch/easyocr needed)"
 run = "uv run pytest python/tests -q"
-
-[tasks."python:export"]
-description = "Primary model-export path (ADR 0025): converts EasyOCR CRAFT + gen2 CRNN checkpoints to the ONNX artifacts hosted on the xberg-io HF org, and (re)writes the charset assets; requires the opt-in export/torch dependency group"
-run = "uv run python -m sceptre_rs_tools.export"
 
 [tasks."python:golden"]
 description = "Regenerate the EasyOCR reference half of the golden parity fixtures, with its provenance block; requires the opt-in export/torch dependency group"
