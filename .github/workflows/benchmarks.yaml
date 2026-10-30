@@ -76,7 +76,7 @@ jobs:
         run: uv sync
 
       - name: Published benchmark numbers match the committed artifact
-        run: uv run python -m sceptre_rs_tools.publish --check
+        run: mise run python:publish:check
 
   # Real, timed criterion run (ADR 0015: report-only, never a gate). Previously a
   # compile-check only; this promotes it to an actual measurement, uploaded for inspection. ~keep

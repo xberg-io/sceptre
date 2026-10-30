@@ -544,4 +544,4 @@ jobs:
       - name: Pytest (pure harness logic)
         # The benchmark unit tests cover metrics, capability detection, report rendering,
         # and the regression gate without torch/easyocr or the release binary. ~keep
-        run: uv run pytest python/tests -q
+        run: mise run python:test
