@@ -28,16 +28,16 @@ the hand-written `candle` path as the fallback despite its cost.
 
 ## Decision Drivers
 
-- GPU execution that does not depend on the ONNX Runtime provisioning matrix.
-- A native backend with no C++ runtime to ship, load, or match to a provider.
-- No new model artifacts: the registry, sha256 pins, and export pipeline must not move.
-- No build-time toolchain requirements that would break `cargo install` (ADR 0029).
-- Bit-level accountability: a hand-written network can diverge from the graph invisibly.
+* GPU execution that does not depend on the ONNX Runtime provisioning matrix.
+* A native backend with no C++ runtime to ship, load, or match to a provider.
+* No new model artifacts: the registry, sha256 pins, and export pipeline must not move.
+* No build-time toolchain requirements that would break `cargo install` (ADR 0029).
+* Bit-level accountability: a hand-written network can diverge from the graph invisibly.
 
 ## Considered Options
 
-- **Stay deferred.** Costs nothing, delivers neither driver.
-- **Execute the ONNX graph with `candle-onnx`.** Re-verified against upstream `main`, and
+* **Stay deferred.** Costs nothing, delivers neither driver.
+* **Execute the ONNX graph with `candle-onnx`.** Re-verified against upstream `main`, and
   it is disqualified twice over. It still `bail!`s on all three constructs these models
   need — bidirectional `LSTM`, `MaxPool` with non-zero pads, and `Resize` with
   `mode != nearest` / `coordinate_transformation_mode != asymmetric` (the `Resize` gap is
@@ -45,9 +45,9 @@ the hand-written `candle` path as the fallback despite its cost.
   `prost_build::compile_protos`, and prost-build has not bundled `protoc` since 0.11, so
   depending on it would break `cargo install --features candle` on any machine without
   protoc — reintroducing the zero-config-install defect ADR 0029 fixed.
-- **Upstream the three ops to `candle-onnx`.** `deny.toml` sets `allow-git = []`, so a fork
+* **Upstream the three ops to `candle-onnx`.** `deny.toml` sets `allow-git = []`, so a fork
   cannot ship; this would block on an upstream crates.io release.
-- **Hand-write the two networks against `candle_nn`**, reading weights from the existing
+* **Hand-write the two networks against `candle_nn`**, reading weights from the existing
   ONNX initializers.
 
 ## Decision Outcome
@@ -55,24 +55,24 @@ the hand-written `candle` path as the fallback despite its cost.
 Chosen option: **hand-write CRAFT and the gen2 CRNN against `candle_nn`**, with weights
 read from the same ONNX files the other backends load.
 
-- **No new artifacts.** `prost` alone has no build script, so ~6 ONNX messages are declared
+* **No new artifacts.** `prost` alone has no build script, so ~6 ONNX messages are declared
   by hand and decoded with prost's wire reader. No `protoc`, no codegen, no second weight
   format. ADR 0025's model source is untouched.
-- **Weights are named positionally**, not by initializer name: roughly half of those names
+* **Weights are named positionally**, not by initializer name: roughly half of those names
   are exporter-generated counters (`onnx::Conv_299`) that shift on every re-export, and
   ADR 0025 makes re-export routine. The `n`-th `Conv` becomes `conv.{n}`, which depends
   only on graph topology.
-- **The seam gains `NetworkKind`** on `BackendOptions`. A backend that runs a hand-written
+* **The seam gains `NetworkKind`** on `BackendOptions`. A backend that runs a hand-written
   forward pass cannot recover the architecture from bytes alone, and both engine call sites
   know the answer already. This mirrors ADR 0027's `fixed_input`: a runtime *value*, not a
   type-level `#[cfg]`, so config and result types stay backend-agnostic. `ort` and `tract`
   ignore it. Because weights are resolved positionally, the graph is still *validated*
   against the requested kind — a host-supplied stranger graph (ADR 0028) must error rather
   than load whatever tensors sit at those positions and produce confident nonsense.
-- **candle keeps the dynamic CRAFT canvas.** A hand-written CRAFT reads each skip tensor's
+* **candle keeps the dynamic CRAFT canvas.** A hand-written CRAFT reads each skip tensor's
   extent at runtime, which is precisely what tract could not do (ADR 0027), so candle sees
   byte-identical preprocessed input to `ort`.
-- **GPU support is a per-backend accelerator vocabulary**, recorded in
+* **GPU support is a per-backend accelerator vocabulary**, recorded in
   [ADR 0032](0032-per-backend-accelerator-support.md).
 
 ### Pinning `candle` at 0.11, and the honesty cost
@@ -101,11 +101,11 @@ A hand-written forward pass can diverge from the graph anywhere — a mistranspo
 misordered LSTM gate, a skip connection taken one convolution too late — and every one of
 those produces plausible output. Two independent bars, both against `ort`:
 
-- **Tensor level:** whole-model output on fixed pseudo-random input, over the same shapes
+* **Tensor level:** whole-model output on fixed pseudo-random input, over the same shapes
   `sceptre_rs_tools.export` already validates torch against onnxruntime, within `1e-4`
   absolute. Not `0.0`: candle accumulates bilinear interpolation weights in `f64` where
   ONNX Runtime uses `f32`, so bit-exactness is unachievable and is not claimed.
-- **End to end:** exact sorted word-multiset equality with `ort` on `english.png` and
+* **End to end:** exact sorted word-multiset equality with `ort` on `english.png` and
   `cyrillic.png` — no numeric tolerance to hide behind.
 
 Two op-level semantics are pinned against ONNX Runtime ground truth in unit tests, because
@@ -150,17 +150,17 @@ and deployment option, never a performance one, and it is excluded from
 
 ### Consequences
 
-- Good: a native backend with no ONNX Runtime dependency, and a GPU path that needs no
+* Good: a native backend with no ONNX Runtime dependency, and a GPU path that needs no
   provider-specific runtime build.
-- Good: no new model artifacts, no `protoc`, no build-time codegen.
-- Good: correctness is held to `ort` at two independent levels rather than asserted.
-- Bad: two networks are now maintained by hand. A re-export that changes either
+* Good: no new model artifacts, no `protoc`, no build-time codegen.
+* Good: correctness is held to `ort` at two independent levels rather than asserted.
+* Bad: two networks are now maintained by hand. A re-export that changes either
   architecture — not merely its weights — breaks candle and only candle. The positional
   weight naming and the node-count validation are what turn that into an error instead of
   silent corruption.
-- Bad: `onig_sys` compiles C, so the "pure Rust" claim belongs to `tract` alone.
-- Neutral: `candle` is opt-in and not in any default feature set.
-- Revisit if: `candle-onnx` grows the three ops *and* drops its `protoc` build dependency,
+* Bad: `onig_sys` compiles C, so the "pure Rust" claim belongs to `tract` alone.
+* Neutral: `candle` is opt-in and not in any default feature set.
+* Revisit if: `candle-onnx` grows the three ops *and* drops its `protoc` build dependency,
   which would let the graph be executed rather than reimplemented.
 
 ## Supersedes

@@ -29,21 +29,21 @@ resolution.
 
 ## Decision Drivers
 
-- Do not vendor binaries in this repository; a corpus update should land once upstream
+* Do not vendor binaries in this repository; a corpus update should land once upstream
   instead of being hand-copied into sceptre (and every other consumer repo).
-- Match the org-wide `test_documents` submodule + `TEST_DOCUMENTS_DIR` idiom instead of a
+* Match the org-wide `test_documents` submodule + `TEST_DOCUMENTS_DIR` idiom instead of a
   bespoke, sceptre-only layout.
-- Keep default `cargo test` fast, offline, and green — unchanged from ADR 0016 — and never
+* Keep default `cargo test` fast, offline, and green — unchanged from ADR 0016 — and never
   reintroduce the silent stand-in fallback that `36c64e3` explicitly killed: an absent or
   unfetched corpus must skip explicitly or fail loudly, never substitute a different image.
-- Ground-truth transcripts are git-tracked plain text upstream, so they arrive with the
+* Ground-truth transcripts are git-tracked plain text upstream, so they arrive with the
   submodule at clone time; only image binaries need an explicit fetch step.
 
 ## Considered Options
 
-- Keep vendoring the fixture subset in-tree (status quo since `36c64e3`).
-- Re-adopt the old Git-LFS `test_documents` submodule from ADR 0016.
-- Adopt the new, LFS-free `test_documents` submodule (content-addressed via
+* Keep vendoring the fixture subset in-tree (status quo since `36c64e3`).
+* Re-adopt the old Git-LFS `test_documents` submodule from ADR 0016.
+* Adopt the new, LFS-free `test_documents` submodule (content-addressed via
   `corpus.lock.json` + `fetch_corpus.py`).
 
 ## Decision Outcome
@@ -78,15 +78,15 @@ than substituting anything.
 
 ### Consequences
 
-- Good: no binaries vendored in this repository; a `test_documents` update lands once
+* Good: no binaries vendored in this repository; a `test_documents` update lands once
   upstream instead of being hand-copied per consumer repo.
-- Good: matches the org-wide submodule + `TEST_DOCUMENTS_DIR` + `fetch_corpus.py` idiom used
+* Good: matches the org-wide submodule + `TEST_DOCUMENTS_DIR` + `fetch_corpus.py` idiom used
   by `xberg` and `xberg-enterprise`.
-- Good: `crates/sceptre/Cargo.toml` no longer needs `exclude` entries or upkeep for the
+* Good: `crates/sceptre/Cargo.toml` no longer needs `exclude` entries or upkeep for the
   corpus, and the published crate carries no fixture bytes either way.
-- Bad: `cargo test` and `task setup` now have an implicit dependency on the submodule being
+* Bad: `cargo test` and `task setup` now have an implicit dependency on the submodule being
   initialized and, for images, fetched; unresolved locally or in a fresh CI checkout,
   corpus-dependent tests skip instead of exercising the real path.
-- Bad: pinned at upstream `main`, several sceptre-specific images remain unavailable until
+* Bad: pinned at upstream `main`, several sceptre-specific images remain unavailable until
   `chore/publish-sceptre-parity-images` merges and the submodule pin is re-bumped — tracked
   as follow-up work, not resolved by this ADR.

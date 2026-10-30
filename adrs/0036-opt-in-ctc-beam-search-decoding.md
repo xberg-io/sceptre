@@ -23,30 +23,30 @@ port EasyOCR's specific algorithm, and what the default should be.
 
 ## Decision Drivers
 
-- EasyOCR parity is the baseline contract, not a ceiling (see `adr-discipline` /
+* EasyOCR parity is the baseline contract, not a ceiling (see `adr-discipline` /
   project rules): a new decoder must not change default output.
-- `ctc.rs` is close to but under the 1000-line module cap; a beam-search port is
+* `ctc.rs` is close to but under the 1000-line module cap; a beam-search port is
   substantial enough to warrant its own sibling module rather than growing `ctc.rs`.
-- Confidence must stay comparable across decoders, since EasyOCR itself computes
+* Confidence must stay comparable across decoders, since EasyOCR itself computes
   confidence identically regardless of `decoder` (`recognition.py::recognizer_predict`
   computes `preds_max_prob` from the greedy argmax once, before branching on the
   decoder choice).
-- Any accuracy claim needs a real measurement on the tier-2 golden corpus, not an
+* Any accuracy claim needs a real measurement on the tier-2 golden corpus, not an
   assumption that beam search is strictly better than greedy.
 
 ## Considered Options
 
-- **Leave the scaffolding as a config error.** Keeps the surface honest about what's
+* **Leave the scaffolding as a config error.** Keeps the surface honest about what's
   implemented, but wastes the groundwork already laid and leaves `readtext`'s most
   commonly reached-for accuracy lever unavailable.
-- **Implement a "corrected" beam search** that fixes `ctcBeamSearch`'s blank-handling
+* **Implement a "corrected" beam search** that fixes `ctcBeamSearch`'s blank-handling
   quirk (its per-timestep extension candidates are not blank-excluded, so an explicit
   blank extension and the implicit "beam unchanged" continuation both add mass to the
   same blank-ending labeling — not a normalized probability update). Tempting, but this
   stops being an EasyOCR decoder and starts being a different algorithm sceptre would
   own the correctness of, with no upstream reference to validate against — and, per the
   "Follow-up" section below, it was measured and is worse net, not better.
-- **Port `ctcBeamSearch` faithfully, quirk included, opt-in via `Decoder::BeamSearch`**,
+* **Port `ctcBeamSearch` faithfully, quirk included, opt-in via `Decoder::BeamSearch`**,
   leaving `Decoder::WordBeamSearch` a config error.
 
 ## Decision Outcome
@@ -166,29 +166,29 @@ faithful port.
 
 ### Consequences
 
-- Good: `RecognitionConfig::decoder` now does what its scaffolding promised for two of
+* Good: `RecognitionConfig::decoder` now does what its scaffolding promised for two of
   its three variants; a user who has a reason to try beam search (e.g., Japanese-heavy
   input, per this corpus) can opt in per `Reader` without a code change.
-- Good: confidence stays comparable across decoders, so `filter_ths` and the
+* Good: confidence stays comparable across decoders, so `filter_ths` and the
   contrast-adjustment second pass (both keyed on confidence) behave the same regardless
   of which decoder produced the text.
-- Good: the default output is unchanged — every `tier2_golden.rs` figure in this ADR's
+* Good: the default output is unchanged — every `tier2_golden.rs` figure in this ADR's
   table is the pre-existing greedy baseline, unmoved.
-- Bad: beam search is not a general accuracy win on this corpus; recommending it
+* Bad: beam search is not a general accuracy win on this corpus; recommending it
   requires knowing it helps for the specific script/content in question, not "richer
   decoding is strictly better." This is called out in the config-level doc comment on
   `Decoder::BeamSearch` and here, so a future reader doesn't reach for it as a default
   accuracy fix.
-- Neutral: `Decoder::WordBeamSearch` remains unimplemented; building it would need a
+* Neutral: `Decoder::WordBeamSearch` remains unimplemented; building it would need a
   dictionary/word-segmentation subsystem this ADR does not scope.
-- Good (incidental): the investigation surfaced and fixed a real determinism bug
+* Good (incidental): the investigation surfaced and fixed a real determinism bug
   (`rank_beams`) that would otherwise have shipped — the same crop recognizing to
   different text on different runs is a correctness defect independent of whether beam
   search helps accuracy at all.
 
 ## Related
 
-- [ADR 0016](0016-parity-harness-and-test-corpus.md) — the tier-2 golden corpus and
+* [ADR 0016](0016-parity-harness-and-test-corpus.md) — the tier-2 golden corpus and
   harness this decision is measured against.
-- [ADR 0019](0019-parity-safe-perf-and-simd.md) — establishes the fused-softmax greedy
+* [ADR 0019](0019-parity-safe-perf-and-simd.md) — establishes the fused-softmax greedy
   decode path that `ctc::probability_matrix` generalizes for beam search's use.

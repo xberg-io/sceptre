@@ -18,19 +18,19 @@ do not want to do purely to enable benchmarking.
 
 ## Decision Drivers
 
-- Measure the real internal hot paths, not a proxy, so perf work is guided by true numbers.
-- Do not widen the crate's public API to expose internals for benchmarking.
-- Benches must build offline and in CI (no model downloads, no mandatory corpus submodule).
-- Fit the existing tooling (`task`, the CI job style) and the 1000-line module cap.
+* Measure the real internal hot paths, not a proxy, so perf work is guided by true numbers.
+* Do not widen the crate's public API to expose internals for benchmarking.
+* Benches must build offline and in CI (no model downloads, no mandatory corpus submodule).
+* Fit the existing tooling (`task`, the CI job style) and the 1000-line module cap.
 
 ## Considered Options
 
-- **Public-API-only benches** — benchmark through `Reader`. Rejected: exercising a real end-to-end
+* **Public-API-only benches** — benchmark through `Reader`. Rejected: exercising a real end-to-end
   run requires downloaded ONNX models (network + cache), conflates the stages under test with
   model inference, and cannot isolate a single hot path.
-- **`#[bench]` / libtest harness** — still unstable, nightly-only, and far weaker than Criterion
+* **`#[bench]` / libtest harness** — still unstable, nightly-only, and far weaker than Criterion
   (no statistics, no regression tracking). Rejected.
-- **A `bench` cargo feature exposing a `#[doc(hidden)] pub` seam module** — a thin wrapper layer
+* **A `bench` cargo feature exposing a `#[doc(hidden)] pub` seam module** — a thin wrapper layer
   that reaches the internal stages through feature-gated `pub(crate)` shim functions in the
   `detect`/`recognize` module roots and re-exposes them through `#[doc(hidden)] pub fn
   *_for_benchmark` wrappers, driven by Criterion.
@@ -65,11 +65,11 @@ gate.
 
 ### Consequences
 
-- Good: the true internal hot paths are measurable without any public-API change; the seam is
+* Good: the true internal hot paths are measurable without any public-API change; the seam is
   hidden from docs and gated off by default.
-- Good: benches build offline and are compile-checked in CI, so they cannot silently rot.
-- Good: Criterion gives statistics and regression tracking, unblocking future perf work.
-- Bad/limited: benchmarks are run manually (perf timings are not a CI gate), so regressions are
+* Good: benches build offline and are compile-checked in CI, so they cannot silently rot.
+* Good: Criterion gives statistics and regression tracking, unblocking future perf work.
+* Bad/limited: benchmarks are run manually (perf timings are not a CI gate), so regressions are
   caught only when someone runs `task bench`.
-- Neutral: a small feature-gated wrapper layer and a set of feature-gated re-exports to maintain
+* Neutral: a small feature-gated wrapper layer and a set of feature-gated re-exports to maintain
   alongside the stage signatures they mirror.

@@ -17,9 +17,9 @@ marginal cost and closes the gap between "gen2 support" and "the six we happened
 
 ## Decision Drivers
 
-- Cover EasyOCR's *entire* gen2 recognizer family, not an arbitrary subset.
-- Stay within the gen2-only architecture (VGG-BiLSTM-CTC, image-only ONNX input) — no gen1 tail.
-- Reuse the existing add-a-language mechanism (enum + registry + charset + CLI arg).
+* Cover EasyOCR's *entire* gen2 recognizer family, not an arbitrary subset.
+* Stay within the gen2-only architecture (VGG-BiLSTM-CTC, image-only ONNX input) — no gen1 tail.
+* Reuse the existing add-a-language mechanism (enum + registry + charset + CLI arg).
 
 ## Decision Outcome
 
@@ -33,11 +33,11 @@ Chinese) remain out of scope, unchanged from ADR 0002.
 
 ### Consequences
 
-- Good: sceptre covers the complete gen2 recognizer family — no gen2 gaps.
-- Good: Telugu and Kannada scripts become supported with the existing greedy-CTC pipeline.
-- Neutral: two new golden parity fixtures (image + dual golden) are added under ADR 0016; none
+* Good: sceptre covers the complete gen2 recognizer family — no gen2 gaps.
+* Good: Telugu and Kannada scripts become supported with the existing greedy-CTC pipeline.
+* Neutral: two new golden parity fixtures (image + dual golden) are added under ADR 0016; none
   existed for these scripts before.
-- Bad: two more models to export, host, and keep parity-tested.
+* Bad: two more models to export, host, and keep parity-tested.
 
 ## Supersedes
 

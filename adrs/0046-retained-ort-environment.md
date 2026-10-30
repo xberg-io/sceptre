@@ -15,10 +15,10 @@ A runtime-information probe can also consume the single initialization before OC
 
 ## Considered Options
 
-- Construct an environment for each session. This fails on the second initialization.
-- Thread an environment through every reader and runtime-information API. Independent
+* Construct an environment for each session. This fails on the second initialization.
+* Thread an environment through every reader and runtime-information API. Independent
   readers still require coordination because the restriction applies to the process.
-- Retain one immutable, fallibly initialized environment inside the ort backend.
+* Retain one immutable, fallibly initialized environment inside the ort backend.
 
 ## Decision Outcome
 

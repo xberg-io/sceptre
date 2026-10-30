@@ -17,11 +17,11 @@ carries almost no information; excluding the eleven moves it from CER 0.584 to 0
 
 Two facts frame the decision:
 
-- **EasyOCR fails identically.** `easyocr.Reader(['en']).readtext(ocr_test_rotated_90.png)`
+* **EasyOCR fails identically.** `easyocr.Reader(['en']).readtext(ocr_test_rotated_90.png)`
   returns `['WI','2','Hl','8','5','9','8','7','g','UL','3']`. This is a shared
   architectural gap, not a sceptre regression, so fixing it is not a parity repair — it
   is a deliberate divergence that puts sceptre ahead.
-- **Recognition was never the problem.** Pre-rotating that same image by 90° externally
+* **Recognition was never the problem.** Pre-rotating that same image by 90° externally
   makes sceptre emit the ground truth verbatim. The detector and recognizer are both
   fine; nothing upstream tells them which way is up.
 
@@ -29,29 +29,29 @@ The question is how to decide which way is up, and whether to do it by default.
 
 ## Decision Drivers
 
-- EasyOCR parity is the baseline contract. The tier-2 golden corpus must stay
+* EasyOCR parity is the baseline contract. The tier-2 golden corpus must stay
   byte-identical unless an ADR says otherwise.
-- Any orientation signal must come from something already in the pipeline. Adding a
+* Any orientation signal must come from something already in the pipeline. Adding a
   separate classifier model would mean a second download, a second `NetworkKind` for the
   `candle` backend to hand-write, and a new entry in the model registry.
-- The pre-pass costs four extra CRAFT forward passes. That is a real latency tax on
+* The pre-pass costs four extra CRAFT forward passes. That is a real latency tax on
   every page, including the overwhelming majority that are already upright.
-- A wrong answer is worse than no answer. Rotating an already-upright page corrupts a
+* A wrong answer is worse than no answer. Rotating an already-upright page corrupts a
   page that previously worked.
 
 ## Considered Options
 
-- **Do nothing.** Matches EasyOCR exactly and costs nothing. Leaves eleven of
+* **Do nothing.** Matches EasyOCR exactly and costs nothing. Leaves eleven of
   twenty-seven corpus images at near-total failure and forgoes the single largest
   quality win available.
-- **A dedicated orientation-classifier model.** Most accurate in principle, and the
+* **A dedicated orientation-classifier model.** Most accurate in principle, and the
   standard approach in document-OCR stacks. Costs a new model download, a new hand-written
   `candle` network, registry and ADR 0035 backend-matrix churn, and a new parity surface —
   a large amount of new machinery for a pre-pass.
-- **Reuse CRAFT: probe all four rotations, score the heat-maps, detect on the best.**
+* **Reuse CRAFT: probe all four rotations, score the heat-maps, detect on the best.**
   No new model, no new backend work, no registry change. Costs four reduced-canvas
   forward passes and needs a scoring function that actually discriminates.
-- **Probe, but only on demand (opt-in).** The above, with the default left unchanged.
+* **Probe, but only on demand (opt-in).** The above, with the default left unchanged.
 
 ## Decision Outcome
 
@@ -100,10 +100,10 @@ at the minimum-`y` corner, corrupting the crop on pages that were never rotated.
 
 Measured with the real CRAFT model:
 
-- All six known-rotated pages get the correcting rotation
+* All six known-rotated pages get the correcting rotation
   (`ocr_test_rotated_{90,180,270}.png`, `complex_document_rotated_{90,180,270}.png`).
-- Seven of the eight tier-2 parity images stay at `Deg0`.
-- **`kannada.png` false-positives to `Deg270`**, clearing the 5% margin by roughly 12%.
+* Seven of the eight tier-2 parity images stay at `Deg0`.
+* **`kannada.png` false-positives to `Deg270`**, clearing the 5% margin by roughly 12%.
   Its short lines and dense, loopy glyph strokes give it high baseline activation in
   every orientation, so the margin gate that protects the other seven does not protect
   it.
@@ -164,11 +164,11 @@ not merely improved.
 
 Two corrections to earlier framing this measurement forces:
 
-- **Vertical Japanese was never in scope.** The five `ndl_meiji_vertical_*` pages do not
+* **Vertical Japanese was never in scope.** The five `ndl_meiji_vertical_*` pages do not
   move, and should not: vertical writing direction is not page rotation. Grouping them
   with the rotated pages into one "eleven broken images" bucket overstated what any
   orientation pre-pass could ever fix.
-- **The false-positive rate, not the win, is the blocker.** Four of sixteen upright images
+* **The false-positive rate, not the win, is the blocker.** Four of sixteen upright images
   (`financial_table_1`, `invoice_image`, `layout_parser_paper_with_table`,
   `cord_receipt_01`) flip wrongly, and a wrong rotation is now a *total* loss rather than a
   no-op, because it corrupts recognition too. `kannada.png` makes five known cases. The
@@ -181,27 +181,27 @@ relative-margin gate can do that is the open question this ADR leaves.
 
 ### Consequences
 
-- Good: no new model, no registry entry, no new `candle` network, and no change to the
+* Good: no new model, no registry entry, no new `candle` network, and no change to the
   backend matrix in ADR 0035 — the pre-pass reuses CRAFT through the existing seam.
-- Good: default output is bit-for-bit unchanged, so ADR 0021's parity gate and the
+* Good: default output is bit-for-bit unchanged, so ADR 0021's parity gate and the
   tier-2 golden fixtures are unaffected.
-- Good: a capability EasyOCR does not have, which is a genuine differentiator rather
+* Good: a capability EasyOCR does not have, which is a genuine differentiator rather
   than parity work.
-- Bad: opt-in features are under-discovered. Most users with rotated pages will never
+* Bad: opt-in features are under-discovered. Most users with rotated pages will never
   find the flag.
-- Bad: four extra forward passes when enabled. Mitigated by the reduced probe canvas,
+* Bad: four extra forward passes when enabled. Mitigated by the reduced probe canvas,
   but it is not free, and the probe is serial.
-- Bad: the scorer is a heuristic over heat-map mass, not a trained classifier, and its
+* Bad: the scorer is a heuristic over heat-map mass, not a trained classifier, and its
   false-positive rate is the feature's binding constraint — five known cases, four of
   which are dense tables and receipts rather than the non-Latin scripts the kannada case
   first suggested. A wrong rotation is a total loss, not a degradation.
-- Neutral: the four probes go through the same `ModelBackend` seam as detection, so
+* Neutral: the four probes go through the same `ModelBackend` seam as detection, so
   every backend gets the feature at once with no per-backend work.
 
 ## Related
 
-- ADR 0021 — the EasyOCR parity gate this decision deliberately leaves untouched.
-- ADR 0035 — the backend/accelerator matrix, unchanged because the pre-pass adds no
+* ADR 0021 — the EasyOCR parity gate this decision deliberately leaves untouched.
+* ADR 0035 — the backend/accelerator matrix, unchanged because the pre-pass adds no
   network.
-- ADR 0036 — the other opt-in-by-measurement quality lever; same discipline of
+* ADR 0036 — the other opt-in-by-measurement quality lever; same discipline of
   defaulting to the measured-safe behavior rather than the theoretically better one.

@@ -22,12 +22,12 @@ organization as everything around them.
 
 ## Decision Drivers
 
-- One org to administer, with the same membership and access controls as the rest of the stack.
-- Do not break already-published crates. Versions 0.2.0 through 0.4.0 are live on crates.io with
+* One org to administer, with the same membership and access controls as the rest of the stack.
+* Do not break already-published crates. Versions 0.2.0 through 0.4.0 are live on crates.io with
   `sceptre-ocr/*` compiled into their registries; those binaries must keep resolving models.
-- Preserve [ADR 0011](0011-repointable-registry-owner.md)'s registry-owner override, which swaps
+* Preserve [ADR 0011](0011-repointable-registry-owner.md)'s registry-owner override, which swaps
   only the owner segment of a repo id so a mirror or air-gapped copy stays a one-setting change.
-- Names must stay unambiguous inside a shared, multi-project org.
+* Names must stay unambiguous inside a shared, multi-project org.
 
 ## Decision
 
@@ -65,26 +65,26 @@ problem this ADR exists to solve would remain.
 
 ## Consequences
 
-- Good: one org, one set of access controls, consistent with the rest of the stack.
-- Good: published 0.2.0–0.4.0 keep working. Hugging Face serves a redirect from a moved repo, and
+* Good: one org, one set of access controls, consistent with the rest of the stack.
+* Good: published 0.2.0–0.4.0 keep working. Hugging Face serves a redirect from a moved repo, and
   this was verified end to end against the `resolve` endpoint the downloader actually uses — a
   throwaway repo was moved between namespaces and the old path still returned the file. The move
   was not performed on the model repos until that held.
-- Neutral: the sha256 pins in `models::registry` are unchanged, so `models::download`'s
+* Neutral: the sha256 pins in `models::registry` are unchanged, so `models::download`'s
   verification is unaffected and existing caches stay valid. The on-disk hub cache directory does
   change name with the repo id, so the next run re-downloads once.
-- Bad: the redirect is a Hugging Face behavior, not a contract we control. If it is ever withdrawn,
+* Bad: the redirect is a Hugging Face behavior, not a contract we control. If it is ever withdrawn,
   crates 0.2.0–0.4.0 lose model resolution with no recourse short of a patch release. Anything
   that must not depend on it should pin `registry_owner` explicitly (ADR 0011).
-- Bad: the `sceptre-ocr` org is now empty rather than deleted. Leaving it in place is deliberate —
+* Bad: the `sceptre-ocr` org is now empty rather than deleted. Leaving it in place is deliberate —
   deleting it would free the namespace for re-registration by someone else, which is a worse
   outcome than an idle org.
 
 ## Related
 
-- Amends [ADR 0025](0025-first-party-onnx-exports.md); does not supersede it. The first-party
+* Amends [ADR 0025](0025-first-party-onnx-exports.md); does not supersede it. The first-party
   export decision, the pipeline, and the provenance story are unchanged.
-- Depends on [ADR 0011](0011-repointable-registry-owner.md)'s owner-segment override, which the
+* Depends on [ADR 0011](0011-repointable-registry-owner.md)'s owner-segment override, which the
   `sceptre-` prefix was chosen to preserve.
-- [ADR 0003](0003-model-source-itext-onnx-runtime-download.md) records the original third-party
+* [ADR 0003](0003-model-source-itext-onnx-runtime-download.md) records the original third-party
   `itextresearch` source, already superseded by ADR 0025.

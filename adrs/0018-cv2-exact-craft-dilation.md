@@ -39,11 +39,11 @@ rectangle fitting remain on `imageproc`.
 
 ### Consequences
 
-- Good: box geometry now matches EasyOCR bit-for-bit through the dilation, so horizontal
+* Good: box geometry now matches EasyOCR bit-for-bit through the dilation, so horizontal
   word-merges resolve as they do upstream; parity improved (the `Mairie du` split is gone).
-- Good: no new dependency — a ~20-line safe scalar kernel, no `unsafe`.
-- Neutral: the dilation is O(area · (1 + niter)²) instead of imageproc's separable pass; `niter`
+* Good: no new dependency — a ~20-line safe scalar kernel, no `unsafe`.
+* Neutral: the dilation is O(area · (1 + niter)²) instead of imageproc's separable pass; `niter`
   is small (single digits) and the scan is already windowed to the component bbox.
-- Limited: strongly-rotated multi-word lines can still diverge via min-area-rect corner rounding
+* Limited: strongly-rotated multi-word lines can still diverge via min-area-rect corner rounding
   (a separate geometry detail, tracked by the ignored `parity_french_jpg` case); this ADR does not
   address that.

@@ -14,15 +14,15 @@ the entry points thin.
 
 ## Decision Drivers
 
-- Library-first reuse; binaries should only orchestrate.
-- Centralized dependency, lint, and profile management.
-- A layout that extends to binding crates without churn.
+* Library-first reuse; binaries should only orchestrate.
+* Centralized dependency, lint, and profile management.
+* A layout that extends to binding crates without churn.
 
 ## Considered Options
 
-- Single crate with `lib.rs` + `main.rs`.
-- Cargo workspace: `crates/sceptre` (rlib) + `crates/sceptre-cli` (bin).
-- Multi-app monorepo with several binaries up front.
+* Single crate with `lib.rs` + `main.rs`.
+* Cargo workspace: `crates/sceptre` (rlib) + `crates/sceptre-cli` (bin).
+* Multi-app monorepo with several binaries up front.
 
 ## Decision Outcome
 
@@ -34,7 +34,7 @@ parsing and never contains OCR logic.
 
 ### Consequences
 
-- Good: the core is independently testable and embeddable; binding crates can be
+* Good: the core is independently testable and embeddable; binding crates can be
   added later as peripheral members.
-- Good: one place governs versions, lints, and build profiles.
-- Bad: slightly more manifest boilerplate than a single crate.
+* Good: one place governs versions, lints, and build profiles.
+* Bad: slightly more manifest boilerplate than a single crate.

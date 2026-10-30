@@ -19,9 +19,9 @@ Rust library consumers with the same failure.
 
 ## Considered Options
 
-- Revert to rc.13, postponing the requested ONNX Runtime upgrade.
-- Add a CLI-only linker flag or raise the deployment target.
-- Restore compiler-runtime linkage at the core crate's build boundary.
+* Revert to rc.13, postponing the requested ONNX Runtime upgrade.
+* Add a CLI-only linker flag or raise the deployment target.
+* Restore compiler-runtime linkage at the core crate's build boundary.
 
 ## Decision Outcome
 

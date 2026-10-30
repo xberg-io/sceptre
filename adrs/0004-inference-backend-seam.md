@@ -16,15 +16,15 @@ to any one runtime.
 
 ## Decision Drivers
 
-- CPU/RSS-optimized native execution.
-- A pure-Rust path for WASM/Android.
-- A hedge if `tract` cannot run the recognizer BiLSTM.
+* CPU/RSS-optimized native execution.
+* A pure-Rust path for WASM/Android.
+* A hedge if `tract` cannot run the recognizer BiLSTM.
 
 ## Considered Options
 
-- `ort` only.
-- `ort` native + `tract` pure-Rust, both behind a runtime-neutral trait.
-- Reimplement the networks in `candle` (pure-Rust tensors), no ONNX runtime.
+* `ort` only.
+* `ort` native + `tract` pure-Rust, both behind a runtime-neutral trait.
+* Reimplement the networks in `candle` (pure-Rust tensors), no ONNX runtime.
 
 ## Decision Outcome
 
@@ -37,10 +37,10 @@ backend's intra-op threads.
 
 ### Consequences
 
-- Good: backend choice is not load-bearing; we can ship `ort` first and add
+* Good: backend choice is not load-bearing; we can ship `ort` first and add
   pure-Rust backends without touching the pipeline.
-- Good: the pure-Rust target has a defined fallback.
-- Bad: an abstraction layer plus a per-backend BiLSTM verification step.
+* Good: the pure-Rust target has a defined fallback.
+* Bad: an abstraction layer plus a per-backend BiLSTM verification step.
 
 ## Status update (2026-08-01)
 

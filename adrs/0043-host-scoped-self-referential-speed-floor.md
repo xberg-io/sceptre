@@ -54,34 +54,34 @@ that can be broken by someone else's changelog.
 
 ## Decision Drivers
 
-- A gate must fail for the reason it names. Neither a smaller runner nor a faster EasyOCR is a
+* A gate must fail for the reason it names. Neither a smaller runner nor a faster EasyOCR is a
   sceptre regression, and both are currently reported as one.
-- The cross-engine speed advantage is real and worth publishing; it needs an honest scope, not a
+* The cross-engine speed advantage is real and worth publishing; it needs an honest scope, not a
   floor to defend.
-- Absolute figures — and floors calibrated against them — are comparable only within one host
+* Absolute figures — and floors calibrated against them — are comparable only within one host
   class (ADR 0035, ADR 0042).
-- Unmeasurable must read as failure, never as success, as it already does for `check_rss_ceiling`
+* Unmeasurable must read as failure, never as success, as it already does for `check_rss_ceiling`
   and for `load_guardrails` / `check_guardrails`.
-- Two floors that answer the same question ("did sceptre get worse on this host?") should have
+* Two floors that answer the same question ("did sceptre get worse on this host?") should have
   the same shape, so a reader learns the rule once.
 
 ## Considered Options
 
-- **Keep the cross-engine ratio and lower the floor to 1.8.** Rejected. It tunes the gate to the
+* **Keep the cross-engine ratio and lower the floor to 1.8.** Rejected. It tunes the gate to the
   measurement rather than fixing what the measurement is: 1.8 is chosen precisely because 1.95
   was observed, so the gate encodes one host's core count as a constant. It is still
   host-dependent — a 4-core runner would push the ratio under 1.8 with no code change — and still
   EasyOCR-coupled, so a faster reference release still reports itself as a sceptre regression.
   It buys quiet until the next runner class or the next torch release.
-- **Host-scope the ratio.** Compare this run's cross-engine ratio against the ratio the committed
+* **Host-scope the ratio.** Compare this run's cross-engine ratio against the ratio the committed
   baseline published for the same host. This fixes the host dependence — the 1.95 would be
   gated against 1.95, not against a macOS-derived 2.0 — but it keeps EasyOCR in the denominator,
   so defect 2 survives untouched. A gate that is right about the machine and wrong about who can
   break it is not worth the asymmetry with `check_rss_ceiling`.
-- **Drop the speed gate entirely** and rely on the published artifact's drift review (ADR 0030).
+* **Drop the speed gate entirely** and rely on the published artifact's drift review (ADR 0030).
   Rejected: memory has a gate, and speed is the axis this project exists to move; an unnoticed
   30% slowdown is exactly what an `--assert` mode is for.
-- **Absolute, host-scoped, self-referential floor on sceptre's own warm throughput.** Chosen.
+* **Absolute, host-scoped, self-referential floor on sceptre's own warm throughput.** Chosen.
 
 ## Decision Outcome
 
@@ -113,33 +113,33 @@ that can be broken by someone else's changelog.
 
 ### Consequences
 
-- The gate now fails only for sceptre-side slowdown, on the host it was baselined on. A smaller
+* The gate now fails only for sceptre-side slowdown, on the host it was baselined on. A smaller
   runner, a faster EasyOCR, and a torch upgrade cannot trip it.
-- Gating requires a published baseline measured on the gating host, as the RSS ceiling already
+* Gating requires a published baseline measured on the gating host, as the RSS ceiling already
   did. The committed artifact is `runner-medium` and the scheduled job runs there, so this floor
   is evaluable today; a run on any other host fails with "no baseline for this host" until one is
   published, which is the incomparability made visible rather than a new obstacle.
-- The floor is scoped to a host *and* a corpus: throughput moves with the images measured, so a
+* The floor is scoped to a host *and* a corpus: throughput moves with the images measured, so a
   corpus change requires re-publishing the baseline. The failure names the measured figure, the
   floor, the baseline, and the host, so the remedy is legible.
-- The published speed claim does not change: `warm_speedup` is still computed and rendered the
+* The published speed claim does not change: `warm_speedup` is still computed and rendered the
   same way, from the same measurements. Unlike ADR 0042, this ADR changes only what is gated.
-- `check_thresholds` now consists of two structurally identical self-referential checks against
+* `check_thresholds` now consists of two structurally identical self-referential checks against
   the published baseline. Nothing cross-engine gates anything.
 
 ## Related
 
-- ADR 0021 (head-to-head benchmark methodology and regression gate) — **amended, not
+* ADR 0021 (head-to-head benchmark methodology and regression gate) — **amended, not
   superseded**. This is the second of its three original floors to be replaced: ADR 0042 took
   the peak-RSS floor, this one takes the warm-speedup floor, and the remaining labeled-quality
   floor had already moved to per-image guardrail contracts (`derive_guardrails` / `--guardrails`)
   in the harness. The measurement methodology — fresh subprocess per language group under
   `/usr/bin/time`, warm/batch axis, native threading, capability gaps excluded from aggregates —
   is untouched.
-- ADR 0042 (host-scoped absolute benchmark floors) — **extended**. This ADR applies its two
+* ADR 0042 (host-scoped absolute benchmark floors) — **extended**. This ADR applies its two
   findings, host-scoping and self-reference, to the floor it deliberately left open, and reuses
   its host identity, its baseline source, and its unmeasurable-is-a-breach discipline verbatim.
-- ADR 0030 (published benchmark artifact and drift gate) — the committed artifact this floor
+* ADR 0030 (published benchmark artifact and drift gate) — the committed artifact this floor
   reads its baseline from, which is why the baseline is reviewable rather than machine-local.
-- ADR 0035 (backend × accelerator benchmark matrix) — established that a runner class is
+* ADR 0035 (backend × accelerator benchmark matrix) — established that a runner class is
   provenance a figure cannot be attributed without.

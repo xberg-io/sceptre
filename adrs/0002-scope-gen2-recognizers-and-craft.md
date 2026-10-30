@@ -19,15 +19,15 @@ recommendation without the legacy tail.
 
 ## Decision Drivers
 
-- "Latest version" parity, not historical completeness.
-- Smaller, consistent model architecture and registry.
-- A clear path to add languages by configuration.
+* "Latest version" parity, not historical completeness.
+* Smaller, consistent model architecture and registry.
+* A clear path to add languages by configuration.
 
 ## Considered Options
 
-- Full parity (all languages, CRAFT + DBNet, gen1 + gen2).
-- gen2 recognizers (`*_g2`) + CRAFT only.
-- English-only first, expand later.
+* Full parity (all languages, CRAFT + DBNet, gen1 + gen2).
+* gen2 recognizers (`*_g2`) + CRAFT only.
+* English-only first, expand later.
 
 ## Decision Outcome
 
@@ -39,7 +39,7 @@ Devanagari) are out of scope.
 
 ### Consequences
 
-- Good: one recognizer architecture; a compact model registry.
-- Good: greedy CTC decoding is sufficient for the initial target.
-- Bad: gen1-only languages are unsupported until a future ADR revisits scope.
-- Neutral: DBNet and beam/word-beam decoding are deferred, not precluded.
+* Good: one recognizer architecture; a compact model registry.
+* Good: greedy CTC decoding is sufficient for the initial target.
+* Bad: gen1-only languages are unsupported until a future ADR revisits scope.
+* Neutral: DBNet and beam/word-beam decoding are deferred, not precluded.

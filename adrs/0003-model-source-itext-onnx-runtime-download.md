@@ -19,16 +19,16 @@ six gen2 recognizers, and a way to deliver them to users.
 
 ## Decision Drivers
 
-- Avoid maintaining a fragile PyTorch export toolchain if we can.
-- Permissive license for redistribution.
-- Dynamic-width recognizers (no letterbox distortion).
-- Keep large binaries out of git.
+* Avoid maintaining a fragile PyTorch export toolchain if we can.
+* Permissive license for redistribution.
+* Dynamic-width recognizers (no letterbox distortion).
+* Keep large binaries out of git.
 
 ## Considered Options
 
-- Author our own `.pth → ONNX` export (extending EasyOCR's script to recognizers).
-- Use the `itextresearch/itext-EasyOCR-*` ONNX exports on Hugging Face.
-- Vendor exported ONNX into the repository (git-lfs).
+* Author our own `.pth → ONNX` export (extending EasyOCR's script to recognizers).
+* Use the `itextresearch/itext-EasyOCR-*` ONNX exports on Hugging Face.
+* Vendor exported ONNX into the repository (git-lfs).
 
 ## Decision Outcome
 
@@ -41,9 +41,9 @@ rejects a model).
 
 ### Consequences
 
-- Good: no export toolchain on the critical path; small repo.
-- Good: one consistent, permissively-licensed source for every model.
-- Bad: first run needs network access; we depend on an external host (mitigated
+* Good: no export toolchain on the critical path; small repo.
+* Good: one consistent, permissively-licensed source for every model.
+* Bad: first run needs network access; we depend on an external host (mitigated
   by caching + checksums, and the fallback export path).
 
 ## Status update (2026-08-01)

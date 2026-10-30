@@ -17,18 +17,18 @@ after v2.0.0-rc.11, so `download-binaries` has no artifact there.
 
 ## Decision Drivers
 
-- Zero-config native builds for contributors and CI on supported targets.
-- A working path for targets with no prebuilt (e.g. macОS x86_64) and for release packaging.
-- Explicit, per-target control — provisioning must not be an implicit default.
-- Consistency with the sibling xberg project, which already solved this.
+* Zero-config native builds for contributors and CI on supported targets.
+* A working path for targets with no prebuilt (e.g. macОS x86_64) and for release packaging.
+* Explicit, per-target control — provisioning must not be an implicit default.
+* Consistency with the sibling xberg project, which already solved this.
 
 ## Considered Options
 
-- Single `download-binaries` — simplest, but no artifact for some targets, and forces a
+* Single `download-binaries` — simplest, but no artifact for some targets, and forces a
   build-time binary fetch everywhere.
-- Single `load-dynamic` — no build-time fetch, but nothing runs until a compatible
+* Single `load-dynamic` — no build-time fetch, but nothing runs until a compatible
   `libonnxruntime` is present, pushing provisioning onto every environment.
-- **Two feature flags (`ort-bundled` / `ort-dynamic`) over a provisioning-agnostic `ort`
+* **Two feature flags (`ort-bundled` / `ort-dynamic`) over a provisioning-agnostic `ort`
   backend feature** — the caller picks per target. This is the xberg pattern.
 
 ## Decision Outcome
@@ -36,10 +36,10 @@ after v2.0.0-rc.11, so `download-binaries` has no artifact there.
 Chosen option: **mirror xberg — a provisioning-agnostic `ort` feature plus two selectable
 provisioning features**, none enabled by default:
 
-- `ort` — compiles the backend against the `ort` API; provisioning-agnostic.
-- `ort-bundled = ["ort", "ort?/download-binaries", "ort?/tls-rustls"]` — fetches a prebuilt
+* `ort` — compiles the backend against the `ort` API; provisioning-agnostic.
+* `ort-bundled = ["ort", "ort?/download-binaries", "ort?/tls-rustls"]` — fetches a prebuilt
   ONNX Runtime at build time; zero-config native for contributors/CI on supported targets.
-- `ort-dynamic = ["ort", "ort?/load-dynamic"]` — `dlopen`s `libonnxruntime` at runtime via
+* `ort-dynamic = ["ort", "ort?/load-dynamic"]` — `dlopen`s `libonnxruntime` at runtime via
   `ORT_DYLIB_PATH`; the path for targets without a prebuilt and for shipping a dylib next to
   the release binary (no `ORT_DYLIB_PATH` needed when it sits beside the executable).
 
@@ -55,14 +55,14 @@ it does not change the backend choice. The pure-Rust story is unaffected — tha
 
 ### Consequences
 
-- Good: zero-config native via `ort-bundled` where prebuilts exist; a real fallback via
+* Good: zero-config native via `ort-bundled` where prebuilts exist; a real fallback via
   `ort-dynamic` where they do not, and for release bundling.
-- Good: provisioning is explicit and per-target, not an implicit auto-download.
-- Good: aligns with xberg, so target-specific handling (e.g. macOS x86_64 → `ort-dynamic`)
+* Good: provisioning is explicit and per-target, not an implicit auto-download.
+* Good: aligns with xberg, so target-specific handling (e.g. macOS x86_64 → `ort-dynamic`)
   can be copied rather than re-derived.
-- Bad: `ort-bundled` pulls a TLS/HTTP stack (`tls-rustls` → `ureq`, `rustls`) and a build-time
+* Bad: `ort-bundled` pulls a TLS/HTTP stack (`tls-rustls` → `ureq`, `rustls`) and a build-time
   binary download into the supply chain (covered by `cargo-deny`).
-- Neutral: the CLI's per-target feature selection is deferred to the CLI pass.
+* Neutral: the CLI's per-target feature selection is deferred to the CLI pass.
 
 ## Status update (2026-08-06)
 

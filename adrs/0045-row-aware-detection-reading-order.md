@@ -19,18 +19,18 @@ top row was emitted as `东`, `西`, `愚园路` rather than the left-to-right o
 
 ## Decision Drivers
 
-- Interleave free quads with horizontal regions by page position.
-- Preserve left-to-right order for mixed-height regions on the same visual row.
-- Prevent a tall region that overlaps two rows from merging those rows.
-- Keep ordering deterministic and backend-independent.
+* Interleave free quads with horizontal regions by page position.
+* Preserve left-to-right order for mixed-height regions on the same visual row.
+* Prevent a tall region that overlaps two rows from merging those rows.
+* Keep ordering deterministic and backend-independent.
 
 ## Considered Options
 
-- **Sort every region by vertical center, then left edge.** Rejected because mixed font sizes and
+* **Sort every region by vertical center, then left edge.** Rejected because mixed font sizes and
   tall labels reorder a single visual row.
-- **Cluster rows by any vertical overlap.** Rejected because a tall region may overlap two adjacent
+* **Cluster rows by any vertical overlap.** Rejected because a tall region may overlap two adjacent
   rows and collapse them into one.
-- **Cluster nearby centers using the shorter region height, then sort each row by left edge.**
+* **Cluster nearby centers using the shorter region height, then sort each row by left edge.**
   Chosen because the shorter height bounds row membership without allowing a tall box to bridge
   neighboring rows.
 
@@ -42,8 +42,8 @@ row's mean center. Sort each completed row by left edge.
 
 ### Consequences
 
-- Free and horizontal regions are interleaved in top-to-bottom page order.
-- Mixed-height labels on one row retain left-to-right reading order.
-- The minimum-height bound prevents a tall label from absorbing an adjacent row.
-- The eight-model tier-2 parity corpus retains its exact sceptre snapshots and all reference line
+* Free and horizontal regions are interleaved in top-to-bottom page order.
+* Mixed-height labels on one row retain left-to-right reading order.
+* The minimum-height bound prevents a tall label from absorbing an adjacent row.
+* The eight-model tier-2 parity corpus retains its exact sceptre snapshots and all reference line
   metrics after the change.

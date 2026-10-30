@@ -16,22 +16,22 @@ Rust with no OpenCV/native dependency, so we need those primitives in pure Rust.
 
 ## Decision Drivers
 
-- Faithful reproduction of the CRAFT box-extraction algorithm (connected components + rotated
+* Faithful reproduction of the CRAFT box-extraction algorithm (connected components + rotated
   min-area rect are the load-bearing steps).
-- Avoid re-deriving numerically fiddly geometry (convex hull + rotating calipers) by hand.
-- Pure-Rust, WASM-compatible, no native/OpenCV dependency.
-- Consistency with the sibling xberg project, which already ships an ONNX text detector
+* Avoid re-deriving numerically fiddly geometry (convex hull + rotating calipers) by hand.
+* Pure-Rust, WASM-compatible, no native/OpenCV dependency.
+* Consistency with the sibling xberg project, which already ships an ONNX text detector
   (DBNet) postprocess in Rust.
 
 ## Considered Options
 
-- **Hand-roll** connected components, morphological dilation, and min-area-rect. Full control,
+* **Hand-roll** connected components, morphological dilation, and min-area-rect. Full control,
   but rotating-calipers min-area-rect is error-prone and pure duplication of solved work.
-- **`imageproc`** — mature pure-Rust image-processing crate providing
+* **`imageproc`** — mature pure-Rust image-processing crate providing
   `region_labelling::connected_components`, `morphology::dilate`, `contrast::threshold`, and
   `geometry::min_area_rect` (convex hull + rotating calipers). xberg already uses it for its
   DBNet postprocess (`find_contours` + `min_area_rect`).
-- **OpenCV bindings** (`opencv` crate) — exact parity with EasyOCR, but a heavy native
+* **OpenCV bindings** (`opencv` crate) — exact parity with EasyOCR, but a heavy native
   dependency that breaks the pure-Rust WASM/Android story ([ADR 0009](0009-candle-evaluation-ort-primary.md)).
 
 ## Decision Outcome
@@ -56,13 +56,13 @@ backend seam and does not touch `config`/`types`.
 
 ### Consequences
 
-- Good: the numerically delicate min-area-rect (convex hull + rotating calipers) is a vetted
+* Good: the numerically delicate min-area-rect (convex hull + rotating calipers) is a vetted
   library routine, not hand-rolled.
-- Good: pure Rust — no OpenCV, preserving the WASM/Android pure-Rust path.
-- Good: aligns with xberg's detector-postprocess stack, so patterns transfer.
-- Bad/limited: `imageproc`'s dilation kernel shape differs slightly from OpenCV's rectangular
+* Good: pure Rust — no OpenCV, preserving the WASM/Android pure-Rust path.
+* Good: aligns with xberg's detector-postprocess stack, so patterns transfer.
+* Bad/limited: `imageproc`'s dilation kernel shape differs slightly from OpenCV's rectangular
   element; parity is asserted at the box level via golden IoU, not per pixel.
-- Neutral: `imageproc` pulls `nalgebra`/`num` into the tree (pure Rust, covered by `cargo-deny`).
+* Neutral: `imageproc` pulls `nalgebra`/`num` into the tree (pure Rust, covered by `cargo-deny`).
 
 ## Status update (2026-08-01)
 

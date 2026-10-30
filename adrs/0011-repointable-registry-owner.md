@@ -17,17 +17,17 @@ behavior identical to ADR 0003.
 
 ## Decision Drivers
 
-- Swap the model host with configuration, not a code edit — the host choice is still open.
-- Zero behavior change by default (must resolve to today's `itextresearch/...` ids).
-- No path-traversal / arbitrary-write risk from a config-controlled value reaching cache paths.
+* Swap the model host with configuration, not a code edit — the host choice is still open.
+* Zero behavior change by default (must resolve to today's `itextresearch/...` ids).
+* No path-traversal / arbitrary-write risk from a config-controlled value reaching cache paths.
 
 ## Considered Options
 
-- **Hardcode the org** — simplest, but a host change means editing the registry table and
+* **Hardcode the org** — simplest, but a host change means editing the registry table and
   cutting a release.
-- **`registry_owner` owner-segment override on `ModelConfig`** — swap only the owner part of
+* **`registry_owner` owner-segment override on `ModelConfig`** — swap only the owner part of
   each repo id; the `itext-EasyOCR-<model>` repo-name segment is preserved.
-- **Full repo-prefix / base-URL override** — maximum flexibility, but more surface to
+* **Full repo-prefix / base-URL override** — maximum flexibility, but more surface to
   validate and easy to misconfigure.
 
 ## Decision Outcome
@@ -51,14 +51,14 @@ is unchanged.
 
 ### Consequences
 
-- Good: the model host is a config change; we can move to our own HF org later with no code
+* Good: the model host is a config change; we can move to our own HF org later with no code
   edit and no release.
-- Good: default resolves to the exact upstream ids — no behavior change for existing users.
-- Good: the override is validated before touching the filesystem, closing an arbitrary-write
+* Good: default resolves to the exact upstream ids — no behavior change for existing users.
+* Good: the override is validated before touching the filesystem, closing an arbitrary-write
   path-traversal vector.
-- Bad/limited: only the owner segment is overridable — a host with a different repo-naming
+* Bad/limited: only the owner segment is overridable — a host with a different repo-naming
   scheme or a non-HF backend would need a broader mechanism (revisit if that host is chosen).
-- Neutral: artifacts served under a different owner cache to a distinct path; identical
+* Neutral: artifacts served under a different owner cache to a distinct path; identical
   content still satisfies the same sha256 pin once pins are populated.
 
 ## Status update (2026-08-03)

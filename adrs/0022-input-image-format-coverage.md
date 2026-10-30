@@ -18,17 +18,17 @@ where to draw the line.
 
 ## Decision Drivers
 
-- Match EasyOCR's practical input coverage on common raster formats.
-- Preserve the pure-Rust story: the `tract` backend targets WASM and Android (ADR 0004,
+* Match EasyOCR's practical input coverage on common raster formats.
+* Preserve the pure-Rust story: the `tract` backend targets WASM and Android (ADR 0004,
   backend-seam), and image decoding is backend-agnostic — it must not pull a C toolchain
   dependency that breaks those targets.
-- Keep binary size and the dependency/audit surface modest.
+* Keep binary size and the dependency/audit surface modest.
 
 ## Considered Options
 
-- Keep `png` + `jpeg` only.
-- Add the pure-Rust decoders the `image` crate ships (BMP, GIF, TIFF, WebP, NetPBM, …).
-- Additionally add the HEIF/AVIF/JPEG-2000 families via C libraries (`libheif`, `dav1d`,
+* Keep `png` + `jpeg` only.
+* Add the pure-Rust decoders the `image` crate ships (BMP, GIF, TIFF, WebP, NetPBM, …).
+* Additionally add the HEIF/AVIF/JPEG-2000 families via C libraries (`libheif`, `dav1d`,
   `openjpeg`) behind an optional feature.
 
 ## Decision Outcome
@@ -46,9 +46,9 @@ extension of this decision, not a reversal.
 
 ### Consequences
 
-- `Image::from_bytes` now decodes BMP/GIF/TIFF/WebP/NetPBM; the benchmark's BMP probe moves
+* `Image::from_bytes` now decodes BMP/GIF/TIFF/WebP/NetPBM; the benchmark's BMP probe moves
   from a capability gap to a scored entry, and three gaps (heif/avif/jp2) remain, clearly
   attributed to the pure-Rust constraint.
-- No `#[cfg(feature = ...)]` leaks into decode code — enabling a decoder is a Cargo feature
+* No `#[cfg(feature = ...)]` leaks into decode code — enabling a decoder is a Cargo feature
   flip on the `image` dependency (root `Cargo.toml`), consistent with `config`/`types`
   staying backend-agnostic.

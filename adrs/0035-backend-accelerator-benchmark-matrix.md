@@ -24,32 +24,32 @@ one exists.
 
 ## Decision Drivers
 
-- Legs must be comparable to each other, not just individually plausible. The single biggest
+* Legs must be comparable to each other, not just individually plausible. The single biggest
   threat to comparability already has a name: tract's fixed-canvas CRAFT (ADR 0027) makes the
   detection cost backend-dependent unless every leg fixes the same canvas.
-- A benchmark leg is evidence of *liveness and throughput*, not of *correctness*. Conflating
+* A benchmark leg is evidence of *liveness and throughput*, not of *correctness*. Conflating
   the two would quietly weaken the one correctness bar that exists (`backend_agreement.rs`)
   by implying a fast run is also a right one.
-- The harness must run on hosted CI, including a real GPU, without becoming a merge gate —
+* The harness must run on hosted CI, including a real GPU, without becoming a merge gate —
   ADR 0015 already settled that criterion benches are report-only, and the same reasoning
   applies here a fortiori: GPU runners are scarce and a flaky external dependency should never
   block a PR.
-- `build-gpu-test-binary@v1` (the org's mechanism for shipping a compiled test binary to a
+* `build-gpu-test-binary@v1` (the org's mechanism for shipping a compiled test binary to a
   GPU runner) extracts a **test** binary via `cargo test --no-run`, not a benchmark binary.
-- Runner choice is itself part of the measurement: a number from a shared, possibly
+* Runner choice is itself part of the measurement: a number from a shared, possibly
   contended host is not the same claim as one from a dedicated machine.
 
 ## Considered Options
 
-- **Extend `backend_agreement.rs` to also assert on timing.** Rejected: it would conflate a
+* **Extend `backend_agreement.rs` to also assert on timing.** Rejected: it would conflate a
   correctness gate with a performance measurement, and correctness assertions must stay
   strict pass/fail while performance numbers are inherently noisy and report-only.
-- **A criterion benchmark (`benches/`).** Rejected for the matrix specifically: criterion's
+* **A criterion benchmark (`benches/`).** Rejected for the matrix specifically: criterion's
   ≥10-sample statistical model does not fit a ~20 s/iteration candle-CPU workload on a spot
   GPU runner — either the sample count is dishonestly reduced or the job times out. Criterion
   stays the right tool for the existing microbenchmarks (ADR 0015), which this ADR promotes
   from compile-check to a timed, uploaded run but otherwise leaves alone.
-- **An `#[ignore]`d integration test, run explicitly with `--ignored`.** Chosen: it is a test
+* **An `#[ignore]`d integration test, run explicitly with `--ignored`.** Chosen: it is a test
   binary, which is exactly what `build-gpu-test-binary@v1` knows how to extract and ship to
   `runner-gpu-l4`; it reuses `Reader` and the real model-loading path with no harness-specific
   reimplementation; and `#[ignore]` means the existing CI legs keep compiling it for free
@@ -66,26 +66,26 @@ dropped when `ci.yaml` split into `ci-lint`/`ci-rust`/`ci-python`.
 
 ### Methodology: what makes a leg comparable to another leg
 
-- **`canvas_size = 1024` for every leg, no exceptions.** tract cannot shape-infer dynamic
+* **`canvas_size = 1024` for every leg, no exceptions.** tract cannot shape-infer dynamic
   CRAFT (ADR 0027) and pads to a fixed square; at the 2560 default its optimization cost would
   dominate the measurement and the comparison would stop meaning anything. `ort` and `candle`
   both run the same fixed canvas so the number measures the backend, not a canvas mismatch.
-- **One `Reader` per leg.** Model load happens once, matching how a long-lived process
+* **One `Reader` per leg.** Model load happens once, matching how a long-lived process
   actually uses sceptre, and isolates `model_load_ms` as a distinct figure from steady-state
   inference — a backend that loads slowly but infers fast (or vice versa) must not average
   the two into one meaningless number.
-- **Warm-up, then repeats, report the median.** One untimed call pages in models, backend
+* **Warm-up, then repeats, report the median.** One untimed call pages in models, backend
   device state, and OS caches; the median of several timed repeats is reported because a mean
   is dragged around by the rare stalled run, and there is no criterion-scale sample budget on
   a GPU runner to make a trimmed statistic worth computing.
-- **A fixed image subset (`english.png`, `cyrillic.png`)**, the same two images
+* **A fixed image subset (`english.png`, `cyrillic.png`)**, the same two images
   `backend_agreement.rs` already uses, so a reader of both files does not have to hold two
   different corpora in their head.
-- **Runner pinning is part of the measurement, not incidental to it.** A number from
+* **Runner pinning is part of the measurement, not incidental to it.** A number from
   `runner-large-arm64` and a number from a contended shared host are different claims; the
   workflow records which runner produced which leg, and the first scheduled run of each new
   runner assignment is a deliberate re-baselining event, not a silent continuation.
-- **The report names what registered, not what was requested.** Every leg captures
+* **The report names what registered, not what was requested.** Every leg captures
   `runtime_info_for(&config)` and writes `accelerator_registered` into its JSON, because a
   silently-degraded-to-CPU run reported as its requested accelerator would misattribute the
   number exactly the way ADR 0029/0032 already refuse to let provenance do.
@@ -154,15 +154,15 @@ block records the runner label so a future reader can tell which host produced i
 
 ## Consequences
 
-- Good: choosing a backend or accelerator is now an answerable question with a number behind
+* Good: choosing a backend or accelerator is now an answerable question with a number behind
   it, refreshed by CI rather than hand-measured once per ADR.
-- Good: the harness is a test binary, which is what the org's GPU tooling already knows how to
+* Good: the harness is a test binary, which is what the org's GPU tooling already knows how to
   build and ship — no bespoke benchmark-binary pipeline.
-- Good: `backend_agreement.rs` keeps sole ownership of correctness; nothing about this matrix
+* Good: `backend_agreement.rs` keeps sole ownership of correctness; nothing about this matrix
   can be read as evidence that a fast backend is also a right one.
-- Bad: one more CI workflow, one more committed artifact, one more thing a human has to
+* Bad: one more CI workflow, one more committed artifact, one more thing a human has to
   remember to promote (`backends.json` has no automated drift gate by design).
-- Neutral: the debug-binary workaround is job-level environment variables, not a real
+* Neutral: the debug-binary workaround is job-level environment variables, not a real
   `--release` build; it narrows the gap but the reported numbers are not release-build
   numbers until `build-gpu-test-binary@v1` grows a `profile:` input.
 
@@ -187,17 +187,17 @@ guessed at now:
 
 ## Related
 
-- [ADR 0021](0021-benchmark-methodology-and-gate.md) — the EasyOCR head-to-head methodology
+* [ADR 0021](0021-benchmark-methodology-and-gate.md) — the EasyOCR head-to-head methodology
   and gate this ADR's workflow re-homes and brings into schedule conformance.
-- [ADR 0027](0027-tract-fixed-canvas-craft.md) — why `canvas_size` must be fixed for every leg.
-- [ADR 0029](0029-cli-provisioning-default-and-runtime-scoped-parity.md) and
+* [ADR 0027](0027-tract-fixed-canvas-craft.md) — why `canvas_size` must be fixed for every leg.
+* [ADR 0029](0029-cli-provisioning-default-and-runtime-scoped-parity.md) and
   [ADR 0032](0032-per-backend-accelerator-support.md) — the accelerator vocabulary and the
   provisioning matrix this benchmark exercises; this ADR amends 0032's `Neutral` clause on GPU
   execution without reopening its accepted decision.
-- [ADR 0030](0030-published-benchmark-artifact-and-drift-gate.md) — the published-artifact
+* [ADR 0030](0030-published-benchmark-artifact-and-drift-gate.md) — the published-artifact
   discipline this ADR mirrors with a separate, ungated `backends.json`. Its "LFS corpus
   submodule blocks CI publishing" caveat is resolved by the `test_documents` corpus migration
   (ADR 0034): the corpus is fetchable in CI with no credentials, which is what makes this
   benchmark matrix runnable there at all.
-- [ADR 0015](0015-bench-seam-and-criterion.md) — the criterion microbenchmarks this ADR
+* [ADR 0015](0015-bench-seam-and-criterion.md) — the criterion microbenchmarks this ADR
   promotes from compile-check to a timed, report-only, uploaded run.

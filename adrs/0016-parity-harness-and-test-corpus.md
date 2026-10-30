@@ -18,48 +18,48 @@ and what a golden fixture is compared against.
 
 ## Decision Drivers
 
-- Default `cargo test` must stay fast and green with no network, no models, no submodule.
-- CI must be able to *force* the real path and fail loudly on a misconfigured cache.
-- Reuse existing, proven patterns (the xberg corpus + skip-if-missing convention).
-- No new runtime dependencies for path resolution; downloading stays deferred.
+* Default `cargo test` must stay fast and green with no network, no models, no submodule.
+* CI must be able to *force* the real path and fail loudly on a misconfigured cache.
+* Reuse existing, proven patterns (the xberg corpus + skip-if-missing convention).
+* No new runtime dependencies for path resolution; downloading stays deferred.
 
 ## Considered Options
 
-- **Corpus:** vendor a handful of images in-tree only / adopt the xberg `test_documents`
+* **Corpus:** vendor a handful of images in-tree only / adopt the xberg `test_documents`
   Git-LFS submodule / build a new corpus.
-- **Model resolution in tests:** a bespoke env-var model provider only / resolve from the
+* **Model resolution in tests:** a bespoke env-var model provider only / resolve from the
   Hugging Face hub cache / add `hf-hub` and download in the harness.
-- **Golden comparison:** exact text only / fuzzy only / a dual golden (EasyOCR reference
+* **Golden comparison:** exact text only / fuzzy only / a dual golden (EasyOCR reference
   compared fuzzily + a sceptre self-snapshot compared exactly).
 
 ## Decision Outcome
 
-- **Corpus:** adopt the xberg `test_documents` Git-LFS submodule as the OCR corpus. It is
+* **Corpus:** adopt the xberg `test_documents` Git-LFS submodule as the OCR corpus. It is
   added without pulling LFS blobs by default; the harness tolerates it being absent or
   unpopulated (`test_documents_dir` + `skip_if_missing`).
-- **Model resolution:** the test harness resolves CRAFT + gen2 models from the Hugging
+* **Model resolution:** the test harness resolves CRAFT + gen2 models from the Hugging
   Face hub cache (`HF_HUB_CACHE` / `HF_HOME` / `~/.cache/huggingface/hub`) via a
   `HfCacheModelProvider` built on `std::fs` only — no `hf-hub`, no download. Adopting
   HF-cache resolution in the *library* is deferred as a follow-up; for now it lives in
   `tests/helpers`.
-- **Golden comparison:** dual goldens. The `easyocr` side (authoritative Python EasyOCR
+* **Golden comparison:** dual goldens. The `easyocr` side (authoritative Python EasyOCR
   reference) is compared with bag-of-words F1 plus per-line box-IoU (>= 0.5); the
   `sceptre` side (self-snapshot) is compared for exact text equality.
-- **Gating:** real-model tests read `SCEPTRE_REQUIRE_MODELS`. Unset/falsy and models
+* **Gating:** real-model tests read `SCEPTRE_REQUIRE_MODELS`. Unset/falsy and models
   absent → skip (test passes); truthy and models absent → panic, so CI surfaces the
   misconfiguration. Pipeline-running bodies are `#[cfg(feature = "ort")]`-gated so the
   backend-less default build still compiles.
 
 ### Consequences
 
-- Good: default `cargo test` stays green offline; the pure helpers are unit-tested and
+* Good: default `cargo test` stays green offline; the pure helpers are unit-tested and
   always run; CI can force the real path via one env var and a `workflow_dispatch` job.
-- Good: no new dependency for model resolution; the download remains deferred and opt-in.
-- Good: the dual golden catches both reference-parity drift and self-regressions.
-- Bad: goldens ship as placeholders until the heavy generation is run and committed.
-- Bad: two generators (Python `sceptre_rs_tools.golden` for the reference, `sceptre-tools
+* Good: no new dependency for model resolution; the download remains deferred and opt-in.
+* Good: the dual golden catches both reference-parity drift and self-regressions.
+* Bad: goldens ship as placeholders until the heavy generation is run and committed.
+* Bad: two generators (Python `sceptre_rs_tools.golden` for the reference, `sceptre-tools
   snapshot` for the snapshot) must be kept in sync with the fixture schema.
-- Bad: HF-cache resolution is duplicated in the harness until the library adopts it.
+* Bad: HF-cache resolution is duplicated in the harness until the library adopts it.
 
 ## Status update (2026-08-01)
 

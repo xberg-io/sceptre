@@ -27,47 +27,47 @@ that a maintenance tax and predicted that a custom domain would remove it.
 
 ## Decision Drivers
 
-- One documentation system across the organization; a brand refresh must be a package bump, not a
+* One documentation system across the organization; a brand refresh must be a package bump, not a
   per-repo edit.
-- The docs URL should be stable and product-shaped, not tied to a personal GitHub account.
-- Content should be host-agnostic: an internal link written in Markdown must be correct with no
+* The docs URL should be stable and product-shaped, not tied to a personal GitHub account.
+* Content should be host-agnostic: an internal link written in Markdown must be correct with no
   build-time rewriting.
-- Analytics, OG cards, and favicons belong in exactly one place.
-- The deploy pipeline should be the shared reusable workflow, so its fixes land everywhere at once.
+* Analytics, OG cards, and favicons belong in exactly one place.
+* The deploy pipeline should be the shared reusable workflow, so its fixes land everywhere at once.
 
 ## Considered Options
 
-- **Keep the project path and only rename the org.** Cheapest, and it keeps `base`, the rehype
+* **Keep the project path and only rename the org.** Cheapest, and it keeps `base`, the rehype
   plugin, and the per-repo brand — the three things that make sceptre's docs different from its
   siblings'.
-- **Custom domain, but keep the local brand CSS and assets.** Removes the sub-path tax and leaves
+* **Custom domain, but keep the local brand CSS and assets.** Removes the sub-path tax and leaves
   sceptre visually divergent, with a second analytics property and its own OG card to re-render.
-- **`docs.sceptre.xberg.io` on the shared theme**, matching every other xberg.io repo.
+* **`docs.sceptre.xberg.io` on the shared theme**, matching every other xberg.io repo.
 
 ## Decision Outcome
 
 Chosen option: **`docs.sceptre.xberg.io` on the shared `@xberg-io/docs-theme`.**
 
-- `website/` becomes **`docs-site/`**, the directory name the shared tooling and the reusable deploy
+* `website/` becomes **`docs-site/`**, the directory name the shared tooling and the reusable deploy
   workflow expect. The move preserves git history.
-- `astro.config.mjs` sets `site: "https://docs.sceptre.xberg.io"` and **no `base`**. The `BASE`
+* `astro.config.mjs` sets `site: "https://docs.sceptre.xberg.io"` and **no `base`**. The `BASE`
   constant, the `rehypeBaseLinks` plugin, the `markdown.rehypePlugins` wiring, and the
   `unist-util-visit` dependency are all deleted; root-absolute links in content now mean what they
   say. `public/CNAME` carries the domain and `robots.txt` points at the site's own sitemap.
-- Starlight config is built by **`xbergStarlightConfig()`** wrapped in `starlight()`. The theme
+* Starlight config is built by **`xbergStarlightConfig()`** wrapped in `starlight()`. The theme
   injects the brand stylesheet, the CDN logo (`SiteTitle` override), favicons, Open Graph and
   Twitter tags, and the shared GA4 / Google Ads tags. Accordingly the site no longer declares
   `logo`, `favicon`, `customCss`, `social`, or a `head` array, and the vendored brand files
   (`src/styles/custom.css`, `public/{og,favicon}*`, `scripts/render-assets.mjs`) are removed. The
   only assets that stay in-repo are the light/dark hero pair used by the splash page.
-- The sidebar adopts the mandated organization-wide order — **Home → Get Started → Guides →
+* The sidebar adopts the mandated organization-wide order — **Home → Get Started → Guides →
   Concepts → Reference → More** — which adds a `More` group carrying the changelog, a contributing
   pointer, and the ecosystem list, and moves `Start here` to `Get Started`.
-- **npm → pnpm.** `package-lock.json` is replaced by `pnpm-lock.yaml`, and `pnpm-workspace.yaml`
+* **npm → pnpm.** `package-lock.json` is replaced by `pnpm-lock.yaml`, and `pnpm-workspace.yaml`
   declares the build allowlist (`esbuild`, `sharp`) and exempts the pinned theme version from the
   minimum-release-age gate. The reusable deploy workflow runs `pnpm install --frozen-lockfile`, so
   the lockfile is a committed build input.
-- `.github/workflows/docs.yaml` — a hand-rolled build-and-deploy pair — is replaced by
+* `.github/workflows/docs.yaml` — a hand-rolled build-and-deploy pair — is replaced by
   `.github/workflows/ci-docs.yaml`, which calls
   `xberg-io/actions/.github/workflows/reusable-docs-deploy.yml@v1` and deploys only on a push to
   `main`. Pull requests build without deploying, which the old workflow did not do at all.
@@ -81,20 +81,20 @@ derived from the shipped source rather than invented.
 
 ### Consequences
 
-- Good: the sub-path tax is gone. Links in Markdown are plain root-absolute paths with no rewriting,
+* Good: the sub-path tax is gone. Links in Markdown are plain root-absolute paths with no rewriting,
   and JSX links no longer interpolate a base.
-- Good: a brand change is a `@xberg-io/docs-theme` version bump; sceptre owns no presentation code.
-- Good: analytics, OG card, and favicons are shared, so the six docs sites report into one property.
-- Neutral: the domain needs a DNS `CNAME` record and GitHub Pages must verify it once. The
+* Good: a brand change is a `@xberg-io/docs-theme` version bump; sceptre owns no presentation code.
+* Good: analytics, OG card, and favicons are shared, so the six docs sites report into one property.
+* Neutral: the domain needs a DNS `CNAME` record and GitHub Pages must verify it once. The
   `public/CNAME` file is what keeps the custom domain across deploys.
-- Bad: the old `goldziher.github.io/sceptre` URLs break. GitHub redirects the repository itself
+* Bad: the old `goldziher.github.io/sceptre` URLs break. GitHub redirects the repository itself
   after the org move, but Pages content at the old project path does not survive, so external links
   to specific pages are lost.
-- Bad: pnpm is a second Node package manager for contributors who already had npm. It is the
+* Bad: pnpm is a second Node package manager for contributors who already had npm. It is the
   organization-wide choice and what the reusable workflow installs, so matching it is cheaper than
   diverging.
 
 ## Related
 
-- [ADR 0024](0024-documentation-site-and-web-presence.md) — the superseded decision: `website/`,
+* [ADR 0024](0024-documentation-site-and-web-presence.md) — the superseded decision: `website/`,
   the GitHub Pages project path, the per-repo brand, and the `base`-prefixing rehype plugin.

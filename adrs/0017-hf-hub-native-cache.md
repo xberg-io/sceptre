@@ -20,19 +20,19 @@ different cache.
 
 ## Decision Drivers
 
-- One cache store shared by the library, the CLI, the snapshot tool, and the tests.
-- Reuse `hf-hub`'s battle-tested cache (atomic writes, snapshot revisions, refs)
+* One cache store shared by the library, the CLI, the snapshot tool, and the tests.
+* Reuse `hf-hub`'s battle-tested cache (atomic writes, snapshot revisions, refs)
   rather than reimplementing atomic download + layout.
-- Honor the ecosystem-standard cache location and its environment overrides
+* Honor the ecosystem-standard cache location and its environment overrides
   (`HF_HUB_CACHE`, `HUGGINGFACE_HUB_CACHE`, `HF_HOME`).
-- Keep model manifest/inspection dependency-free (usable without the `download`
+* Keep model manifest/inspection dependency-free (usable without the `download`
   feature).
 
 ## Considered Options
 
-- Keep the bespoke `~/.cache/sceptre` layout and teach the harness to read it.
-- Adopt `hf-hub`'s native hub cache in the library and delete the harness resolver.
-- Point both at a third, custom shared layout.
+* Keep the bespoke `~/.cache/sceptre` layout and teach the harness to read it.
+* Adopt `hf-hub`'s native hub cache in the library and delete the harness resolver.
+* Point both at a third, custom shared layout.
 
 ## Decision Outcome
 
@@ -57,13 +57,13 @@ name.
 
 ### Consequences
 
-- Good: the library, CLI, snapshot tool, and harness share one cache store, so a
+* Good: the library, CLI, snapshot tool, and harness share one cache store, so a
   model downloaded once is seen everywhere — unblocking parity.
-- Good: less code — `hf-hub` owns atomic download, revisions, and layout; the
+* Good: less code — `hf-hub` owns atomic download, revisions, and layout; the
   harness resolver duplication is deleted.
-- Good: standard location and env overrides; sha256 pins can still be enforced by
+* Good: standard location and env overrides; sha256 pins can still be enforced by
   streaming the returned file (real pins can be added later).
-- Neutral: the flat `~/.cache/sceptre` layout is abandoned; a previously cached
+* Neutral: the flat `~/.cache/sceptre` layout is abandoned; a previously cached
   copy there is simply re-downloaded into the hub cache once.
 
 ## Status update (2026-08-01)

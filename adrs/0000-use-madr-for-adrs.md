@@ -15,9 +15,9 @@ or lose the rationale.
 
 ## Considered Options
 
-- MADR (Markdown Any Decision Records) under `adrs/`.
-- Rationale embedded in code comments and commit messages.
-- A single running design document.
+* MADR (Markdown Any Decision Records) under `adrs/`.
+* Rationale embedded in code comments and commit messages.
+* A single running design document.
 
 ## Decision Outcome
 
@@ -28,6 +28,6 @@ context well).
 
 ### Consequences
 
-- Good: decisions are discoverable, versioned, and supersedable.
-- Good: an `adr-discipline` rule keeps the practice enforced for agents.
-- Bad: a small authoring overhead per significant decision.
+* Good: decisions are discoverable, versioned, and supersedable.
+* Good: an `adr-discipline` rule keeps the practice enforced for agents.
+* Bad: a small authoring overhead per significant decision.

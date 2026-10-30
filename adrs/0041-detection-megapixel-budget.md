@@ -19,8 +19,8 @@ Sceptre's own allocations are ~1.5% of peak; ORT's arena holds the rest.
 but it bounds the *longest side*, not memory. Fitting RSS against 91 (image, canvas)
 points over the actual resized/padded detection input gives:
 
-- `RSS_MB ≈ 1063 * megapixels + 326` (R² = 0.984)
-- `RSS_MB ≈ 2.26 * longest_side - 889` (R² = 0.847)
+* `RSS_MB ≈ 1063 * megapixels + 326` (R² = 0.984)
+* `RSS_MB ≈ 2.26 * longest_side - 889` (R² = 0.847)
 
 Area is decisively the better predictor. A caller who wants a memory ceiling and reaches
 for `canvas_size` is aiming at the wrong variable: two images with the same longest side
@@ -30,11 +30,11 @@ cap by hand.
 
 ## Decision Drivers
 
-- Bound peak detection memory without forcing every caller to hand-derive a
+* Bound peak detection memory without forcing every caller to hand-derive a
   longest-side cap from their own image's aspect ratio.
-- The EasyOCR parity gate (ADR 0021) is the correctness bar: default detection output
+* The EasyOCR parity gate (ADR 0021) is the correctness bar: default detection output
   must stay byte-identical unless an ADR says otherwise, and none does here.
-- The parity corpus cannot referee a `canvas_size` default change: all eight tier-2
+* The parity corpus cannot referee a `canvas_size` default change: all eight tier-2
   images are natively ≤ 1024 px on their longest side, so raising or lowering the
   default anywhere above that is invisible to the gate. Line counts on genuinely large
   pages swing 8/18/64/116/75/35/30 across `canvas_size` 768–3200 in exploratory testing,
@@ -43,16 +43,16 @@ cap by hand.
 
 ## Considered Options
 
-- **Lower the `canvas_size` default.** Rejected: the parity corpus cannot see the
+* **Lower the `canvas_size` default.** Rejected: the parity corpus cannot see the
   effect (all images already fit under any plausible new default), so there is no
   measurement to justify a specific number, and the large pages where it *would* matter
   have no ground truth to check the accuracy trade against. This would be moving a
   load-bearing default on vibes.
-- **Document a formula for callers to derive a `canvas_size` from a memory target.**
+* **Document a formula for callers to derive a `canvas_size` from a memory target.**
   Pushes aspect-ratio and padding-to-32 arithmetic onto every caller and silently
   breaks the moment `canvas_size`'s relationship to memory changes (e.g. a future
   backend with a different arena growth curve).
-- **A separate megapixel budget on `DetectionConfig`, opt-in, composing with
+* **A separate megapixel budget on `DetectionConfig`, opt-in, composing with
   `canvas_size` as a minimum.** Bounds the actual measured driver of peak memory
   directly, defaults to `None` so it cannot move today's output, and composes rather
   than replaces the existing knob.
@@ -106,20 +106,20 @@ feature actually controls (the budgeted ones) to trust the knob does what it cla
 
 ### Consequences
 
-- Good: bounds the metric that actually drives peak memory, not a proxy for it.
-- Good: default output is bit-for-bit unchanged; the parity gate needs no update and no
+* Good: bounds the metric that actually drives peak memory, not a proxy for it.
+* Good: default output is bit-for-bit unchanged; the parity gate needs no update and no
   new ADR to justify a moved baseline.
-- Good: composes with `canvas_size` rather than replacing it, so existing configs and
+* Good: composes with `canvas_size` rather than replacing it, so existing configs and
   the CLI's `--canvas-size` flag keep working unchanged.
-- Neutral: on `tract`'s fixed-square canvas, the budget shrinks real content but not
+* Neutral: on `tract`'s fixed-square canvas, the budget shrinks real content but not
   the padded memory footprint — a limitation inherent to ADR 0027's fixed-shape
   requirement, not something this feature can fix without revisiting that ADR.
-- Bad: a budget small enough to bind hard trades detection accuracy for memory on large
+* Bad: a budget small enough to bind hard trades detection accuracy for memory on large
   pages, the same trade `canvas_size` already makes — this ADR does not change that
   trade-off, only how precisely a caller can target it.
 
 ## Related
 
-- ADR 0021 — the EasyOCR parity gate this decision leaves untouched by construction.
-- ADR 0027 — the `tract` fixed-square canvas this budget cannot shrink the memory
+* ADR 0021 — the EasyOCR parity gate this decision leaves untouched by construction.
+* ADR 0027 — the `tract` fixed-square canvas this budget cannot shrink the memory
   footprint of, only the real content within it.

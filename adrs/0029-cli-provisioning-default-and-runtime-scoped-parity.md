@@ -31,32 +31,32 @@ looks exactly like success.
 
 ## Decision Drivers
 
-- `cargo install sceptre-cli` must produce a binary that runs, with no follow-up steps.
-- Switching provisioning strategy must stay expressible, and the escape hatch must work on
+* `cargo install sceptre-cli` must produce a binary that runs, with no follow-up steps.
+* Switching provisioning strategy must stay expressible, and the escape hatch must work on
   the targets that need it — the ones ONNX Runtime publishes no prebuilt for.
-- An accuracy or performance number is meaningless without the runtime that produced it;
+* An accuracy or performance number is meaningless without the runtime that produced it;
   the runtime must be selectable, reportable, and scoped in the claim.
-- A requested accelerator that does not take must be an error, not a quiet CPU run.
-- No `compile_error!`-style mutual exclusion: cargo features are additive by design, and
+* A requested accelerator that does not take must be an error, not a quiet CPU run.
+* No `compile_error!`-style mutual exclusion: cargo features are additive by design, and
   fighting that breaks feature unification for anyone depending on the crate.
 
 ## Considered Options
 
 **Provisioning default:**
 
-- `default = ["ort-bundled", "download"]` — self-contained binary; `--features ort-dynamic`
+* `default = ["ort-bundled", "download"]` — self-contained binary; `--features ort-dynamic`
   remains available as an additive override.
-- A mutually-exclusive selector enforced with `compile_error!` when both `ort-bundled` and
+* A mutually-exclusive selector enforced with `compile_error!` when both `ort-bundled` and
   `ort-dynamic` are enabled.
-- `default = ["download"]` with no backend — force an explicit choice.
-- A target-conditional default that picks `ort-bundled` where a prebuilt exists and
+* `default = ["download"]` with no backend — force an explicit choice.
+* A target-conditional default that picks `ort-bundled` where a prebuilt exists and
   `ort-dynamic` elsewhere.
 
 **Accelerator selection:**
 
-- No selection at all (status quo): CPU implicitly, forever.
-- `Accelerator` defaulting to `Auto` — best available hardware out of the box.
-- `Accelerator` defaulting to `Cpu`, with explicit opt-in and fail-fast registration.
+* No selection at all (status quo): CPU implicitly, forever.
+* `Accelerator` defaulting to `Auto` — best available hardware out of the box.
+* `Accelerator` defaulting to `Cpu`, with explicit opt-in and fail-fast registration.
 
 ## Decision Outcome
 
@@ -93,15 +93,15 @@ to the WARP software adapter and produce numbers describing neither CPU nor a re
 
 ### Rejected alternatives
 
-- **`compile_error!` mutual exclusion.** It would turn the additive override into a build
+* **`compile_error!` mutual exclusion.** It would turn the additive override into a build
   failure — the very mechanism that makes `--features ort-dynamic` work without
   `--no-default-features`. It also breaks feature unification for any consumer whose
   dependency graph enables both, which is a cost paid by third parties for our convenience.
-- **A no-backend default (`default = ["download"]`).** Honest, and it never mispicks — but
+* **A no-backend default (`default = ["download"]`).** Honest, and it never mispicks — but
   `cargo install sceptre-cli` would then produce a binary that cannot perform OCR at all,
   failing at runtime with a configuration error instead of a dlopen panic. Trading one
   broken default install for another is not an improvement.
-- **A target-conditional default.** Cargo cannot express target-conditional *features* —
+* **A target-conditional default.** Cargo cannot express target-conditional *features* —
   `[target.'cfg(...)'.features]` does not exist (rust-lang/cargo#1197). The only
   approximation is a shim crate with target-specific dependencies, and it would have to pick
   `ort-dynamic` on precisely the targets that have no prebuilt — which are precisely the
@@ -109,40 +109,40 @@ to the WARP software adapter and produce numbers describing neither CPU nor a re
   panic on exactly the machines the mechanism exists to help. A build-time failure naming
   the missing prebuilt, with two documented remedies, is strictly better than a runtime
   panic on first OCR.
-- **`Accelerator::Auto` as the default.** Fastest out of the box, and wrong: the same ONNX
+* **`Accelerator::Auto` as the default.** Fastest out of the box, and wrong: the same ONNX
   graph produces different numeric output on different providers, so an upgrade would
   silently change a user's OCR results and invalidate their own regression baselines.
 
 ### Consequences
 
-- Good: `cargo install sceptre-cli` produces a runnable, self-contained binary; both
+* Good: `cargo install sceptre-cli` produces a runnable, self-contained binary; both
   provisioning strategies stay expressible additively; `--backend tract` is real.
-- Good: accuracy and performance claims now name the runtime that produced them, and the
+* Good: accuracy and performance claims now name the runtime that produced them, and the
   runtime is reportable from the binary itself.
-- Good: a requested accelerator that cannot register fails loudly instead of quietly running
+* Good: a requested accelerator that cannot register fails loudly instead of quietly running
   on CPU and looking like a success.
-- Bad: the default install now fails at *build* time on every target `ort` publishes no
+* Bad: the default install now fails at *build* time on every target `ort` publishes no
   prebuilt for — `x86_64-apple-darwin`, all `*-unknown-linux-musl`, `armv7`, `riscv64gc`,
   `*-unknown-freebsd`, `i686`, `s390x`, `powerpc64le`. This is a deliberate trade: a build
   error naming the problem beats a binary that installs cleanly and panics later. The
   installation docs name the full target set and both remedies.
-- Bad: the default install pulls a TLS/HTTP stack and a build-time binary download into
+* Bad: the default install pulls a TLS/HTTP stack and a build-time binary download into
   every user's supply chain (see the status update on ADR 0012).
-- Neutral: CoreML, DirectML, and CUDA support is compiled-in capability, not validated
+* Neutral: CoreML, DirectML, and CUDA support is compiled-in capability, not validated
   accuracy. The docs say so rather than implying the CPU numbers transfer.
 
 ## Related
 
-- **Amended by [ADR 0032](0032-per-backend-accelerator-support.md)** for the accelerator
+* **Amended by [ADR 0032](0032-per-backend-accelerator-support.md)** for the accelerator
   vocabulary only: `candle` gained Metal and CUDA support, so the "`tract` and `candle`
   reject a hardware accelerator" clause above holds for `tract` alone, and validation
   consults a per-backend support table instead of testing for `ort`. Everything else here —
   the provisioning default, the `Cpu`-not-`Auto` default, `error_on_failure` registration,
   and the scoping of published figures to `ort` + CPU — stands unchanged.
-- [ADR 0012](0012-ort-runtime-provisioning.md) — establishes `ort-bundled` / `ort-dynamic`
+* [ADR 0012](0012-ort-runtime-provisioning.md) — establishes `ort-bundled` / `ort-dynamic`
   and defers the CLI's per-target selection; this ADR resolves that deferral.
-- [ADR 0016](0016-parity-harness-and-test-corpus.md) — the parity harness whose golden
+* [ADR 0016](0016-parity-harness-and-test-corpus.md) — the parity harness whose golden
   fixtures this ADR scopes to a named runtime.
-- [ADR 0021](0021-benchmark-methodology-and-gate.md) — the performance-side equivalent of
+* [ADR 0021](0021-benchmark-methodology-and-gate.md) — the performance-side equivalent of
   this decision: it made the speed and memory claim measurable and honest; this one does the
   same for the accuracy claim's runtime.

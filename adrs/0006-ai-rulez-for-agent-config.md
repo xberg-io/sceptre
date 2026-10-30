@@ -14,8 +14,8 @@ files in parallel is error-prone and drifts.
 
 ## Considered Options
 
-- Hand-write a committed `CLAUDE.md` (and duplicate for other harnesses).
-- Use `ai-rulez`: edit a single `.ai-rulez/` source of truth and generate the
+* Hand-write a committed `CLAUDE.md` (and duplicate for other harnesses).
+* Use `ai-rulez`: edit a single `.ai-rulez/` source of truth and generate the
   per-harness files (which are gitignored).
 
 ## Decision Outcome
@@ -28,7 +28,7 @@ supplies the implementation subagents.
 
 ### Consequences
 
-- Good: one edit point; harness files stay consistent and regenerable.
-- Good: the generated subagents drive later implementation sessions.
-- Bad: contributors must run `ai-rulez generate` (via the poly hook) rather than
+* Good: one edit point; harness files stay consistent and regenerable.
+* Good: the generated subagents drive later implementation sessions.
+* Bad: contributors must run `ai-rulez generate` (via the poly hook) rather than
   editing the generated files directly.

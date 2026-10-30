@@ -42,24 +42,24 @@ floor calibrated against them — are not comparable at all (ADR 0035).
 
 ## Decision Drivers
 
-- A gate must fail for the reason it names. "sceptre regressed" must never be signalled by a
+* A gate must fail for the reason it names. "sceptre regressed" must never be signalled by a
   corpus edit or by a dependency's release.
-- The cross-engine memory advantage is real and worth publishing; it needs an honest statistic
+* The cross-engine memory advantage is real and worth publishing; it needs an honest statistic
   and an honest scope, not a floor to defend.
-- Absolute figures are comparable only within one host class; a runner label is part of a
+* Absolute figures are comparable only within one host class; a runner label is part of a
   host's identity, not a footnote to it (ADR 0035).
-- Unmeasurable must read as failure, never as success — the discipline `load_guardrails` and
+* Unmeasurable must read as failure, never as success — the discipline `load_guardrails` and
   `check_guardrails` already apply to the per-image quality contract.
 
 ## Considered Options
 
-- **Gate shape:** keep the cross-engine ratio and lower the floor / keep it but compute it
+* **Gate shape:** keep the cross-engine ratio and lower the floor / keep it but compute it
   paired per image / replace it with an absolute, self-referential ceiling on sceptre's own
   peak RSS / drop the memory gate entirely and rely on review.
-- **Reported statistic:** max-of-maxes (status quo) / arithmetic mean of per-image ratios /
+* **Reported statistic:** max-of-maxes (status quo) / arithmetic mean of per-image ratios /
   median of per-image ratios / geometric mean of per-image ratios.
-- **Scope of an absolute floor:** global / per `(os, arch)` / per `(os, arch, runner label)`.
-- **Absent or foreign baseline:** skip the check / warn and pass / fail the gate.
+* **Scope of an absolute floor:** global / per `(os, arch)` / per `(os, arch, runner label)`.
+* **Absent or foreign baseline:** skip the check / warn and pass / fail the gate.
 
 ## Decision Outcome
 
@@ -99,31 +99,31 @@ floor calibrated against them — are not comparable at all (ADR 0035).
 
 ### Consequences
 
-- The gate now fails only for sceptre-side memory growth, on the host it was baselined on. A
+* The gate now fails only for sceptre-side memory growth, on the host it was baselined on. A
   corpus addition, an EasyOCR upgrade, or a torch upgrade cannot trip it.
-- Gating requires a published baseline measured on the gating host. The committed artifact is
+* Gating requires a published baseline measured on the gating host. The committed artifact is
   macOS/arm64 and the scheduled head-to-head job runs on `runner-medium`, so the first
   scheduled run after this ADR fails with "no baseline for this host" until a `runner-medium`
   run is published. That is a pre-existing incomparability made visible, not a new obstacle.
-- The ceiling is scoped to a host *and* a corpus: peak RSS moves with the largest canvas, so a
+* The ceiling is scoped to a host *and* a corpus: peak RSS moves with the largest canvas, so a
   corpus change requires re-publishing the baseline. Unlike the ratio, this failure is legible —
   it names the measured figure, the ceiling, the baseline, and the host — and its remedy
   (re-publish) is the correct response to a changed corpus.
-- The published memory claim changes both number and meaning, from 3.11× (max-of-maxes) to
+* The published memory claim changes both number and meaning, from 3.11× (max-of-maxes) to
   3.77× (per-image median), recomputed from the *same* macOS measurement run. No new
   measurement was taken and no provenance changed.
-- The floors that remain in `check_thresholds` are warm speedup and the sceptre peak-RSS
+* The floors that remain in `check_thresholds` are warm speedup and the sceptre peak-RSS
   ceiling; labeled quality is enforced separately by the per-image guardrail contract
   (`derive_guardrails` / `--guardrails`), which had already replaced ADR 0021's corpus-mean
   token-F1 floor in the harness.
 
 ## Related
 
-- ADR 0021 (head-to-head benchmark methodology and regression gate) — **amended, not
+* ADR 0021 (head-to-head benchmark methodology and regression gate) — **amended, not
   superseded**. The methodology stands unchanged: fresh subprocess per language group under
   `/usr/bin/time`, warm/batch axis, native threading, capability gaps excluded from aggregates.
   Only the memory floor's shape changes.
-- ADR 0030 (published benchmark artifact and drift gate) — the committed artifact this gate now
+* ADR 0030 (published benchmark artifact and drift gate) — the committed artifact this gate now
   reads its baseline from, which is why the baseline is reviewable rather than machine-local.
-- ADR 0035 (backend × accelerator benchmark matrix) — established that a runner class is
+* ADR 0035 (backend × accelerator benchmark matrix) — established that a runner class is
   provenance a figure cannot be attributed without; this ADR makes it part of a floor's scope.

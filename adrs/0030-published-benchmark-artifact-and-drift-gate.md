@@ -16,25 +16,25 @@ The harness writes `benchmark-results/comparison.{json,md}`. That directory is g
 machine-local. Every figure quoted in `README.md` and on the docs site was copied out of such a run
 by a human, at some point, from some machine. The consequences were all realized, not hypothetical:
 
-- **No number could be attributed to a runtime.** The harness learned to record a
+* **No number could be attributed to a runtime.** The harness learned to record a
   `metadata.environment` block — sceptre version, backend, accelerator, ONNX Runtime version, model
   pins, and the reference EasyOCR/torch/Python versions. But the artifact the published tables were
   copied from predated that block, so the published figures named no runtime at all. ADR 0029 had
   just finished arguing that an accuracy or performance number is meaningless without the runtime
   that produced it; the published tables were the counterexample.
-- **The same numbers were transcribed into several places in different units** — gigabytes in the
+* **The same numbers were transcribed into several places in different units** — gigabytes in the
   README, megabytes on the docs site — plus ratio claims restated in prose in a third and fourth
   place. Nothing kept them consistent, and an audit found the copies had already diverged from each
   other in wording and rounding.
-- **Nothing could detect drift.** A stale table is indistinguishable from a fresh one by inspection.
+* **Nothing could detect drift.** A stale table is indistinguishable from a fresh one by inspection.
 
 ## Decision Drivers
 
-- A published figure must carry the runtime that produced it, or not be publishable.
-- Numbers must have exactly one authoritative location; anything else is a copy that can rot.
-- The drift check must be cheap enough to run on every pull request — which means it must not
+* A published figure must carry the runtime that produced it, or not be publishable.
+* Numbers must have exactly one authoritative location; anything else is a copy that can rot.
+* The drift check must be cheap enough to run on every pull request — which means it must not
   require torch, easyocr, models, or a release binary.
-- Regenerating the numbers is expensive and needs a quiet machine, so measuring and publishing must
+* Regenerating the numbers is expensive and needs a quiet machine, so measuring and publishing must
   be separable steps.
 
 ## Considered Options
@@ -64,14 +64,14 @@ second runs in CI on a pull request, as `task python:publish:check`.
 
 Three rules make it hold:
 
-- **No provenance, no publish.** A report without a `metadata.environment` block is rejected rather
+* **No provenance, no publish.** A report without a `metadata.environment` block is rejected rather
   than published. A table that cannot be attributed to a runtime is the defect this ADR exists to
   prevent, so it is unrepresentable rather than discouraged.
-- **One authoritative location.** Numeric claims live in the generated table only. The surrounding
+* **One authoritative location.** Numeric claims live in the generated table only. The surrounding
   prose was rewritten to be qualitative, so there is no second copy to drift. This is why the README
   hero line no longer quotes a speedup ratio: an ungenerated number in prose is a future defect, and
   automating a hero sentence is worse than not making it numeric.
-- **Generated regions are addressed by marker pairs**, not by line number or table detection. The
+* **Generated regions are addressed by marker pairs**, not by line number or table detection. The
   README is Markdown and takes `<!-- generated:NAME:start -->`; the docs site is MDX, where an HTML
   comment is a parse error, so it takes `{/* generated:NAME:start */}`.
 
@@ -83,23 +83,23 @@ which is how the first version of this job failed.
 
 ### Consequences
 
-- Good: a published figure is traceable to the sceptre build, ONNX Runtime, EasyOCR and torch
+* Good: a published figure is traceable to the sceptre build, ONNX Runtime, EasyOCR and torch
   versions, host, and corpus subset that produced it.
-- Good: the drift gate is a few hundred milliseconds of JSON and string work, so it runs on every PR
+* Good: the drift gate is a few hundred milliseconds of JSON and string work, so it runs on every PR
   rather than only when someone remembers.
-- Good: measuring and publishing decouple. Numbers can be re-measured on a quiet machine and
+* Good: measuring and publishing decouple. Numbers can be re-measured on a quiet machine and
   published later, or published from a report produced elsewhere via `--from`.
-- Bad: the published numbers are only as current as the last deliberate `task python:publish`. The
+* Bad: the published numbers are only as current as the last deliberate `task python:publish`. The
   gate proves the docs match the artifact, **not** that the artifact matches today's code. Catching
   a stale artifact needs a re-measurement, which is a human decision by design.
-- Bad: one more schema to version. `schema_version` is pinned in the artifact so a future shape
+* Bad: one more schema to version. `schema_version` is pinned in the artifact so a future shape
   change is detectable rather than silent.
-- Neutral: the numbers still come from one machine. Publishing from a CI-produced report is
+* Neutral: the numbers still come from one machine. Publishing from a CI-produced report is
   possible through `--from`, and is the natural next step once CI can run the benchmark — the
   harness's LFS corpus submodule currently prevents that.
 
 ## More Information
 
-- [ADR 0021](0021-benchmark-methodology-and-gate.md) — how the numbers are measured and gated.
-- [ADR 0029](0029-cli-provisioning-default-and-runtime-scoped-parity.md) — why a number without its
+* [ADR 0021](0021-benchmark-methodology-and-gate.md) — how the numbers are measured and gated.
+* [ADR 0029](0029-cli-provisioning-default-and-runtime-scoped-parity.md) — why a number without its
   runtime is not a claim.

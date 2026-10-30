@@ -14,8 +14,8 @@ surface.
 
 ## Considered Options
 
-- A dedicated `crates/sceptre-mcp` binary crate.
-- An `mcp` feature-gated module in the core lib, exposed via an `sceptre mcp`
+* A dedicated `crates/sceptre-mcp` binary crate.
+* An `mcp` feature-gated module in the core lib, exposed via an `sceptre mcp`
   subcommand.
 
 ## Decision Outcome
@@ -27,6 +27,6 @@ the CLI and the server.
 
 ### Consequences
 
-- Good: one binary to build and distribute; no duplicated wiring.
-- Good: MCP dependencies are absent from default builds.
-- Bad: the CLI crate gains an optional feature and a cfg-gated subcommand.
+* Good: one binary to build and distribute; no duplicated wiring.
+* Good: MCP dependencies are absent from default builds.
+* Bad: the CLI crate gains an optional feature and a cfg-gated subcommand.

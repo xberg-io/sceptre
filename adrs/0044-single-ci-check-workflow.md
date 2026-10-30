@@ -23,21 +23,21 @@ concurrency-group boilerplate three times over.
 
 ## Decision Drivers
 
-- CI status should read as one signal for one product, not require summing across files.
-- The cost the per-language split bought — skipping the three-OS Rust matrix, the install lanes,
+* CI status should read as one signal for one product, not require summing across files.
+* The cost the per-language split bought — skipping the three-OS Rust matrix, the install lanes,
   and the parity lanes on a docs-only change — is real and must not be lost by merging files.
-- `ci-docs.yaml` deploys to Pages and needs `pages: write` + `id-token: write`; no other job may
+* `ci-docs.yaml` deploys to Pages and needs `pages: write` + `id-token: write`; no other job may
   inherit those permissions.
-- A path filter that fails must fail toward running too much, never toward silently running
+* A path filter that fails must fail toward running too much, never toward silently running
   nothing.
 
 ## Considered Options
 
-- Keep the three-file split as-is.
-- Merge everything, including `ci-docs.yaml`, into one workflow with per-job path conditions.
-- Merge the three *check* workflows into one `ci.yaml` with a `changes` job gating the Rust and
+* Keep the three-file split as-is.
+* Merge everything, including `ci-docs.yaml`, into one workflow with per-job path conditions.
+* Merge the three *check* workflows into one `ci.yaml` with a `changes` job gating the Rust and
   Python jobs, keeping `ci-docs.yaml` separate.
-- Drop path filtering entirely and run every job on every push.
+* Drop path filtering entirely and run every job on every push.
 
 ## Decision Outcome
 
@@ -87,20 +87,20 @@ side, which is exactly the failure mode a shared fixture is meant to prevent.
 
 ### Consequences
 
-- One workflow file, `ci.yaml`, carries every check job except the Pages deploy; the check list on
+* One workflow file, `ci.yaml`, carries every check job except the Pages deploy; the check list on
   a PR reads as one product's status rather than three files' worth of guards and concurrency
   groups.
-- `main` currently has no branch protection, so there are no required-status-check names to
+* `main` currently has no branch protection, so there are no required-status-check names to
   migrate as part of this change. If branch protection is added later, the required check names
   will be the new `ci.yaml` job names (`test`, `install`, `parity`, `gpu-backends`, `bench`,
   `deny`, `python`, `validate`, `changelog`), not the old per-workflow names — that migration step
   is not automatic and must be done by hand when protection is configured.
-- `README.md`'s CI badge now points at `ci.yaml` instead of `ci-rust.yaml`.
-- ADR 0035, which references the pre-consolidation per-workflow split historically (naming
+* `README.md`'s CI badge now points at `ci.yaml` instead of `ci-rust.yaml`.
+* ADR 0035, which references the pre-consolidation per-workflow split historically (naming
   `ci-rust.yaml` and its matrix), is left unchanged — that reference remains accurate as a
   description of the CI shape at the time it was written.
 
 ## Related
 
-- ADR 0035 (backend x accelerator benchmark matrix) — references the pre-consolidation workflow
+* ADR 0035 (backend x accelerator benchmark matrix) — references the pre-consolidation workflow
   split as history; not amended by this decision.
