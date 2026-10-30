@@ -70,12 +70,12 @@ __pycache__/
 .claude/rules/typescript.md
 .claude/skills/
 .codex/agents/
-.mcp.json
 .opencode/agents/
 .opencode/commands/
-AGENTS.md
-CLAUDE.md
-opencode.json
+/.mcp.json
+/AGENTS.md
+/CLAUDE.md
+/opencode.json
 # END ai-rulez
 
 # Agent harness output outside the ai-rulez managed block: the machine-local overlay,
