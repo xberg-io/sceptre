@@ -4,36 +4,36 @@
 version = 1
 ai_rulez_version = '5.9.2'
 scope = 'all'
-tree = 'sha256:d2ba2d49b93437278df2eab38ef10ac19613bafd4aaaaa2d8869751d252bfe8b'
+tree = 'sha256:cc15cff8a1556529dcbdbcc472206d8aa3d557d3a28403df274e5906c5660d1c'
 
 [[include]]
 name = 'xberg-cicd'
 source = 'https://github.com/xberg-io/agent-conventions.git'
 path = 'modules/cicd'
 ref = '^1'
-tag = 'v1.2.0'
-tag_object = 'c9c678e7f6e45360be4839f033f4c9dc94a6dbbb'
-commit = 'b09c32e0871b8927199a77c1132c820e8f5a58d8'
-digest = 'sha256:38d54dc260b5da71bc0887d877dcc1f41de4a0b688cf805491458abdf7b01ffb'
+tag = 'v1.3.1'
+tag_object = 'ddf05f44d55b752f763795e843ecf0c6e7e08394'
+commit = 'a8ed32b44b161605dbc8b934a417ff136178a980'
+digest = 'sha256:781d7485b00c32c03a25470981d0e09d36d02973618ae073236865ba1269447a'
 
 [[include]]
 name = 'xberg-core'
 source = 'https://github.com/xberg-io/agent-conventions.git'
 path = 'modules/core'
 ref = '^1'
-tag = 'v1.2.0'
-tag_object = 'c9c678e7f6e45360be4839f033f4c9dc94a6dbbb'
-commit = 'b09c32e0871b8927199a77c1132c820e8f5a58d8'
-digest = 'sha256:34d96c409e7fac57655856f96fe44a0757b2d11975feebb54825635b41fa9164'
+tag = 'v1.3.1'
+tag_object = 'ddf05f44d55b752f763795e843ecf0c6e7e08394'
+commit = 'a8ed32b44b161605dbc8b934a417ff136178a980'
+digest = 'sha256:e812c49d68cfcb08b24a483d051947b27c9e111529a5e54e7a46051f3c1b0f9e'
 
 [[include]]
 name = 'xberg-docs-sites'
 source = 'https://github.com/xberg-io/agent-conventions.git'
 path = 'modules/docs-sites'
 ref = '^1'
-tag = 'v1.2.0'
-tag_object = 'c9c678e7f6e45360be4839f033f4c9dc94a6dbbb'
-commit = 'b09c32e0871b8927199a77c1132c820e8f5a58d8'
+tag = 'v1.3.1'
+tag_object = 'ddf05f44d55b752f763795e843ecf0c6e7e08394'
+commit = 'a8ed32b44b161605dbc8b934a417ff136178a980'
 digest = 'sha256:b3c9853170e19437f2e62e074df373a320d2efbd888aeb86780cd0c1c3b3e1c5'
 
 [[include]]
@@ -41,9 +41,9 @@ name = 'xberg-languages'
 source = 'https://github.com/xberg-io/agent-conventions.git'
 path = 'modules/languages'
 ref = '^1'
-tag = 'v1.2.0'
-tag_object = 'c9c678e7f6e45360be4839f033f4c9dc94a6dbbb'
-commit = 'b09c32e0871b8927199a77c1132c820e8f5a58d8'
+tag = 'v1.3.1'
+tag_object = 'ddf05f44d55b752f763795e843ecf0c6e7e08394'
+commit = 'a8ed32b44b161605dbc8b934a417ff136178a980'
 digest = 'sha256:a1a929c5d6ae0250616ccac332501fe1d899136513ef1f8425d010572a27740a'
 
 [[served]]
