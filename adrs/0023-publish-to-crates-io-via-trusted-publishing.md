@@ -2,7 +2,7 @@
 status: accepted
 date: 2026-08-03
 deciders: Na'aman Hirschfeld
-supersedes: 0020
+supersedes: "0020"
 ---
 
 # Publish to crates.io for real, via GitHub Actions trusted publishing

@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-08-07
 deciders: Na'aman Hirschfeld
+amends: ["0032"]
 ---
 
 # Backend x accelerator benchmark matrix (amends ADR 0032)

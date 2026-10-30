@@ -133,7 +133,9 @@ Measured on this repository's images (release build, Apple Silicon, best of runs
 
 **`candle` on a GPU is still slower than `ort` on the CPU**, by roughly 3–4× here, and its
 CPU path is ~10× slower — consistent with ADR 0009's measurement, which stands. Metal buys
-~2.5× over candle's own CPU path and nothing relative to `ort`.
+~2.5× over candle's own CPU path and nothing relative to `ort`. `candle` is a compatibility
+and deployment option, never a performance one, and it is excluded from
+[ADR 0030](0030-published-benchmark-artifact-and-drift-gate.md)'s benchmark drift gate.
 
 > **Status update (2026-08-08).** These ratios are host-dependent and the numbers above are
 > specific to the stated setup. The ADR 0035 backend matrix measures `candle`/cpu against
@@ -147,9 +149,7 @@ CPU path is ~10× slower — consistent with ADR 0009's measurement, which stand
 > The **ordering is invariant across every host measured**: `ort` fastest on CPU, then `candle`,
 > then `tract`. That ordering, not any particular multiple, is what this ADR's decision rests on,
 > and it stands as written. The lesson for anyone quoting these numbers is that the multiple is
-> meaningless without its host. `candle` is a compatibility
-and deployment option, never a performance one, and it is excluded from
-[ADR 0030](0030-published-benchmark-artifact-and-drift-gate.md)'s benchmark drift gate.
+> meaningless without its host.
 
 ### Consequences
 

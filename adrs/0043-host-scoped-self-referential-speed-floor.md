@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-08-08
 deciders: Na'aman Hirschfeld
+amends: ["0021"]
 ---
 
 # Host-scoped, self-referential warm-speed floor (amends ADR 0021)

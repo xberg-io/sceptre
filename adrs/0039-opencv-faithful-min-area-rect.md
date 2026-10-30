@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-08-08
 deciders: Na'aman Hirschfeld
+amends: ["0013"]
 ---
 
 # OpenCV-faithful min-area-rect fitting (supersedes ADR 0013's min-area-rect half)

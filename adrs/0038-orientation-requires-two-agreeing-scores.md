@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-08-08
 deciders: Na'aman Hirschfeld
+amends: ["0037"]
 ---
 
 # A rotation is applied only when two independent scores agree (amends ADR 0037)

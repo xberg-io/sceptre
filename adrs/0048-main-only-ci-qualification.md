@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-10-27
 deciders: Na'aman Hirschfeld
+amends: ["0044"]
 ---
 
 # Qualify reviewed changes on main

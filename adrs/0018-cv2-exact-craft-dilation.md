@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-08-01
 deciders: Na'aman Hirschfeld
+amends: ["0013"]
 ---
 
 # cv2-exact CRAFT dilation (amends ADR 0013)

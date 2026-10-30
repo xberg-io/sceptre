@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-08-06
 deciders: Na'aman Hirschfeld
+amends: ["0012"]
 ---
 
 # CLI provisioning default and runtime-scoped parity

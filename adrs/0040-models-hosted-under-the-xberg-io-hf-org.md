@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-08-08
 deciders: Na'aman Hirschfeld
+amends: ["0025"]
 ---
 
 # Model artifacts move to the `xberg-io` Hugging Face org (amends ADR 0025)

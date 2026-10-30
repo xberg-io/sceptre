@@ -2,6 +2,8 @@
 status: accepted
 date: 2026-08-03
 deciders: Na'aman Hirschfeld
+supersedes: "0003"
+amends: ["0008", "0011"]
 ---
 
 # First-party ONNX exports on the `sceptre-ocr` Hugging Face org

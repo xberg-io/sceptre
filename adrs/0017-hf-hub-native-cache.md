@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-08-01
 deciders: Na'aman Hirschfeld
+amends: ["0003", "0016"]
 ---
 
 # Resolve models through the Hugging Face hub's native on-disk cache

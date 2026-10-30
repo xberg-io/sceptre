@@ -2,7 +2,7 @@
 status: accepted
 date: 2026-08-07
 deciders: Na'aman Hirschfeld
-supersedes: 0024
+supersedes: "0024"
 ---
 
 # Docs on `docs.sceptre.xberg.io` with the shared `@xberg-io/docs-theme`

@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-10-27
 deciders: Na'aman Hirschfeld
+amends: ["0042", "0043"]
 ---
 
 # Measure a published release and candidate on the same hosted machine
@@ -25,10 +26,12 @@ not qualify a release on the hosted infrastructure.
 
 Chosen option: "measure a published release and the candidate on the same hosted machine", because
 returning to an unavailable private runner or changing its old measurements' host labels would not
-qualify a release on the hosted infrastructure. Run the genuine published 0.8.1 executable and the final release candidate serially in the same
-ready-main job, using the current harness. Bind the old executable to its official GitHub release
-asset digest and regular archive member; record the independent candidate hash, source revision
-and observed version. Retain both raw reports and a manifest with artifact hashes.
+qualify a release on the hosted infrastructure. Run the genuine published executable of the latest
+qualified release, 0.8.2, and the final release candidate serially in the same ready-main job,
+using the current harness. Pin that identity explicitly in the release harness. Bind the old
+executable to its official GitHub release asset digest and regular archive member, and resolve its
+immutable tag for the configuration-source comparison; record the independent candidate hash,
+source revision and observed version. Retain both raw reports and a manifest with artifact hashes.
 
 Verify every expected image, labeled ground truth and pinned model file before measurement, then
 verify those bytes again afterwards. Explicit thread counts, configuration source defaults,
@@ -38,7 +41,8 @@ investigation; it must not be replaced with a uniform label. Configuration-sourc
 an explicit comparison design before this gate can accept them.
 
 Convert the old binary's actual measured report into a local baseline with the existing publisher.
-Preserve its observed 0.8.1 version. Apply the unchanged 0.90 throughput floor and 1.10 RSS ceiling
+Preserve both independently observed executable versions, and reject a stale 0.8.1 baseline
+before timing. Apply the unchanged 0.90 throughput floor and 1.10 RSS ceiling
 to the candidate, and the existing baseline-derived per-image token-F1 contracts. Missing rows,
 missing measurements, skipped ordinary images and empty quality contracts fail. Capability probes
 retain their separate unsupported-format semantics.
@@ -52,17 +56,7 @@ This amends the source of the comparable host baseline in ADRs 0042 and 0043, re
 numeric thresholds and fail-closed semantics. Existing ordinary benchmark CLI defaults continue
 to use the committed baseline; explicit binary and baseline selectors are additive.
 
-## Amendment: qualify 0.9.0 against published 0.8.2 (2026-10-28)
-
-The 0.9.0 candidate upgrades the public ONNX Runtime Rust dependency. Its paired release
-measurement must use the latest qualified published executable, 0.8.2, rather than retaining
-0.8.1 as the release comparator. Pin this identity explicitly in the release harness; obtain
-the genuine 0.8.2 archive, verify its official release digest and regular executable member,
-and resolve its immutable tag for the configuration-source comparison. Preserve both
-independently observed executable versions and reject a stale 0.8.1 baseline before timing.
-
-This changes only the release comparator. Keep the same host, model, runtime, configuration,
-corpus and artifact identity requirements, the 0.90 throughput floor, the 1.10 RSS ceiling,
-and the existing baseline-derived per-image quality contracts. Retain the historical
-0.8.1-to-0.8.2 regression fixtures and shallow-checkout failure controls. Existing committed
-benchmark reports, public tables and ordinary benchmark defaults remain unchanged.
+The comparator was 0.8.1 until 2026-10-28, when the 0.9.0 candidate upgraded the public ONNX
+Runtime Rust dependency and the comparator moved to 0.8.2 with every other requirement unchanged.
+The historical 0.8.1-to-0.8.2 regression fixtures and shallow-checkout failure controls are
+retained.

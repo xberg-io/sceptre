@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-08-03
 deciders: Na'aman Hirschfeld
+supersedes: "0002"
 ---
 
 # Extend gen2 scope to Telugu and Kannada

@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-08-07
 deciders: Na'aman Hirschfeld
+amends: ["0029"]
 ---
 
 # Per-backend accelerator support (amends ADR 0029)

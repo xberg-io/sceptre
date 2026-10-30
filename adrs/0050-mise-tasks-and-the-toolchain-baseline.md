@@ -2,7 +2,7 @@
 status: accepted
 date: 2026-10-29
 decision-makers: ["Na'aman Hirschfeld"]
-amends: ["0007", "0008", "0015", "0044"]
+amends: ["0007", "0008", "0015", "0020", "0023", "0030", "0034", "0044"]
 ---
 
 # mise tasks and the toolchain baseline

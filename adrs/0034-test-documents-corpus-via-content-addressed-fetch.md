@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-08-07
 deciders: Na'aman Hirschfeld
+amends: ["0016"]
 ---
 
 # Test corpus: the `test_documents` submodule via content-addressed fetch, not vendored fixtures

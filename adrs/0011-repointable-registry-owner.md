@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-07-31
 deciders: Na'aman Hirschfeld
+amends: ["0003"]
 ---
 
 # Re-pointable model registry via a `registry_owner` override
