@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Cover release packaging, CLI publication dry-runs, Python typechecking, feature resolution, and changelog
+  synchronization with offline Bats contracts; pin and verify the shared helper library in CI (#20).
+
 - Run the repository tasks with mise instead of go-task: `mise run <task>` replaces `task <task>`
   under the same task names, and task arguments are positional (`mise run version:set X.Y.Z`,
   `mise run release:package <triple>`). `Taskfile.yaml` and `.task/` are gone.

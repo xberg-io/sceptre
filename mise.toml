@@ -5,6 +5,7 @@ lockfile = true
 lockfile_platforms = ["linux-x64", "linux-arm64", "macos-arm64", "windows-x64"]
 
 [tools]
+bats = "1.14.0"
 python = "3.13.18"
 uv = "0.13.6"
 node = "26.12.1"
@@ -196,3 +197,19 @@ run = "./scripts/sync-changelog.sh --check"
 
 [task_config]
 includes = ["mise-tasks", "mise-tasks/shared.toml"]
+
+[env]
+BATS_LIB_REF = "v1.29.0"
+
+[tasks."test:bats"]
+description = "Run offline shell contract tests"
+env = { BATS_LIB_PATH = "{{config_root}}/tests/lib" }
+run = "bats --print-output-on-failure tests/bats"
+
+[tasks."test:lib:sync"]
+description = "Refresh the pinned shared Bats helpers"
+run = "bash scripts/sync-bats-lib.sh sync"
+
+[tasks."test:lib:check"]
+description = "Verify pinned shared Bats helper bytes"
+run = "bash scripts/sync-bats-lib.sh --check"

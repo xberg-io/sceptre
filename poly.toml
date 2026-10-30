@@ -6,6 +6,8 @@ trim_trailing_whitespace = true
 
 [discovery]
 exclude = [
+  # Vendored helpers are checked against pinned upstream bytes, so formatting must not rewrite them. ~keep
+  "/tests/lib/xberg-bats/**",
   # toolchains.py sync writes these and its check compares them byte for byte; formatting would re-indent
   # the script with tabs and the uncomment pass would strip the generated header. ~keep
   "/mise-tasks/shared.toml",
@@ -210,6 +212,7 @@ stages = ["pre-commit"]
 
 [hooks.builtin]
 lint = { exclude = [
+  "/tests/lib/xberg-bats/**",
   "**/*.lock",
   "**/*.onnx",
   "**/*.svg",
@@ -227,6 +230,7 @@ lint = { exclude = [
   "/adrs/**",
 ] }
 fmt = { exclude = [
+  "/tests/lib/xberg-bats/**",
   "**/*.lock",
   "**/*.onnx",
   "**/*.svg",
