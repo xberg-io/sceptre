@@ -38,8 +38,8 @@ content then have one source, and freshness is verifiable against it.
 * `.github/workflows/plugin-artifacts.yaml` packages every supported runtime for an existing
   release tag and attaches the verified archive, with ai-rulez pinned on that release path.
 
-The organization decision on shared distribution is org ADR "shared assets and distribution"
-(agent-conventions `adrs/`).
+The organization decision on shared distribution is
+[org ADR-0014 (Shared assets and distribution channels)](https://github.com/xberg-io/agent-conventions/blob/main/adrs/0014-shared-assets-and-distribution-channels.md).
 
 ### Consequences
 
@@ -49,6 +49,7 @@ The organization decision on shared distribution is org ADR "shared assets and d
 
 ### Confirmation
 
-`.github/workflows/ci-plugin.yaml` runs `scripts/tests/test_public_skills.py` and
-`scripts/sync_public_skills.py --check`, and `ai-rulez verify --plugin` compares the bundle with
-the source output and provenance.
+`.github/workflows/ci-plugin.yaml` runs `xberg-io/actions/verify-ai-rulez-plugin@v1`, which checks
+plugin versions, validity, freshness and provenance with `ai-rulez verify --plugin`, then `scripts/tests/test_public_skills.py` and
+`scripts/sync_public_skills.py --check`. On release, `.github/workflows/publish.yaml` runs
+`scripts/sync_public_skills.py --check` and `ai-rulez verify --plugin` before packaging.

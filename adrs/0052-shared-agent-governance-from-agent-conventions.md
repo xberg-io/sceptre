@@ -39,8 +39,9 @@ repository the same way, while sceptre-specific rules stay here.
 * Rules local to `.ai-rulez/rules/`, such as `adr-discipline`, cover sceptre's own conventions.
 * The governance actions run from their `@v1` major tag.
 
-The organization decision is org ADR "ai-rulez and agent-conventions modules" (agent-conventions
-`adrs/`). This ADR amends ADR 0006 only in where the shared rules come from; ai-rulez remains the
+The organization decision is
+[org ADR-0007 (ai-rulez with shared agent-conventions modules)](https://github.com/xberg-io/agent-conventions/blob/main/adrs/0007-ai-rulez-with-shared-agent-conventions-modules.md).
+This ADR amends ADR 0006 only in where the shared rules come from; ai-rulez remains the
 generator, and generated files remain unedited outputs.
 
 ### Consequences

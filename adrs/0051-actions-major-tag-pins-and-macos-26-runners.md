@@ -40,9 +40,10 @@ GitHub's deprecation of older images.
   `macos-15` release verifier (39e3bad, 2026-10-28). The same commit updated ADR 0035's runner
   assignment in place; this ADR is the record of that change.
 
-The organization-wide rules are org ADR "GitHub Actions pinned to major tags" and org ADR "macOS
-runners on macos-26 and macos-26-intel" (agent-conventions `adrs/`). This ADR records how sceptre
-applies them.
+The organization-wide rules are
+[org ADR-0008 (Pin actions to major tags)](https://github.com/xberg-io/agent-conventions/blob/main/adrs/0008-pin-actions-to-major-tags.md) and
+[org ADR-0009 (macOS runners macos-26 only)](https://github.com/xberg-io/agent-conventions/blob/main/adrs/0009-macos-runners-macos-26-only.md).
+This ADR records how sceptre applies them.
 
 This amends ADR 0035's runner assignment, whose `macos-26` text 39e3bad wrote in place, and
 ADR 0031: the `macos-latest` measurements it quotes are historical and stay as recorded, and new

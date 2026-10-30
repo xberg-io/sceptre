@@ -43,11 +43,10 @@ and CI then calls the same tasks contributors run locally.
   toolchains library in `mise-tasks/shared.toml` (f6497c2, 2026-10-29).
 * CI calls `mise run` instead of `task`, and its path filters watch `mise-tasks/` instead of
   `Taskfile.yaml` and `.task/` (36580cd, 2026-10-29).
-* `bench`, `release:build` and `python:export` are removed; the benchmarks workflow runs
-  `cargo bench` itself (34b9802, 2026-10-30).
 
-The organization-wide decisions are recorded once, in agent-conventions: org ADR "mise toolchain
-baseline" and org ADR "go-task to mise tasks and shared task sets" (agent-conventions `adrs/`).
+The organization-wide decisions are recorded once, in agent-conventions:
+[org ADR-0004 (Mise toolchain baseline)](https://github.com/xberg-io/agent-conventions/blob/main/adrs/0004-mise-toolchain-baseline.md) and
+[org ADR-0005 (Mise tasks and shared task sets)](https://github.com/xberg-io/agent-conventions/blob/main/adrs/0005-mise-tasks-and-shared-task-sets.md).
 This ADR records only how sceptre applies them.
 
 This amends ADRs 0007, 0008, 0015 and 0044: read every `task <name>` and `Taskfile` setup target
