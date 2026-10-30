@@ -280,3 +280,8 @@ blake3 = "c4fb60f92ce4be3449b3f7a92acb2497e2b27b51ad3318da81ee4dbe20a9be70"
 number = 55
 status = "accepted"
 blake3 = "3f1e0bea72892f2ec5e65d097da9b670204dda0614b0a390e3d95d423abfb0bd"
+
+[adrs."adrs/0056-shared-xberg-brand-assets-for-the-docs-site.md"]
+number = 56
+status = "accepted"
+blake3 = "b7fc0a952553b365f7d08f128abb3fbafee59db34a3cf7108eab222237aac13a"
