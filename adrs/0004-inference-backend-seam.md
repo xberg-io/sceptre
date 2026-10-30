@@ -28,9 +28,9 @@ to any one runtime.
 
 ## Decision Outcome
 
-Chosen option: **a runtime-neutral `ModelBackend` seam** with `ort` as the
-default native impl and `tract` as the pure-Rust impl, both feature-gated;
-`candle` is reserved as a third impl (reimplemented nets) to fall back on if
+Chosen option: "a runtime-neutral `ModelBackend` seam" with `ort` as the default native impl and
+`tract` as the pure-Rust impl, both feature-gated, because we need to avoid coupling the pipeline
+to any one runtime; `candle` is reserved as a third impl (reimplemented nets) to fall back on if
 `tract` fails the recognizer BiLSTM. The pipeline and all config/result types
 stay backend-agnostic. A single `ConcurrencyConfig` budget feeds Rayon and the
 backend's intra-op threads.

@@ -33,7 +33,8 @@ behavior identical to ADR 0003.
 
 ## Decision Outcome
 
-Chosen option: **an optional `registry_owner` owner-segment override on `ModelConfig`.**
+Chosen option: "an optional `registry_owner` owner-segment override on `ModelConfig`", because
+it swaps the model host with configuration, not a code edit, with zero behavior change by default.
 `registry::effective_repo(entry, registry_owner)` maps the base entry to an effective repo
 id: `None` returns the entry's own `hf_repo` verbatim (exactly the ADR 0003 ids), `Some(owner)`
 replaces only the owner segment. `DefaultModelProvider` reads `model.registry_owner` from

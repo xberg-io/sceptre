@@ -37,7 +37,9 @@ do not want to do purely to enable benchmarking.
 
 ## Decision Outcome
 
-Chosen option: **the `bench` feature seam**. A new `bench` cargo feature compiles
+Chosen option: "the `bench` feature seam", because it measures the real internal hot paths, not a
+proxy, without widening the crate's public API to expose internals for benchmarking.
+A new `bench` cargo feature compiles
 `crates/sceptre/src/bench.rs` as `#[cfg(feature = "bench")] #[doc(hidden)] pub mod bench`. The
 `detect` and `recognize` module roots add `#[cfg(feature = "bench")] pub(crate)` shim functions
 (`bench_preprocess`, `bench_postprocess`, `bench_group`, `bench_crop_preprocess`,

@@ -28,7 +28,8 @@ six gen2 recognizers, and a way to deliver them to users.
 
 ## Decision Outcome
 
-Chosen option: **use the `itextresearch` ONNX exports, downloaded at runtime**.
+Chosen option: "use the `itextresearch` ONNX exports, downloaded at runtime", because they avoid
+maintaining a fragile PyTorch export toolchain and keep large binaries out of git.
 They cover CRAFT + all six gen2 recognizers, are Apache-2.0, full-precision, and
 dynamic-width. Models are fetched via `hf-hub`, cached under
 `~/.cache/sceptre`, and sha256-verified. A Python export script is kept only

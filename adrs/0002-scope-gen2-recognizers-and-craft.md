@@ -28,8 +28,10 @@ recommendation without the legacy tail.
 
 ## Decision Outcome
 
-Chosen option: **gen2 recognizers + CRAFT only**, covering `english_g2`,
-`latin_g2`, `zh_sim_g2`, `japanese_g2`, `korean_g2`, `cyrillic_g2`. gen2 shares a
+Chosen option: "gen2 recognizers + CRAFT only", because it matches EasyOCR's current
+recommendation without the legacy tail: "latest version" parity, not historical completeness,
+with a smaller, consistent model architecture and registry. It covers `english_g2`, `latin_g2`,
+`zh_sim_g2`, `japanese_g2`, `korean_g2`, `cyrillic_g2`. gen2 shares a
 single architecture (VGG-BiLSTM-CTC, image-only ONNX input) and is EasyOCR's
 current default. Languages that exist only as gen1 (e.g. Thai, Arabic,
 Devanagari) are out of scope.

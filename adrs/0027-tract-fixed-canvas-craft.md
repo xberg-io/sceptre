@@ -36,7 +36,9 @@ must run under tract. Two obstacles surfaced when validating this against real m
 
 ## Decision Outcome
 
-Chosen option: **on the tract backend, run CRAFT on a fixed square canvas.**
+Chosen option: "on the tract backend, run CRAFT on a fixed square canvas", because it gives a
+working end-to-end pure-Rust pipeline on tract while keeping the `ort` path unchanged and the
+model-execution seam model-agnostic.
 
 * The first-party export pipeline (ADR 0025) replaces the recognizer's `AdaptiveAvgPool2d` with a
   numerically identical mean over the height axis (a `ReduceMean`), which **makes the recognizers

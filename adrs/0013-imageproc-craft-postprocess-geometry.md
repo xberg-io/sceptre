@@ -36,8 +36,10 @@ Rust with no OpenCV/native dependency, so we need those primitives in pure Rust.
 
 ## Decision Outcome
 
-Chosen option: **`imageproc`** (pinned `0.27`, `default-features = false`), a core (always
-compiled) dependency of the detection stage. It supplies every geometry primitive CRAFT's
+Chosen option: "`imageproc`" (pinned `0.27`, `default-features = false`), a core (always
+compiled) dependency of the detection stage, because it avoids re-deriving numerically fiddly
+geometry (convex hull + rotating calipers) by hand while staying pure-Rust, WASM-compatible, with
+no native/OpenCV dependency. It supplies every geometry primitive CRAFT's
 postprocess needs in pure Rust: connected-component labelling (4-connectivity, matching
 `cv2.connectedComponentsWithStats(connectivity=4)`), morphological dilation, thresholding, and
 `min_area_rect` — which returns corners already in `[top-left, top-right, bottom-right,

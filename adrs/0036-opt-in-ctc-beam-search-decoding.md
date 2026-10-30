@@ -51,8 +51,9 @@ port EasyOCR's specific algorithm, and what the default should be.
 
 ## Decision Outcome
 
-Chosen option: **a faithful port of `ctcBeamSearch`, opt-in, greedy remains the
-default.** New module `recognize/beam.rs`: `fast_simplify_label` (the same-vs-different
+Chosen option: "a faithful port of `ctcBeamSearch`, opt-in, greedy remains the default", because
+EasyOCR parity is the baseline contract, not a ceiling: a new decoder must not change default
+output. New module `recognize/beam.rs`: `fast_simplify_label` (the same-vs-different
 repeated-class blank bookkeeping), a `BeamEntry`/beam-state prefix search keyed by raw
 label sequence, and `decode_beam_search`, which reuses `ctc::probability_matrix` (the
 ignore-masked, renormalized probability row, generalized from the greedy path to keep
