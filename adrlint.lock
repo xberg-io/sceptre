@@ -1,0 +1,282 @@
+version = 1
+canonical = 1
+
+[adrs."adrs/0000-use-madr-for-adrs.md"]
+number = 0
+status = "accepted"
+blake3 = "73c33a5d22ccfc1e1a41f0f1717f80584efc32d5cb02d24f554b41548eaee98a"
+
+[adrs."adrs/0001-cargo-workspace-rlib-core-thin-cli.md"]
+number = 1
+status = "accepted"
+blake3 = "6595c1a71cba6bb041de6f1e7fc6d2ccaeda0ca57839cd2c54a9990d11b3ffeb"
+
+[adrs."adrs/0002-scope-gen2-recognizers-and-craft.md"]
+number = 2
+status = "accepted"
+blake3 = "556c0774021c6541acc4079860fe80e66b3f84e711ec5daf887403626e3869c6"
+
+[adrs."adrs/0003-model-source-itext-onnx-runtime-download.md"]
+number = 3
+status = "accepted"
+blake3 = "fa6d9eae1e08ab16525a3d168416864ce2ebb5bfafd64df414c0388156583270"
+
+[adrs."adrs/0004-inference-backend-seam.md"]
+number = 4
+status = "accepted"
+blake3 = "f5f2b72be510e5ffa018542b0a325a0d59b351c769086cbe49e76fc9808d68a0"
+
+[adrs."adrs/0005-mcp-as-feature-module-and-subcommand.md"]
+number = 5
+status = "accepted"
+blake3 = "f29af1a1011ad667efc2fbdf34f3a51f3b1f8ef780edeadcb4d862ab099d56bd"
+
+[adrs."adrs/0006-ai-rulez-for-agent-config.md"]
+number = 6
+status = "accepted"
+blake3 = "e10e6ec89c02adffd230861fdc3e3f10fa093cd5bb07921620ba8f6b36f89bde"
+
+[adrs."adrs/0007-tooling-scaffolding-from-basemind.md"]
+number = 7
+status = "accepted"
+blake3 = "63ed0c972fed3f74a3824a88e51435683bca6e5c8720c1415624bd34c0715eea"
+
+[adrs."adrs/0008-uv-taskfile-tools-infra.md"]
+number = 8
+status = "accepted"
+blake3 = "21645decbabef14cd054e3f4cc3ca06c6152a51e82a6566b92aa754a9dd1fb1c"
+
+[adrs."adrs/0009-candle-evaluation-ort-primary.md"]
+number = 9
+status = "accepted"
+blake3 = "77746079e0b0e99ae34dcf151029e8115a8917a1bd76706b2531f20e2753e42f"
+
+[adrs."adrs/0010-ocr-engine-seam-and-encapsulation-lockdown.md"]
+number = 10
+status = "accepted"
+blake3 = "5f2b8300edce1aea751bd64fa38334df45b655d70b3c578440c73d6a09976cae"
+
+[adrs."adrs/0011-repointable-registry-owner.md"]
+number = 11
+status = "accepted"
+blake3 = "3c404f20e7b6006e3fe7de32d3f374bcbde1ee447128261cc00129a7d381125c"
+
+[adrs."adrs/0012-ort-runtime-provisioning.md"]
+number = 12
+status = "accepted"
+blake3 = "614b9249fc630d2c598c16fc7f0bacbb480ccb083578242bae33a21b1cdddb01"
+
+[adrs."adrs/0013-imageproc-craft-postprocess-geometry.md"]
+number = 13
+status = "accepted"
+blake3 = "da6f52969df69daa14595780a1e9bd26198ba2a4bb65685925b7f9c846617619"
+
+[adrs."adrs/0014-public-detect-recognize-line-and-model-provisioning.md"]
+number = 14
+status = "accepted"
+blake3 = "128085215e7bc1c4decbf0529249543aebb575c79c70cfdc915f78f15e7aaac0"
+
+[adrs."adrs/0015-bench-seam-and-criterion.md"]
+number = 15
+status = "accepted"
+blake3 = "f17ce72d700226d438afb320d0f8635e2cfaf2f73c12cdea5b55571c8961de04"
+
+[adrs."adrs/0016-parity-harness-and-test-corpus.md"]
+number = 16
+status = "accepted"
+blake3 = "f97c6620d6c6534ef406f6a940e1ac19e89f5e190dfcdc7130617654f9925866"
+
+[adrs."adrs/0017-hf-hub-native-cache.md"]
+number = 17
+status = "accepted"
+blake3 = "053dc2b6af84b18a648841cb0503070851e12e5db0366b97a42a00cfd9e9b667"
+
+[adrs."adrs/0018-cv2-exact-craft-dilation.md"]
+number = 18
+status = "accepted"
+blake3 = "63744e329cb1034835044c2dbbd28cb543e90a73c06065506ffbdf5a0127a96d"
+
+[adrs."adrs/0019-parity-safe-perf-and-simd.md"]
+number = 19
+status = "accepted"
+blake3 = "c63b6cd9395291bf8cd48536628860200c2fe4708149cde5d43d627aba774060"
+
+[adrs."adrs/0020-release-strategy.md"]
+number = 20
+status = "accepted"
+blake3 = "14039fab7ba5566368d0c53945d5736a945656e4e5877c73cdebcc5f9c26f92f"
+
+[adrs."adrs/0021-benchmark-methodology-and-gate.md"]
+number = 21
+status = "accepted"
+blake3 = "19ed4c6b7b2b7dbb3d1c66e612ed86fb9af1651232e4162267790f3c58cca340"
+
+[adrs."adrs/0022-input-image-format-coverage.md"]
+number = 22
+status = "accepted"
+blake3 = "0fe063d052e2f789c7c801e878eec9ca61d3c455483abd97b65ea6118d2339ce"
+
+[adrs."adrs/0023-publish-to-crates-io-via-trusted-publishing.md"]
+number = 23
+status = "accepted"
+blake3 = "c092e16e7845b73b9526b1347fd05924d8b881867dacc5b75eff30e9455168c3"
+
+[adrs."adrs/0024-documentation-site-and-web-presence.md"]
+number = 24
+status = "superseded"
+blake3 = "30f04e9d56e556e3abcd8b9e7166c4205beae5df5b145d58016c94453efc8c1f"
+
+[adrs."adrs/0025-first-party-onnx-exports.md"]
+number = 25
+status = "accepted"
+blake3 = "2e1fca4f6c2590e0c30f52f9d27416eae42dcb036f9523e3255659af218847c1"
+
+[adrs."adrs/0026-extend-gen2-scope-telugu-kannada.md"]
+number = 26
+status = "accepted"
+blake3 = "2726ef7cdeb24f6216dd0aabf19af5059b6d18032b1baa0ed99d7ced15f600cf"
+
+[adrs."adrs/0027-tract-fixed-canvas-craft.md"]
+number = 27
+status = "accepted"
+blake3 = "4be2598be39fb1c4a6f1e844aca7626a7b6097530e28bae176bc82facbbeb78f"
+
+[adrs."adrs/0028-host-supplied-model-artifacts-and-wasm-execution.md"]
+number = 28
+status = "accepted"
+blake3 = "341c532f1851a50f3faa81fc29ddf19530a1b82360bad0604b60add66aced817"
+
+[adrs."adrs/0029-cli-provisioning-default-and-runtime-scoped-parity.md"]
+number = 29
+status = "accepted"
+blake3 = "8df4be3d3b89484a3d9ad2be234084b0bb82720daef4ceb82872be1325656537"
+
+[adrs."adrs/0030-published-benchmark-artifact-and-drift-gate.md"]
+number = 30
+status = "accepted"
+blake3 = "6ac78d9373e8fff662ad62be7d7b5e0e68aa7130eaf7c42be9e994046e121198"
+
+[adrs."adrs/0031-hand-written-candle-networks.md"]
+number = 31
+status = "accepted"
+blake3 = "670cf063de2380bacff9da93c4a751e684d1f92a22853d722f5b48ee4cc2f3fb"
+
+[adrs."adrs/0032-per-backend-accelerator-support.md"]
+number = 32
+status = "accepted"
+blake3 = "4fad6c3d0344f8ef5d3beeace3bb944e6dbad599cf85da558a033370d286fbb2"
+
+[adrs."adrs/0033-org-migration-docs-domain-and-shared-theme.md"]
+number = 33
+status = "accepted"
+blake3 = "849ad86acab5c5f49638ffff6f6cf87775bcd1aa739801da765c0421358ae2c6"
+
+[adrs."adrs/0034-test-documents-corpus-via-content-addressed-fetch.md"]
+number = 34
+status = "accepted"
+blake3 = "b3b2803c8943b9b6eec013ef08c873bb7dad0dc5109d59cd0a5d82a60cf5915c"
+
+[adrs."adrs/0035-backend-accelerator-benchmark-matrix.md"]
+number = 35
+status = "accepted"
+blake3 = "35d7a2bb5e33d60fdef00313edb4832d6caa87374cbf7e35696c701a7f39a849"
+
+[adrs."adrs/0036-opt-in-ctc-beam-search-decoding.md"]
+number = 36
+status = "accepted"
+blake3 = "ab11ede160d827d753ee238bc3ae2ae74aa1edf9551118b7545b42e9f32dbdd4"
+
+[adrs."adrs/0037-opt-in-whole-page-orientation-pre-pass.md"]
+number = 37
+status = "accepted"
+blake3 = "40e42a60a715ddfbfc33a8112baa5cc7fc139e05ff8de5e8f1b76341b29e5905"
+
+[adrs."adrs/0038-orientation-requires-two-agreeing-scores.md"]
+number = 38
+status = "accepted"
+blake3 = "c5ee51a2433e42b79b5c01b99f7b8ab470203900ee1a89a5c44dba3073352ac0"
+
+[adrs."adrs/0039-opencv-faithful-min-area-rect.md"]
+number = 39
+status = "accepted"
+blake3 = "c2571704e529790f5bb08e6222110d8364b82b8117402e80eb273c967dc35ef0"
+
+[adrs."adrs/0040-models-hosted-under-the-xberg-io-hf-org.md"]
+number = 40
+status = "accepted"
+blake3 = "3b64e8d7db9fb7fd912f571d3d306271891ac714645e6d976860c1e83bfe0f3a"
+
+[adrs."adrs/0041-detection-megapixel-budget.md"]
+number = 41
+status = "accepted"
+blake3 = "e2d67ac84923296aef1b34dcf6ebd8b5b74762be6f46492a0093f402f0f7c650"
+
+[adrs."adrs/0042-host-scoped-benchmark-floors.md"]
+number = 42
+status = "accepted"
+blake3 = "6582573800b2a35d3a8edb1cd990e90202b5d64c81fccc63f2bfc9cd4ee63f1e"
+
+[adrs."adrs/0043-host-scoped-self-referential-speed-floor.md"]
+number = 43
+status = "accepted"
+blake3 = "64e3126d40fca1c3da9f82311ec1c3682a064dc10c597a359dc6bb7794f90b4f"
+
+[adrs."adrs/0044-single-ci-check-workflow.md"]
+number = 44
+status = "accepted"
+blake3 = "86776b73ebf476ea09809f1a2d86de4f10ec871eba788aa7ed625020232cfcc6"
+
+[adrs."adrs/0045-row-aware-detection-reading-order.md"]
+number = 45
+status = "accepted"
+blake3 = "41175cede2162e50006ceece42dcf7381e1df247437adc59f48b98a0cf53a5fc"
+
+[adrs."adrs/0046-retained-ort-environment.md"]
+number = 46
+status = "accepted"
+blake3 = "fe868f186f3cc7a499410b1d9d12d25cfc15577293bbf0762c6b7adfa6d92897"
+
+[adrs."adrs/0047-macos-bundled-ort-compiler-runtime.md"]
+number = 47
+status = "accepted"
+blake3 = "9e3384c382d7c10a9af30cb1d4670aa52f560a9b2163e3184aa164a969f64905"
+
+[adrs."adrs/0048-main-only-ci-qualification.md"]
+number = 48
+status = "accepted"
+blake3 = "ef9ce15e9bc0e64c6b7eff9dbdfe7684b06a35cce9aa0f38d350a6296bdf1935"
+
+[adrs."adrs/0049-paired-release-benchmarks.md"]
+number = 49
+status = "accepted"
+blake3 = "575ccabf85ea4f5306eb819ccbde8199cdb659c158756b4b3400b68b0af6da94"
+
+[adrs."adrs/0050-mise-tasks-and-the-toolchain-baseline.md"]
+number = 50
+status = "accepted"
+blake3 = "3349c00ede0d91125fc2e28df7fd282324df54556d3aa132f796c781e892650e"
+
+[adrs."adrs/0051-actions-major-tag-pins-and-macos-26-runners.md"]
+number = 51
+status = "accepted"
+blake3 = "115de52603c821f6eb460f896570ddba3a8cdb3650c975d44e1893b938bfa03d"
+
+[adrs."adrs/0052-shared-agent-governance-from-agent-conventions.md"]
+number = 52
+status = "accepted"
+blake3 = "727d0cded25fcb2f5704f4bdbda4c9f0fe4ea9a138d167a837b8e8942ec6fe63"
+
+[adrs."adrs/0053-agent-plugin-and-public-skills-distribution.md"]
+number = 53
+status = "accepted"
+blake3 = "169e5eb3cc7b2c4b15d6d35393e0bbf1eb54833e5ec7406d64b492dd66884d2f"
+
+[adrs."adrs/0054-resolve-cached-models-offline-first.md"]
+number = 54
+status = "accepted"
+blake3 = "c4fb60f92ce4be3449b3f7a92acb2497e2b27b51ad3318da81ee4dbe20a9be70"
+
+[adrs."adrs/0055-verify-cached-models-on-every-hit.md"]
+number = 55
+status = "accepted"
+blake3 = "3f1e0bea72892f2ec5e65d097da9b670204dda0614b0a390e3d95d423abfb0bd"
