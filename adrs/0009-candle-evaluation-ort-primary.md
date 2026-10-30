@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-07-31
 decision-makers: ["Na'aman Hirschfeld"]
+amends: ["0004"]
 ---
 
 # Backend evaluation: `ort` primary, `candle` deferred off the critical path
