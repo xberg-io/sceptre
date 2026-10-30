@@ -12,7 +12,7 @@ amends: ["0020", "0031", "0035"]
 The workflows pinned some actions to commit SHAs and others to exact version tags, and macOS legs
 ran on the floating `macos-latest` label, which [ADR 0031](0031-hand-written-candle-networks.md)'s
 measurements and [ADR 0035](0035-backend-accelerator-benchmark-matrix.md)'s runner assignment
-name. GitHub deprecated
+named. GitHub deprecated
 the macOS 14 image, so `macos-latest` and the `macos-15` release verifier would move under the
 workflows without a change in this repository.
 
