@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-08-07
 deciders: Na'aman Hirschfeld
+amends: ["0009"]
 ---
 
 # Hand-written `candle` networks as the GPU and no-C++-runtime backend
@@ -165,7 +166,7 @@ and deployment option, never a performance one, and it is excluded from
 * Revisit if: `candle-onnx` grows the three ops *and* drops its `protoc` build dependency,
   which would let the graph be executed rather than reimplemented.
 
-## Supersedes
+## Amends
 
 [ADR 0009](0009-candle-evaluation-ort-primary.md). Its CPU conclusion is not overturned —
 it is confirmed by fresh measurement. What changes is the question: 0009 asked whether
