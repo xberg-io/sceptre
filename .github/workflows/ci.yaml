@@ -545,3 +545,10 @@ jobs:
         # The benchmark unit tests cover metrics, capability detection, report rendering,
         # and the regression gate without torch/easyocr or the release binary. ~keep
         run: mise run python:test
+
+      # python:typecheck syncs every dependency group, PyTorch included. UV_NO_CACHE keeps those
+      # wheels out of the uv cache this job saves for the default group. ~keep
+      - name: Pyrefly over every Python tool and test
+        env:
+          UV_NO_CACHE: "1"
+        run: mise run python:typecheck
