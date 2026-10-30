@@ -48,8 +48,11 @@ Offline-first resolution from ADR 0054 is unchanged: a verified cache hit still 
 ### Confirmation
 
 `ensure_with_env` in `crates/sceptre/src/models/download.rs` calls `verify_or_evict` on every
-cache hit, with `hub_offline` deciding whether a miss may download. The unit tests
-`resolve_cached_only_uses_the_requested_revision` and
-`verify_or_evict_removes_a_corrupt_artifact_and_leaves_the_cache_a_miss`, and
-`crates/sceptre/tests/model_bytes.rs` (`should_pin_builtin_models_to_immutable_revisions`,
-`should_serve_only_sha256_verified_model_bytes`) cover it.
+cache hit, with `hub_offline` deciding whether a miss may download. The unit tests in that file
+cover it: `resolve_cached_only_uses_the_requested_revision`,
+`verify_or_evict_removes_a_corrupt_artifact_and_leaves_the_cache_a_miss`,
+`verify_or_evict_removes_both_the_snapshot_symlink_and_its_blob`,
+`ensure_fails_closed_offline_after_evicting_a_corrupt_artifact` and
+`ensure_fails_closed_offline_when_the_artifact_is_missing`. `crates/sceptre/tests/model_bytes.rs`
+(`should_pin_builtin_models_to_immutable_revisions`) checks that every built-in model pins an
+immutable revision.
