@@ -33,8 +33,7 @@ purely this box geometry.
 ## Decision Outcome
 
 Chosen option: "replace the imageproc dilation with a small custom dilation that reproduces OpenCV
-exactly", because the approximation matches EasyOCR only for **even** `niter`. Replace the
-imageproc dilation with a small custom dilation that reproduces OpenCV exactly:
+exactly", because the approximation matches EasyOCR only for **even** `niter`. The dilation is
 `dst(x, y) = max` over kernel offsets `(i, j) ∈ [0, 1 + niter)` of `src(x + i − anchor, y + j −
 anchor)`, with OpenCV's default center anchor `anchor = (1 + niter) / 2` (integer division) and
 out-of-buffer neighbours treated as background (`BORDER_CONSTANT`). The kernel is symmetric for

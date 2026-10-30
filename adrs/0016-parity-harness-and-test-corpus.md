@@ -35,9 +35,9 @@ and what a golden fixture is compared against.
 ## Decision Outcome
 
 Chosen option: "the xberg `test_documents` Git-LFS submodule, Hugging Face hub cache model
-resolution, and dual goldens", because default `cargo test` must stay fast and green with no
-network, no models, no submodule, CI must be able to force the real path, and it reuses
-existing, proven patterns with no new runtime dependencies for path resolution.
+resolution, and dual goldens", because they reuse existing, proven patterns (the xberg corpus +
+skip-if-missing convention), add no new runtime dependencies for path resolution, and let CI
+force the real path and fail loudly on a misconfigured cache.
 
 * **Corpus:** adopt the xberg `test_documents` Git-LFS submodule as the OCR corpus. It is
   added without pulling LFS blobs by default; the harness tolerates it being absent or

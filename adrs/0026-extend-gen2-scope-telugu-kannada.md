@@ -32,8 +32,9 @@ marginal cost and closes the gap between "gen2 support" and "the six we happened
 ## Decision Outcome
 
 Chosen option: "add `telugu_g2` and `kannada_g2`", because completing the gen2 set is low marginal
-cost, extending ADR 0002's enumerated scope to all eight gen2 recognizers. Both are genuine EasyOCR gen2 models (EasyOCR has no gen1
-Telugu/Kannada), so this is a scope extension within the existing architecture, not a gen1 exception. They are
+cost. This extends ADR 0002's enumerated scope to all eight gen2 recognizers. Both are genuine
+EasyOCR gen2 models (EasyOCR has no gen1 Telugu/Kannada), so this is a scope extension within the
+existing architecture, not a gen1 exception. They are
 exported by the ADR 0025 pipeline and hosted at `sceptre-ocr/telugu_g2` and `sceptre-ocr/kannada_g2`.
 
 Languages that exist only as EasyOCR gen1 (Arabic, Thai, Devanagari, Bengali, Tamil, Traditional
