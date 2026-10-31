@@ -285,3 +285,8 @@ blake3 = "3f1e0bea72892f2ec5e65d097da9b670204dda0614b0a390e3d95d423abfb0bd"
 number = 56
 status = "accepted"
 blake3 = "b7fc0a952553b365f7d08f128abb3fbafee59db34a3cf7108eab222237aac13a"
+
+[adrs."adrs/0057-allow-compatible-onnx-runtime-binding-updates.md"]
+number = 57
+status = "accepted"
+blake3 = "2b40775cce72d6876d81ab35b6b8c2f15df2df08003dfbfa7e9ee0cad055b074"

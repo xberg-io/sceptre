@@ -7,7 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-10-31
+
 ### Changed
+
+- Allow compatible ONNX Runtime Rust binding updates from `2.0.0-rc.15` instead of
+  requiring that exact release; the lockfile retains the latest published rc.15.
+- Refresh Python development, model-export and corpus tooling.
 
 - Refresh compatible Rust dependencies and require rmcp 3.8 for MCP support.
 

@@ -6,7 +6,7 @@ name: sceptre
 <!--
 AI-RULEZ :: GENERATED FILE — DO NOT EDIT
 Content-Hash: blake3:4480b74da08c9d29de3bb2322b8b84eaf216530468c1741d2daa74d9684c2d79
-Source-Hash: blake3:01fae52962d4455bc9e5418e1d2394e7b6c3e89319782e09cc101521590f99bc
+Source-Hash: blake3:9c178e239df0c920c0243b02d5690efd91aa0fd88e3be58623814b0836264ff2
 Schema-Version: v1
 -->
 

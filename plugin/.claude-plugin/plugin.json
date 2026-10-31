@@ -1,7 +1,7 @@
 {
   "name": "sceptre",
   "description": "Local OCR with CRAFT detection and multilingual CRNN recognition.",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "author": {
     "name": "Kreuzberg, Inc.",
     "email": "contact@xberg.io",

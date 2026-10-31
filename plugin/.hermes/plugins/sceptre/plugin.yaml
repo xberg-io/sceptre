@@ -1,5 +1,5 @@
 name: "sceptre"
-version: "0.9.0"
+version: "0.10.0"
 description: "Local OCR with CRAFT detection and multilingual CRNN recognition."
 author: "Kreuzberg, Inc."
 kind: "standalone"
