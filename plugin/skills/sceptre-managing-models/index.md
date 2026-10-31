@@ -1,10 +1,10 @@
 <!--
 AI-RULEZ :: GENERATED FILE — DO NOT EDIT
-Content-Hash: blake3:73f4139621ec1bd31efe6b9cc904ef77bf57f23040c5b40dec7e40ca6786cf97
-Source-Hash: blake3:5ba6fce721d21bf8c19016b9b5f38557791b36501f70d78b30db765130749cb5
+Content-Hash: blake3:208973b449b712ef3162281541dc771ae359697e3182d4f62a0c6ddc0447e566
+Source-Hash: blake3:b2940af2435cba24185ff039801734bb8c1096cd58e04798953396a457a528cc
 Schema-Version: v1
 -->
 
 # Concepts
 
-* [Managing Models](SKILL.md) - List, download and prepare Sceptre multilingual OCR models and inspect backend configuration.
+- [Managing Models](SKILL.md) - List, download and prepare Sceptre multilingual OCR models and inspect backend configuration.

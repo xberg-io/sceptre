@@ -1,10 +1,10 @@
 <!--
 AI-RULEZ :: GENERATED FILE — DO NOT EDIT
-Content-Hash: blake3:495222cad8f2c2c576c5882c85aaee78b1713f760ba484b29206401e4bc55f9e
-Source-Hash: blake3:5ba6fce721d21bf8c19016b9b5f38557791b36501f70d78b30db765130749cb5
+Content-Hash: blake3:6efd910d4a1c8e384b060e79b8d2a128c3b3d18a24d92c6577c671404e66d235
+Source-Hash: blake3:b2940af2435cba24185ff039801734bb8c1096cd58e04798953396a457a528cc
 Schema-Version: v1
 -->
 
 # Concepts
 
-* [Integrating Rust](SKILL.md) - Embed Sceptre OCR in Rust with Reader, decoded images, model providers and structured error handling.
+- [Integrating Rust](SKILL.md) - Embed Sceptre OCR in Rust with Reader, decoded images, model providers and structured error handling.

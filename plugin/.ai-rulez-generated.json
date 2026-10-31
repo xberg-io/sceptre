@@ -1,6 +1,6 @@
 {
   "schema_version": "v1",
-  "source_hash": "blake3:5ba6fce721d21bf8c19016b9b5f38557791b36501f70d78b30db765130749cb5",
+  "source_hash": "blake3:b2940af2435cba24185ff039801734bb8c1096cd58e04798953396a457a528cc",
   "outputs": {
     ".claude-plugin/plugin.json": {
       "content_hash": "blake3:4e702812de76e781a75bb4c5449146bf150587a1d3af013d3f49858023e34087",
@@ -19,7 +19,7 @@
       "mode": "0644"
     },
     ".cursor-plugin/skills/sceptre-integrating-rust/index.md": {
-      "content_hash": "blake3:495222cad8f2c2c576c5882c85aaee78b1713f760ba484b29206401e4bc55f9e",
+      "content_hash": "blake3:6efd910d4a1c8e384b060e79b8d2a128c3b3d18a24d92c6577c671404e66d235",
       "mode": "0644"
     },
     ".cursor-plugin/skills/sceptre-managing-models/SKILL.md": {
@@ -27,7 +27,7 @@
       "mode": "0644"
     },
     ".cursor-plugin/skills/sceptre-managing-models/index.md": {
-      "content_hash": "blake3:73f4139621ec1bd31efe6b9cc904ef77bf57f23040c5b40dec7e40ca6786cf97",
+      "content_hash": "blake3:208973b449b712ef3162281541dc771ae359697e3182d4f62a0c6ddc0447e566",
       "mode": "0644"
     },
     ".cursor-plugin/skills/sceptre-ocr-images/SKILL.md": {
@@ -35,7 +35,7 @@
       "mode": "0644"
     },
     ".cursor-plugin/skills/sceptre-ocr-images/index.md": {
-      "content_hash": "blake3:f017e5bf65240325247b6275d33f4117b35d729b5f2b8005056d3e8693cb50a9",
+      "content_hash": "blake3:d0350093887dfee6484a1a7295c3c6e6c08de73b2285e9f40435749cc2fc101b",
       "mode": "0644"
     },
     ".cursor-plugin/skills/sceptre-tuning-ocr/SKILL.md": {
@@ -43,7 +43,7 @@
       "mode": "0644"
     },
     ".cursor-plugin/skills/sceptre-tuning-ocr/index.md": {
-      "content_hash": "blake3:517dcc6c8372f39810c4878eb390cf1d079276d25fb9d7f994251102d8c22602",
+      "content_hash": "blake3:9b10fb3030f03501809455fd4d60c1b7912dbbecd132da0682f4413dfc58d13c",
       "mode": "0644"
     },
     ".cursor-plugin/skills/sceptre-using-the-mcp-server/SKILL.md": {
@@ -51,7 +51,7 @@
       "mode": "0644"
     },
     ".cursor-plugin/skills/sceptre-using-the-mcp-server/index.md": {
-      "content_hash": "blake3:c95193991f89d756f36366ed9dbcf0c5b5e691f26bbe884618bd34978d95008d",
+      "content_hash": "blake3:f7745f2d434c3c74f801cb51a6fe85fa7cdc8015ab24341e4a147856f3e00261",
       "mode": "0644"
     },
     ".cursor-plugin/skills/sceptre/SKILL.md": {
@@ -59,7 +59,7 @@
       "mode": "0644"
     },
     ".cursor-plugin/skills/sceptre/index.md": {
-      "content_hash": "blake3:ae279e2eec2ca553f4261a02d63dbb75a6bc76c611be09a1dc1441f70d00c48e",
+      "content_hash": "blake3:6cf54c1e4ae0dc325a1c4790863a5fb34b392c0ad04473f3632cb641fadb4d3f",
       "mode": "0644"
     },
     ".factory-plugin/plugin.json": {
@@ -87,7 +87,7 @@
       "mode": "0644"
     },
     ".hermes/package/src/sceptre_hermes_plugin/skills/sceptre-integrating-rust/index.md": {
-      "content_hash": "blake3:495222cad8f2c2c576c5882c85aaee78b1713f760ba484b29206401e4bc55f9e",
+      "content_hash": "blake3:6efd910d4a1c8e384b060e79b8d2a128c3b3d18a24d92c6577c671404e66d235",
       "mode": "0644"
     },
     ".hermes/package/src/sceptre_hermes_plugin/skills/sceptre-managing-models/SKILL.md": {
@@ -95,7 +95,7 @@
       "mode": "0644"
     },
     ".hermes/package/src/sceptre_hermes_plugin/skills/sceptre-managing-models/index.md": {
-      "content_hash": "blake3:73f4139621ec1bd31efe6b9cc904ef77bf57f23040c5b40dec7e40ca6786cf97",
+      "content_hash": "blake3:208973b449b712ef3162281541dc771ae359697e3182d4f62a0c6ddc0447e566",
       "mode": "0644"
     },
     ".hermes/package/src/sceptre_hermes_plugin/skills/sceptre-ocr-images/SKILL.md": {
@@ -103,7 +103,7 @@
       "mode": "0644"
     },
     ".hermes/package/src/sceptre_hermes_plugin/skills/sceptre-ocr-images/index.md": {
-      "content_hash": "blake3:f017e5bf65240325247b6275d33f4117b35d729b5f2b8005056d3e8693cb50a9",
+      "content_hash": "blake3:d0350093887dfee6484a1a7295c3c6e6c08de73b2285e9f40435749cc2fc101b",
       "mode": "0644"
     },
     ".hermes/package/src/sceptre_hermes_plugin/skills/sceptre-tuning-ocr/SKILL.md": {
@@ -111,7 +111,7 @@
       "mode": "0644"
     },
     ".hermes/package/src/sceptre_hermes_plugin/skills/sceptre-tuning-ocr/index.md": {
-      "content_hash": "blake3:517dcc6c8372f39810c4878eb390cf1d079276d25fb9d7f994251102d8c22602",
+      "content_hash": "blake3:9b10fb3030f03501809455fd4d60c1b7912dbbecd132da0682f4413dfc58d13c",
       "mode": "0644"
     },
     ".hermes/package/src/sceptre_hermes_plugin/skills/sceptre-using-the-mcp-server/SKILL.md": {
@@ -119,7 +119,7 @@
       "mode": "0644"
     },
     ".hermes/package/src/sceptre_hermes_plugin/skills/sceptre-using-the-mcp-server/index.md": {
-      "content_hash": "blake3:c95193991f89d756f36366ed9dbcf0c5b5e691f26bbe884618bd34978d95008d",
+      "content_hash": "blake3:f7745f2d434c3c74f801cb51a6fe85fa7cdc8015ab24341e4a147856f3e00261",
       "mode": "0644"
     },
     ".hermes/package/src/sceptre_hermes_plugin/skills/sceptre/SKILL.md": {
@@ -127,7 +127,7 @@
       "mode": "0644"
     },
     ".hermes/package/src/sceptre_hermes_plugin/skills/sceptre/index.md": {
-      "content_hash": "blake3:ae279e2eec2ca553f4261a02d63dbb75a6bc76c611be09a1dc1441f70d00c48e",
+      "content_hash": "blake3:6cf54c1e4ae0dc325a1c4790863a5fb34b392c0ad04473f3632cb641fadb4d3f",
       "mode": "0644"
     },
     ".hermes/plugins/sceptre/__init__.py": {
@@ -147,7 +147,7 @@
       "mode": "0644"
     },
     ".hermes/plugins/sceptre/skills/sceptre-integrating-rust/index.md": {
-      "content_hash": "blake3:495222cad8f2c2c576c5882c85aaee78b1713f760ba484b29206401e4bc55f9e",
+      "content_hash": "blake3:6efd910d4a1c8e384b060e79b8d2a128c3b3d18a24d92c6577c671404e66d235",
       "mode": "0644"
     },
     ".hermes/plugins/sceptre/skills/sceptre-managing-models/SKILL.md": {
@@ -155,7 +155,7 @@
       "mode": "0644"
     },
     ".hermes/plugins/sceptre/skills/sceptre-managing-models/index.md": {
-      "content_hash": "blake3:73f4139621ec1bd31efe6b9cc904ef77bf57f23040c5b40dec7e40ca6786cf97",
+      "content_hash": "blake3:208973b449b712ef3162281541dc771ae359697e3182d4f62a0c6ddc0447e566",
       "mode": "0644"
     },
     ".hermes/plugins/sceptre/skills/sceptre-ocr-images/SKILL.md": {
@@ -163,7 +163,7 @@
       "mode": "0644"
     },
     ".hermes/plugins/sceptre/skills/sceptre-ocr-images/index.md": {
-      "content_hash": "blake3:f017e5bf65240325247b6275d33f4117b35d729b5f2b8005056d3e8693cb50a9",
+      "content_hash": "blake3:d0350093887dfee6484a1a7295c3c6e6c08de73b2285e9f40435749cc2fc101b",
       "mode": "0644"
     },
     ".hermes/plugins/sceptre/skills/sceptre-tuning-ocr/SKILL.md": {
@@ -171,7 +171,7 @@
       "mode": "0644"
     },
     ".hermes/plugins/sceptre/skills/sceptre-tuning-ocr/index.md": {
-      "content_hash": "blake3:517dcc6c8372f39810c4878eb390cf1d079276d25fb9d7f994251102d8c22602",
+      "content_hash": "blake3:9b10fb3030f03501809455fd4d60c1b7912dbbecd132da0682f4413dfc58d13c",
       "mode": "0644"
     },
     ".hermes/plugins/sceptre/skills/sceptre-using-the-mcp-server/SKILL.md": {
@@ -179,7 +179,7 @@
       "mode": "0644"
     },
     ".hermes/plugins/sceptre/skills/sceptre-using-the-mcp-server/index.md": {
-      "content_hash": "blake3:c95193991f89d756f36366ed9dbcf0c5b5e691f26bbe884618bd34978d95008d",
+      "content_hash": "blake3:f7745f2d434c3c74f801cb51a6fe85fa7cdc8015ab24341e4a147856f3e00261",
       "mode": "0644"
     },
     ".hermes/plugins/sceptre/skills/sceptre/SKILL.md": {
@@ -187,7 +187,7 @@
       "mode": "0644"
     },
     ".hermes/plugins/sceptre/skills/sceptre/index.md": {
-      "content_hash": "blake3:ae279e2eec2ca553f4261a02d63dbb75a6bc76c611be09a1dc1441f70d00c48e",
+      "content_hash": "blake3:6cf54c1e4ae0dc325a1c4790863a5fb34b392c0ad04473f3632cb641fadb4d3f",
       "mode": "0644"
     },
     ".mcp.json": {
@@ -211,7 +211,7 @@
       "mode": "0644"
     },
     ".opencode/skills/sceptre-integrating-rust/index.md": {
-      "content_hash": "blake3:495222cad8f2c2c576c5882c85aaee78b1713f760ba484b29206401e4bc55f9e",
+      "content_hash": "blake3:6efd910d4a1c8e384b060e79b8d2a128c3b3d18a24d92c6577c671404e66d235",
       "mode": "0644"
     },
     ".opencode/skills/sceptre-managing-models/SKILL.md": {
@@ -219,7 +219,7 @@
       "mode": "0644"
     },
     ".opencode/skills/sceptre-managing-models/index.md": {
-      "content_hash": "blake3:73f4139621ec1bd31efe6b9cc904ef77bf57f23040c5b40dec7e40ca6786cf97",
+      "content_hash": "blake3:208973b449b712ef3162281541dc771ae359697e3182d4f62a0c6ddc0447e566",
       "mode": "0644"
     },
     ".opencode/skills/sceptre-ocr-images/SKILL.md": {
@@ -227,7 +227,7 @@
       "mode": "0644"
     },
     ".opencode/skills/sceptre-ocr-images/index.md": {
-      "content_hash": "blake3:f017e5bf65240325247b6275d33f4117b35d729b5f2b8005056d3e8693cb50a9",
+      "content_hash": "blake3:d0350093887dfee6484a1a7295c3c6e6c08de73b2285e9f40435749cc2fc101b",
       "mode": "0644"
     },
     ".opencode/skills/sceptre-tuning-ocr/SKILL.md": {
@@ -235,7 +235,7 @@
       "mode": "0644"
     },
     ".opencode/skills/sceptre-tuning-ocr/index.md": {
-      "content_hash": "blake3:517dcc6c8372f39810c4878eb390cf1d079276d25fb9d7f994251102d8c22602",
+      "content_hash": "blake3:9b10fb3030f03501809455fd4d60c1b7912dbbecd132da0682f4413dfc58d13c",
       "mode": "0644"
     },
     ".opencode/skills/sceptre-using-the-mcp-server/SKILL.md": {
@@ -243,7 +243,7 @@
       "mode": "0644"
     },
     ".opencode/skills/sceptre-using-the-mcp-server/index.md": {
-      "content_hash": "blake3:c95193991f89d756f36366ed9dbcf0c5b5e691f26bbe884618bd34978d95008d",
+      "content_hash": "blake3:f7745f2d434c3c74f801cb51a6fe85fa7cdc8015ab24341e4a147856f3e00261",
       "mode": "0644"
     },
     ".opencode/skills/sceptre/SKILL.md": {
@@ -251,7 +251,7 @@
       "mode": "0644"
     },
     ".opencode/skills/sceptre/index.md": {
-      "content_hash": "blake3:ae279e2eec2ca553f4261a02d63dbb75a6bc76c611be09a1dc1441f70d00c48e",
+      "content_hash": "blake3:6cf54c1e4ae0dc325a1c4790863a5fb34b392c0ad04473f3632cb641fadb4d3f",
       "mode": "0644"
     },
     ".pi/skills/sceptre-integrating-rust/SKILL.md": {
@@ -259,7 +259,7 @@
       "mode": "0644"
     },
     ".pi/skills/sceptre-integrating-rust/index.md": {
-      "content_hash": "blake3:495222cad8f2c2c576c5882c85aaee78b1713f760ba484b29206401e4bc55f9e",
+      "content_hash": "blake3:6efd910d4a1c8e384b060e79b8d2a128c3b3d18a24d92c6577c671404e66d235",
       "mode": "0644"
     },
     ".pi/skills/sceptre-managing-models/SKILL.md": {
@@ -267,7 +267,7 @@
       "mode": "0644"
     },
     ".pi/skills/sceptre-managing-models/index.md": {
-      "content_hash": "blake3:73f4139621ec1bd31efe6b9cc904ef77bf57f23040c5b40dec7e40ca6786cf97",
+      "content_hash": "blake3:208973b449b712ef3162281541dc771ae359697e3182d4f62a0c6ddc0447e566",
       "mode": "0644"
     },
     ".pi/skills/sceptre-ocr-images/SKILL.md": {
@@ -275,7 +275,7 @@
       "mode": "0644"
     },
     ".pi/skills/sceptre-ocr-images/index.md": {
-      "content_hash": "blake3:f017e5bf65240325247b6275d33f4117b35d729b5f2b8005056d3e8693cb50a9",
+      "content_hash": "blake3:d0350093887dfee6484a1a7295c3c6e6c08de73b2285e9f40435749cc2fc101b",
       "mode": "0644"
     },
     ".pi/skills/sceptre-tuning-ocr/SKILL.md": {
@@ -283,7 +283,7 @@
       "mode": "0644"
     },
     ".pi/skills/sceptre-tuning-ocr/index.md": {
-      "content_hash": "blake3:517dcc6c8372f39810c4878eb390cf1d079276d25fb9d7f994251102d8c22602",
+      "content_hash": "blake3:9b10fb3030f03501809455fd4d60c1b7912dbbecd132da0682f4413dfc58d13c",
       "mode": "0644"
     },
     ".pi/skills/sceptre-using-the-mcp-server/SKILL.md": {
@@ -291,7 +291,7 @@
       "mode": "0644"
     },
     ".pi/skills/sceptre-using-the-mcp-server/index.md": {
-      "content_hash": "blake3:c95193991f89d756f36366ed9dbcf0c5b5e691f26bbe884618bd34978d95008d",
+      "content_hash": "blake3:f7745f2d434c3c74f801cb51a6fe85fa7cdc8015ab24341e4a147856f3e00261",
       "mode": "0644"
     },
     ".pi/skills/sceptre/SKILL.md": {
@@ -299,7 +299,7 @@
       "mode": "0644"
     },
     ".pi/skills/sceptre/index.md": {
-      "content_hash": "blake3:ae279e2eec2ca553f4261a02d63dbb75a6bc76c611be09a1dc1441f70d00c48e",
+      "content_hash": "blake3:6cf54c1e4ae0dc325a1c4790863a5fb34b392c0ad04473f3632cb641fadb4d3f",
       "mode": "0644"
     },
     "gemini-extension.json": {
@@ -327,7 +327,7 @@
       "mode": "0644"
     },
     "skills/sceptre-integrating-rust/index.md": {
-      "content_hash": "blake3:495222cad8f2c2c576c5882c85aaee78b1713f760ba484b29206401e4bc55f9e",
+      "content_hash": "blake3:6efd910d4a1c8e384b060e79b8d2a128c3b3d18a24d92c6577c671404e66d235",
       "mode": "0644"
     },
     "skills/sceptre-managing-models/SKILL.md": {
@@ -335,7 +335,7 @@
       "mode": "0644"
     },
     "skills/sceptre-managing-models/index.md": {
-      "content_hash": "blake3:73f4139621ec1bd31efe6b9cc904ef77bf57f23040c5b40dec7e40ca6786cf97",
+      "content_hash": "blake3:208973b449b712ef3162281541dc771ae359697e3182d4f62a0c6ddc0447e566",
       "mode": "0644"
     },
     "skills/sceptre-ocr-images/SKILL.md": {
@@ -343,7 +343,7 @@
       "mode": "0644"
     },
     "skills/sceptre-ocr-images/index.md": {
-      "content_hash": "blake3:f017e5bf65240325247b6275d33f4117b35d729b5f2b8005056d3e8693cb50a9",
+      "content_hash": "blake3:d0350093887dfee6484a1a7295c3c6e6c08de73b2285e9f40435749cc2fc101b",
       "mode": "0644"
     },
     "skills/sceptre-tuning-ocr/SKILL.md": {
@@ -351,7 +351,7 @@
       "mode": "0644"
     },
     "skills/sceptre-tuning-ocr/index.md": {
-      "content_hash": "blake3:517dcc6c8372f39810c4878eb390cf1d079276d25fb9d7f994251102d8c22602",
+      "content_hash": "blake3:9b10fb3030f03501809455fd4d60c1b7912dbbecd132da0682f4413dfc58d13c",
       "mode": "0644"
     },
     "skills/sceptre-using-the-mcp-server/SKILL.md": {
@@ -359,7 +359,7 @@
       "mode": "0644"
     },
     "skills/sceptre-using-the-mcp-server/index.md": {
-      "content_hash": "blake3:c95193991f89d756f36366ed9dbcf0c5b5e691f26bbe884618bd34978d95008d",
+      "content_hash": "blake3:f7745f2d434c3c74f801cb51a6fe85fa7cdc8015ab24341e4a147856f3e00261",
       "mode": "0644"
     },
     "skills/sceptre/SKILL.md": {
@@ -367,7 +367,7 @@
       "mode": "0644"
     },
     "skills/sceptre/index.md": {
-      "content_hash": "blake3:ae279e2eec2ca553f4261a02d63dbb75a6bc76c611be09a1dc1441f70d00c48e",
+      "content_hash": "blake3:6cf54c1e4ae0dc325a1c4790863a5fb34b392c0ad04473f3632cb641fadb4d3f",
       "mode": "0644"
     }
   },

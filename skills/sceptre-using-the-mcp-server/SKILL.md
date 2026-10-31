@@ -6,7 +6,7 @@ name: sceptre-using-the-mcp-server
 <!--
 AI-RULEZ :: GENERATED FILE — DO NOT EDIT
 Content-Hash: blake3:0c4b7b53db64ffd289b22f94f4678cc5048e115da76008a08c14aecede596b41
-Source-Hash: blake3:5ba6fce721d21bf8c19016b9b5f38557791b36501f70d78b30db765130749cb5
+Source-Hash: blake3:b2940af2435cba24185ff039801734bb8c1096cd58e04798953396a457a528cc
 Schema-Version: v1
 -->
 

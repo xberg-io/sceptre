@@ -1,3 +1,3 @@
 # Subdirectories
 
-* [sceptre-release](sceptre-release/index.md)
+- [sceptre-release](sceptre-release/index.md)
