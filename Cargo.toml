@@ -28,14 +28,13 @@ anstyle = "1.0"
 
 anyhow = "1.0"
 assert_cmd = "2.2"
-# 0.10 is the floor: 0.9.x miscomputes conv2d whenever a layer's channel count equals its
+# 0.11.1 is the security floor: it replaces vulnerable zip 8 with patched zip 9.
+# Before 0.10, candle miscomputes conv2d whenever a layer's channel count equals its
 # width and height, because its tiled im2col mistakes a contiguous NCHW tensor for a
 # channels-last one and skips the conversion. CRAFT hits that at 128 channels on a 128x128
-# map. The same release made `tokenizers` (feature `onig`, which builds oniguruma from C) a
-# non-optional dependency, so candle removes the ONNX Runtime C++ runtime and its
-# provisioning matrix rather than all native code. ~keep
-candle-core = { version = "0.11", default-features = false }
-candle-nn = { version = "0.11", default-features = false }
+# map. ~keep
+candle-core = { version = "0.11.1", default-features = false }
+candle-nn = { version = "0.11.1", default-features = false }
 clap = { version = "4.6", features = ["derive", "env", "wrap_help"] }
 clap_complete = "4.6"
 criterion = { version = "0.8", features = ["html_reports"] }

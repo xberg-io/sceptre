@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Allow compatible ONNX Runtime Rust binding updates from `2.0.0-rc.15` instead of
   requiring that exact release; the lockfile retains the latest published rc.15.
+- Require Candle 0.11.1 and resolve zip 9.2.0, removing the three temporary zip advisory exceptions.
 - Refresh Python development, model-export and corpus tooling.
 
 - Refresh compatible Rust dependencies and require rmcp 3.8 for MCP support.
