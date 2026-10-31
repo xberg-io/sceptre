@@ -113,8 +113,11 @@ run = "cargo clippy --workspace --all-targets --tests -- -D warnings"
 
 [tasks."rust:ci:clippy"]
 description = "Lint one CI matrix leg's feature set with clippy (deny warnings); the feature set may be empty"
-usage = 'arg "[features]" default="" help="Comma-separated cargo features"'
-run = 'cargo clippy --workspace --all-targets --tests --features "{{usage.features}}" -- -D warnings'
+usage = """
+arg "[features]" default="" help="Comma-separated cargo features"
+flag "-p --package <package>" help="Lint only this crate instead of the whole workspace"
+"""
+run = 'cargo clippy {% if usage.package %}-p {{usage.package}}{% else %}--workspace{% endif %} --all-targets --tests --features "{{usage.features}}" -- -D warnings'
 
 [tasks."rust:ci:test"]
 description = "Run the workspace test suite for one CI matrix leg's feature set; the feature set may be empty"

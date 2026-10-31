@@ -470,7 +470,7 @@ jobs:
           # CUDA benchmark leg targets. Compile-only, so the value only has to be a real
           # capability nvcc accepts. Inert for the metal leg. ~keep
           CUDA_COMPUTE_CAP: "89"
-        run: mise run rust:ci:clippy "candle-${{ matrix.device }}"
+        run: mise run rust:ci:clippy -p sceptre "candle-${{ matrix.device }}"
       - name: Compile-check the CLI
         env:
           CUDA_COMPUTE_CAP: "89"
@@ -497,7 +497,7 @@ jobs:
           # The tasks need only mise and the Rust toolchain; install no mise tool. ~keep
           install: "false"
       - name: Clippy (benches)
-        run: mise run rust:ci:clippy bench
+        run: mise run rust:ci:clippy -p sceptre bench
       - name: Compile-check benches
         # Benches are compile-checked here, not perf-run; timing runs are manual. ~keep
         run: cargo check -p sceptre --benches --features bench
