@@ -280,7 +280,7 @@ hooks = ["ai-rulez-validate", "ai-rulez-plugin-verify"]
 [[hooks.sources]]
 id = "adrlint"
 git = "https://github.com/Goldziher/adrlint.git"
-revision = "v0.4.1"
+revision = "v0"
 hooks = ["adrlint-lint", "adrlint-format-check", "adrlint-lock-check"]
 [fmt.shell.shfmt]
 enabled = true
