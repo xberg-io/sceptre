@@ -449,6 +449,10 @@ jobs:
           components: clippy
           install-llvm-cov: "false"
           cache-key-prefix: rust-gpu-${{ matrix.device }}
+      - uses: xberg-io/actions/setup-mise@v1
+        with:
+          # The tasks need only mise and the Rust toolchain; install no mise tool. ~keep
+          install: "false"
       - name: Install nvcc
         # candle's CUDA kernels are compiled by candle-kernels' build script, so the
         # toolkit is a build-time requirement even with no GPU present. Only the nvcc
@@ -466,7 +470,7 @@ jobs:
           # CUDA benchmark leg targets. Compile-only, so the value only has to be a real
           # capability nvcc accepts. Inert for the metal leg. ~keep
           CUDA_COMPUTE_CAP: "89"
-        run: cargo clippy -p sceptre --all-targets --features "candle-${{ matrix.device }}" -- -D warnings
+        run: mise run rust:ci:clippy "candle-${{ matrix.device }}"
       - name: Compile-check the CLI
         env:
           CUDA_COMPUTE_CAP: "89"
@@ -488,8 +492,12 @@ jobs:
           components: clippy
           install-llvm-cov: "false"
           cache-key-prefix: rust-bench
+      - uses: xberg-io/actions/setup-mise@v1
+        with:
+          # The tasks need only mise and the Rust toolchain; install no mise tool. ~keep
+          install: "false"
       - name: Clippy (benches)
-        run: cargo clippy -p sceptre --all-targets --features bench -- -D warnings
+        run: mise run rust:ci:clippy bench
       - name: Compile-check benches
         # Benches are compile-checked here, not perf-run; timing runs are manual. ~keep
         run: cargo check -p sceptre --benches --features bench
