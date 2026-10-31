@@ -129,6 +129,46 @@ description = "Release-build the workspace for one CI matrix leg's feature set; 
 usage = 'arg "[features]" default="" help="Comma-separated cargo features"'
 run = 'cargo build --release --workspace --features "{{usage.features}}"'
 
+[tasks."rust:ci:check"]
+description = "Compile-check one CI leg's feature set; the feature set may be empty"
+usage = """
+arg "[features]" default="" help="Comma-separated cargo features"
+flag "-p --package <package>" help="Check only this crate instead of the whole workspace"
+flag "--benches" help="Check the benchmark targets too"
+"""
+run = 'cargo check {% if usage.package %}-p {{usage.package}}{% else %}--workspace{% endif %}{% if usage.benches %} --benches{% endif %} --features "{{usage.features}}"'
+
+[tasks."rust:deny"]
+description = "Check dependency licenses, advisories and sources with cargo-deny"
+run = "cargo deny check"
+
+[tasks."rust:install"]
+description = "Install the CLI from the workspace exactly as `cargo install sceptre-cli` would (forwards extra cargo args)"
+run = "cargo install --locked --path crates/sceptre-cli"
+
+[tasks."rust:models:download"]
+description = "Download every registered model into the Hugging Face cache with a release CLI build"
+run = "cargo run --release -p sceptre-cli --no-default-features --features ort-bundled,download -- models download --all"
+
+[tasks."rust:test:golden"]
+description = "Run the tier-2 golden parity suite for one feature set; the feature set may be empty"
+usage = 'arg "[features]" default="" help="Comma-separated cargo features"'
+run = 'cargo test -p sceptre --features "{{usage.features}}" --test tier2_golden -- --nocapture'
+
+[tasks."rust:bench"]
+description = "Run the criterion benchmarks"
+run = "cargo bench -p sceptre --features bench"
+
+[tasks."rust:bench:backends"]
+description = "Run the release-profile backend matrix for one feature set"
+usage = 'arg "<features>" help="Comma-separated cargo features"'
+run = 'cargo test --release --locked -p sceptre --test backend_matrix --features "{{usage.features}}" -- --ignored --nocapture'
+
+[tasks."rust:bench:backends:build"]
+description = "Build the backend matrix test binary for one feature set without running it (verbose)"
+usage = 'arg "<features>" help="Comma-separated cargo features"'
+run = 'cargo test --locked -p sceptre --test backend_matrix --features "{{usage.features}}" --no-run -v'
+
 [tasks."rust:verify:features"]
 description = "Assert the CLI's ONNX Runtime provisioning feature matrix resolves as intended"
 run = "bash scripts/verify-features.sh"
@@ -172,6 +212,14 @@ run = "uv run python -m sceptre_rs_tools.rasterize"
 [tasks."python:benchmark"]
 description = "Head-to-head benchmark of sceptre (release CLI) vs upstream EasyOCR over the image corpus (forwards extra CLI args, e.g. --group/--limit/--repeats/--baseline, or --assert for the regression gate); requires the opt-in export/torch group and a built release binary"
 run = "uv run python -m sceptre_rs_tools.benchmark"
+
+[tasks."python:benchmark:backends:aggregate"]
+description = "Aggregate backend-matrix leg reports into one artifact (forwards extra CLI args, e.g. --input-dir/--out/--summary)"
+run = "uv run python -m sceptre_rs_tools.backend_matrix"
+
+[tasks."plugin:hermes:test"]
+description = "Verify Hermes plugin discovery and tool calls on the Python floor"
+run = "uv run --no-project --python 3.11 --with mcp==1.28.1 --with PyYAML==6.0.3 python scripts/tests/test_hermes_plugin.py"
 
 [tasks."python:publish"]
 description = "Publish the measured numbers from benchmark-results/comparison.json into benchmarks/published/latest.json and the generated tables in the README and docs site; needs no torch and no release binary"

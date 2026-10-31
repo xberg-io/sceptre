@@ -205,9 +205,7 @@ jobs:
         if: matrix.variant.label == 'backend-agreement'
         env:
           HF_HOME: ${{ github.workspace }}/.hf
-        run: |
-          cargo run --release -p sceptre-cli --no-default-features \
-            --features ort-bundled,download -- models download --all
+        run: mise run rust:models:download
 
       - name: Clippy
         run: mise run rust:ci:clippy "${{ matrix.variant.features }}"
@@ -262,10 +260,14 @@ jobs:
         with:
           install-llvm-cov: "false"
           cache-key-prefix: rust-install-${{ matrix.install.label }}
+      - uses: xberg-io/actions/setup-mise@v1
+        with:
+          # The tasks need only mise and the Rust toolchain; install no mise tool. ~keep
+          install: "false"
 
       - name: Install from the workspace exactly as `cargo install sceptre-cli` would
         shell: bash
-        run: cargo install --locked --path crates/sceptre-cli ${{ matrix.install.args }}
+        run: mise run rust:install -- ${{ matrix.install.args }}
 
       - name: sceptre --version
         shell: bash
@@ -352,6 +354,10 @@ jobs:
         with:
           install-llvm-cov: "false"
           cache-key-prefix: rust-parity-${{ matrix.accelerator }}
+      - uses: xberg-io/actions/setup-mise@v1
+        with:
+          # The tasks need only mise and the Rust toolchain; install no mise tool. ~keep
+          install: "false"
 
       - name: Cache Hugging Face models
         uses: actions/cache@v6
@@ -389,7 +395,7 @@ jobs:
         shell: bash
         env:
           SCEPTRE_REQUIRE_MODELS: "1"
-        run: cargo test -p sceptre --features "${{ matrix.features }}" --test tier2_golden -- --nocapture 2>&1 | tee tier2_golden.log
+        run: mise run rust:test:golden "${{ matrix.features }}" 2>&1 | tee tier2_golden.log
 
       - name: End-to-end OCR through the requested execution provider
         # The golden fixtures are CPU fixtures, so a non-CPU lane asserts that the provider
@@ -474,7 +480,7 @@ jobs:
       - name: Compile-check the CLI
         env:
           CUDA_COMPUTE_CAP: "89"
-        run: cargo check -p sceptre-cli --features "candle-${{ matrix.device }}"
+        run: mise run rust:ci:check -p sceptre-cli "candle-${{ matrix.device }}"
 
   bench:
     needs: changes
@@ -500,7 +506,7 @@ jobs:
         run: mise run rust:ci:clippy -p sceptre bench
       - name: Compile-check benches
         # Benches are compile-checked here, not perf-run; timing runs are manual. ~keep
-        run: cargo check -p sceptre --benches --features bench
+        run: mise run rust:ci:check -p sceptre --benches bench
 
   deny:
     needs: changes
@@ -516,7 +522,7 @@ jobs:
         with:
           install-args: cargo-deny
       - name: cargo deny check
-        run: cargo deny check
+        run: mise run rust:deny
 
   python:
     needs: changes
@@ -553,7 +559,7 @@ jobs:
         run: uv sync
 
       - name: Ruff check
-        run: uv run ruff check python
+        run: mise run python:lint
 
       - name: Pytest (pure harness logic)
         # The benchmark unit tests cover metrics, capability detection, report rendering,

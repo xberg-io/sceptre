@@ -105,9 +105,13 @@ jobs:
         with:
           install-llvm-cov: "false"
           cache-key-prefix: rust-bench-run
+      - uses: xberg-io/actions/setup-mise@v1
+        with:
+          # The tasks need only mise and the Rust toolchain; install no mise tool. ~keep
+          install: "false"
 
       - name: Run criterion benchmarks
-        run: cargo bench -p sceptre --features bench
+        run: mise run rust:bench
 
       - name: Upload criterion report
         if: always()
@@ -279,9 +283,7 @@ jobs:
       # Rust profile, while `tract` and `candle` are pure Rust, so a default (opt-level 0)
       # test profile penalizes precisely the backends this matrix exists to compare. ~keep
       - name: Run the backend matrix (ort, tract, candle x CPU)
-        run: |
-          cargo test --release --locked -p sceptre --test backend_matrix \
-            --features ort-bundled,tract,candle,download -- --ignored --nocapture
+        run: mise run rust:bench:backends ort-bundled,tract,candle,download
 
       - name: Upload leg reports
         if: always()
@@ -320,6 +322,10 @@ jobs:
         with:
           install-llvm-cov: "false"
           cache-key-prefix: rust-backend-matrix-macos
+      - uses: xberg-io/actions/setup-mise@v1
+        with:
+          # The tasks need only mise and the Rust toolchain; install no mise tool. ~keep
+          install: "false"
 
       - name: Cache Hugging Face models
         uses: actions/cache@v6
@@ -343,9 +349,7 @@ jobs:
       # only, not on the weekly schedule, until a first run confirms macos-26 exposes a
       # Metal device (ADR 0035, open question #1). ~keep
       - name: Run the backend matrix (ort+coreml, tract, candle+metal)
-        run: |
-          cargo test --release --locked -p sceptre --test backend_matrix \
-            --features ort-bundled,ort-coreml,tract,candle-metal,download -- --ignored --nocapture
+        run: mise run rust:bench:backends ort-bundled,ort-coreml,tract,candle-metal,download
 
       - name: Upload leg reports
         if: always()
@@ -377,6 +381,10 @@ jobs:
         with:
           install-llvm-cov: "false"
           cache-key-prefix: rust-backend-matrix-gpu-build
+      - uses: xberg-io/actions/setup-mise@v1
+        with:
+          # The tasks need only mise and the Rust toolchain; install no mise tool. ~keep
+          install: "false"
 
       # A plain-Rust CLI build (no ort, no CUDA) that only needs the `download` feature, so
       # it can be built before the CUDA toolkit install below and used purely to pre-seed
@@ -427,8 +435,7 @@ jobs:
           CARGO_PROFILE_DEV_DEBUG_ASSERTIONS: "false"
           CARGO_PROFILE_DEV_OVERFLOW_CHECKS: "false"
         run: |
-          cargo test --locked -p sceptre --test backend_matrix \
-            --features ort-dynamic,ort-cuda,tract,candle-cuda,download --no-run -v 2>&1 | tail -40
+          mise run rust:bench:backends:build ort-dynamic,ort-cuda,tract,candle-cuda,download 2>&1 | tail -40
 
       - name: Upload the GPU test binary
         uses: actions/upload-artifact@v7
@@ -567,7 +574,7 @@ jobs:
 
       - name: Aggregate into one artifact and a step summary
         run: |
-          uv run python -m sceptre_rs_tools.backend_matrix \
+          mise run python:benchmark:backends:aggregate -- \
             --input-dir benchmark-results/backends \
             --out benchmark-results/backends-combined.json \
             --summary "$GITHUB_STEP_SUMMARY"

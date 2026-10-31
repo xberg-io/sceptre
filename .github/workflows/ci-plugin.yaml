@@ -37,16 +37,9 @@ jobs:
         with:
           install-args: uv
       - name: Validate Hermes distribution metadata
-        shell: bash
-        run: |
-          wheel_dir=$(mktemp -d)
-          [ -n "$wheel_dir" ] && [ -d "$wheel_dir" ]
-          uv build --wheel --out-dir "$wheel_dir" plugin/.hermes/package
-          wheels=("$wheel_dir"/*.whl)
-          [ "${#wheels[@]}" -eq 1 ] && [ -f "${wheels[0]}" ]
-          uvx --from twine==7.0.0 --with packaging==26.3 twine check --strict "${wheels[0]}"
+        run: mise run plugin:hermes:dist:check
       - name: Verify Hermes discovery and tool calls
-        run: uv run --no-project --python 3.11 --with mcp==1.28.1 --with PyYAML==6.0.3 python scripts/tests/test_hermes_plugin.py
+        run: mise run plugin:hermes:test
 
       - name: Verify public skills and export ownership
         run: |
