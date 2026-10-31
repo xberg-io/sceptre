@@ -21,18 +21,11 @@ permissions:
 jobs:
   validate:
     if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      # ~keep ai-rulez runs at its latest release, never a mise pin (org ADR-0015).
-      - uses: xberg-io/actions/setup-ai-rulez@v1
-      - uses: xberg-io/actions/validate-ai-rulez@v1
-        with:
-          expected-config-count: "2"
-          additional-config-directories: "plugin/.ai-rulez"
-          verify-plugin: "true"
-      - uses: xberg-io/agent-conventions/actions/context-exposure@v1
-        with:
-          budgets: |
-            claude=5600
-            codex=6050
+    uses: xberg-io/actions/.github/workflows/reusable-ai-rulez-validation.yml@v1
+    with:
+      expected-config-count: "2"
+      additional-config-directories: plugin/.ai-rulez
+      verify-plugin: true
+      budgets: |
+        claude=5600
+        codex=6050
