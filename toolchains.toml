@@ -1,2 +1,6 @@
-baseline = "v1.12.3"
+baseline = "v1.13.0"
 task_sets = ["docs-site", "governance", "governance-check", "plugin"]
+
+[overrides.python]
+version = "3.13.18"
+reason = "onnxruntime 1.31.1 ships no cp315 wheels; python:typecheck syncs every group with --no-build"
