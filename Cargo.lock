@@ -3734,7 +3734,7 @@ dependencies = [
 
 [[package]]
 name = "sceptre"
-version = "0.10.0"
+version = "0.10.1"
 dependencies = [
  "candle-core",
  "candle-nn",
@@ -3762,7 +3762,7 @@ dependencies = [
 
 [[package]]
 name = "sceptre-cli"
-version = "0.10.0"
+version = "0.10.1"
 dependencies = [
  "anstream",
  "anstyle",
@@ -3779,7 +3779,7 @@ dependencies = [
 
 [[package]]
 name = "sceptre-tools"
-version = "0.10.0"
+version = "0.10.1"
 dependencies = [
  "anyhow",
  "clap",

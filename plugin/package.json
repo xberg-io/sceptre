@@ -4,9 +4,7 @@
     "name": "Kreuzberg, Inc.",
     "url": "https://xberg.io"
   },
-  "dependencies": {
-    "@opencode/plugin": "^2.0.26"
-  },
+  "dependencies": {},
   "description": "Local OCR with CRAFT detection and multilingual CRNN recognition.",
   "exports": {
     ".": "./.opencode/plugins/sceptre.js"
@@ -69,5 +67,5 @@
     "url": "https://github.com/xberg-io/sceptre"
   },
   "type": "module",
-  "version": "0.10.0"
+  "version": "0.10.1"
 }
