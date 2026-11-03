@@ -73,8 +73,7 @@ cargo install sceptre-cli --locked
 
 `--locked` uses the dependency versions tested for that release.
 
-The locked core, ONNX Runtime, and Tract builds support Rust 1.92 or newer. On AArch64 targets with
-`fp16`, including Apple Silicon macOS, the optional `candle` backend requires Rust 1.94 or newer;
+Every build, including the optional `candle` backend, supports Rust 1.99 or newer;
 see [Rust version requirements](https://docs.sceptre.xberg.io/reference/feature-flags/#rust-version-requirements).
 
 [Prebuilt release archives](https://github.com/xberg-io/sceptre/releases/latest) for Linux x86_64/ARM64,

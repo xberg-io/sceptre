@@ -31,16 +31,13 @@ CoreML-enabled by construction, so on Apple Silicon `ort-coreml` is sufficient o
 
 ## Rust version requirements
 
-The core, ONNX Runtime, and Tract builds support Rust 1.92 with the released dependency lockfile.
-On AArch64 targets with `fp16`, including Apple Silicon macOS, the `candle` feature requires Rust
-1.94 or newer. Candle 0.11 uses
+Every build supports Rust 1.99, the declared `rust-version`. On AArch64 targets with `fp16`,
+including Apple Silicon macOS, the `candle` feature needs at least Rust 1.94: Candle 0.11 uses
 [`float16x8_t`](https://doc.rust-lang.org/stable/core/arch/aarch64/struct.float16x8_t.html),
 which became stable in Rust 1.94. This also applies to `candle-metal` and `candle-cuda`, which enable
 `candle`, and already affected Sceptre 0.8.1.
 
-These minimum versions describe the released lockfile. An unlocked consumer using `download`
-can resolve HF-Xet 1.7 and its `sysinfo` dependency, which requires Rust 1.95. CLI installations
-should use `cargo install sceptre-cli --locked` to use the tested dependency versions.
+CLI installations should use `cargo install sceptre-cli --locked` to use the tested dependency versions.
 
 ## `ort` vs. `tract`: which backend
 

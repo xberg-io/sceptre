@@ -7,9 +7,7 @@ description: >-
 
 import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
-With the released dependency lockfile, the core, ONNX Runtime, and Tract builds support Rust 1.92
-or newer. On AArch64 targets with `fp16`, including Apple Silicon macOS, enabling `candle` requires
-Rust 1.94 or newer. See [Rust version requirements](/reference/feature-flags/#rust-version-requirements)
+Every build, including `candle`, supports Rust 1.99 or newer. See [Rust version requirements](/reference/feature-flags/#rust-version-requirements)
 for the backend and dependency-resolution details.
 
 <Tabs>
