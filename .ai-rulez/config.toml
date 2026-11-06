@@ -74,6 +74,11 @@ tools = ["find_skill", "load_skill"]
 [codex]
 project_doc_max_bytes = 65536
 
+[exposure]
+mcp_server_tokens = 1150
+start_budget = 6050
+codex_start_budget = 6700
+
 [lock]
 include_outputs = false
 
