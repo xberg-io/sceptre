@@ -10,6 +10,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Expose `preload_ort_runtime()` on native `ort` builds. With Sceptre's `ort-dynamic` feature,
+  it loads the caller-selected path and returns `true`. The preload call does not read
+  `ORT_DYLIB_PATH`.
+  Linked builds return `false` without loading a library.
+
+### Changed
+
+- Minimum supported versions raised: Rust 1.99.
+
 ## [0.10.1] - 2026-11-01
 
 ### Fixed

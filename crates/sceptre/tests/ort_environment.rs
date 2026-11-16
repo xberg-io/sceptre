@@ -9,13 +9,20 @@ const CHILD_TEST_ENV: &str = "SCEPTRE_ORT_ENVIRONMENT_CHILD_TEST";
 const CONCURRENT_CALLERS: usize = 8;
 
 fn isolated(test_name: &str, run: impl FnOnce()) {
+    isolated_with(test_name, |_| {}, run);
+}
+
+fn isolated_with(test_name: &str, configure: impl FnOnce(&mut Command), run: impl FnOnce()) {
     if std::env::var(CHILD_TEST_ENV).as_deref() == Ok(test_name) {
         run();
         return;
     }
-    let output = Command::new(std::env::current_exe().expect("locate the integration test binary"))
+    let mut command = Command::new(std::env::current_exe().expect("locate the integration test binary"));
+    command
         .args(["--exact", test_name, "--nocapture"])
-        .env(CHILD_TEST_ENV, test_name)
+        .env(CHILD_TEST_ENV, test_name);
+    configure(&mut command);
+    let output = command
         .output()
         .expect("run the environment regression in a fresh process");
     assert!(
@@ -135,4 +142,87 @@ fn should_preserve_context_when_an_external_caller_initialized_an_environment() 
             assert_eq!(source.to_string(), "only one environment is allowed per process");
         },
     );
+}
+
+#[cfg(all(
+    not(feature = "ort-dynamic"),
+    not(all(target_family = "wasm", target_os = "unknown"))
+))]
+#[test]
+fn should_skip_preloading_without_the_sceptre_dynamic_feature() {
+    isolated_with(
+        "should_skip_preloading_without_the_sceptre_dynamic_feature",
+        |command| {
+            command.env("ORT_DYLIB_PATH", "sceptre-test-missing-configured-runtime.dll");
+        },
+        || {
+            assert!(
+                !sceptre::preload_ort_runtime("sceptre-test-missing-fallback-runtime.dll")
+                    .expect("static runtime preloading is a no-op")
+            );
+            assert_usable_runtime();
+        },
+    );
+}
+
+#[cfg(all(feature = "ort-dynamic", not(all(target_family = "wasm", target_os = "unknown"))))]
+mod dynamic {
+    use std::path::Path;
+
+    use super::{assert_usable_runtime, isolated_with, ort_environment};
+    use sceptre::preload_ort_runtime;
+
+    #[test]
+    fn should_preserve_a_typed_loader_error_for_the_selected_path() {
+        let selected = Path::new("sceptre-test-missing-selected-runtime.dll");
+        isolated_with(
+            "dynamic::should_preserve_a_typed_loader_error_for_the_selected_path",
+            |command| {
+                command.env("ORT_DYLIB_PATH", "sceptre-test-missing-configured-runtime.dll");
+            },
+            || {
+                let error = preload_ort_runtime(selected).expect_err("a missing runtime must fail");
+                let source = std::error::Error::source(&error)
+                    .and_then(|source| source.downcast_ref::<ort::LoadDynamicError>())
+                    .expect("preserve the typed loader failure");
+                assert!(
+                    matches!(source, ort::LoadDynamicError::Dlopen { path, .. } if path.as_path() == selected),
+                    "expected a loader failure for {selected:?}, got {source}"
+                );
+            },
+        );
+    }
+
+    #[test]
+    fn should_preload_the_selected_runtime_despite_a_conflicting_environment() {
+        const SELECTED_RUNTIME: &str = "SCEPTRE_TEST_SELECTED_RUNTIME";
+        const MISSING_RUNTIME: &str = "sceptre-test-missing-configured-runtime.dll";
+
+        isolated_with(
+            "dynamic::should_preload_the_selected_runtime_despite_a_conflicting_environment",
+            |command| {
+                let runtime = std::env::var("ORT_DYLIB_PATH")
+                    .ok()
+                    .filter(|path| !path.is_empty())
+                    .unwrap_or_else(|| {
+                        format!(
+                            "{}onnxruntime{}",
+                            std::env::consts::DLL_PREFIX,
+                            std::env::consts::DLL_SUFFIX
+                        )
+                    });
+                command
+                    .env(SELECTED_RUNTIME, runtime)
+                    .env("ORT_DYLIB_PATH", MISSING_RUNTIME);
+            },
+            || {
+                let selected = std::env::var_os(SELECTED_RUNTIME).expect("the parent selected a runtime");
+                assert!(preload_ort_runtime(selected).expect("preload the available ONNX Runtime"));
+                assert!(preload_ort_runtime(MISSING_RUNTIME).expect("reuse the first loaded runtime"));
+                let environment = ort_environment().expect("initialize the shared environment after preloading");
+                let _builder = ort::session::Session::builder(environment).expect("create native session options");
+                assert_usable_runtime();
+            },
+        );
+    }
 }
