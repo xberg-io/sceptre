@@ -9,8 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Expose `preload_ort_runtime()` on native `ort-dynamic` builds. Embedders can supply a
-  fallback library path while honoring `ORT_DYLIB_PATH` and retaining the shared environment.
+- Expose `preload_ort_runtime()` on native `ort` builds. With Sceptre's `ort-dynamic` feature,
+  it selects a runtime using `ORT_DYLIB_PATH` or the caller's fallback and returns `true`.
+  Linked builds return `false` without loading a library.
 
 ### Changed
 

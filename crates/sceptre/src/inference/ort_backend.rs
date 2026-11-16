@@ -18,27 +18,38 @@ use crate::error::{OcrError, Result};
 
 /// Preload a native ONNX Runtime before initializing the shared environment.
 ///
-/// A nonempty `ORT_DYLIB_PATH` takes precedence over `fallback`. ONNX Runtime's loader
-/// resolves the selected path using its usual rules, including paths relative to the
-/// executable. Call this before any ORT use to select a library for the process.
-/// The first library loaded by `ort` remains in use.
+/// With Sceptre's `ort-dynamic` feature, a nonempty `ORT_DYLIB_PATH` takes precedence
+/// over `fallback`. The loader resolves the selected path using its usual rules, including
+/// paths relative to the executable. Call this before any ORT use to select a library for
+/// the process. The first library loaded by `ort` remains in use.
 ///
-/// Available with the `ort-dynamic` feature. Initialize the shared environment with
-/// [`crate::ort_environment`] after preloading.
+/// Returns `true` when dynamic selection succeeds or a runtime was already selected.
+/// Returns `false` without inspecting either path when Sceptre's `ort-dynamic` feature
+/// is disabled. Consumers that enable the upstream `ort/load-dynamic` feature directly
+/// must also enable Sceptre's `ort-dynamic` feature to use this preloader.
+/// Initialize the shared environment with [`crate::ort_environment`] afterward.
 ///
 /// # Errors
 ///
 /// Returns an inference error with the loader failure as its source if the selected
 /// library cannot be loaded. A failed override does not retry the fallback.
-#[cfg(all(feature = "ort-dynamic", not(all(target_family = "wasm", target_os = "unknown"))))]
-pub fn preload_ort_runtime(fallback: impl AsRef<std::path::Path>) -> Result<()> {
-    let builder = match std::env::var("ORT_DYLIB_PATH") {
-        Ok(configured) if !configured.is_empty() => ort::init_from(configured),
-        _ => ort::init_from(fallback),
-    };
-    builder
-        .map(drop)
-        .map_err(|error| inference_error("load the ONNX Runtime library", error))
+#[cfg(not(all(target_family = "wasm", target_os = "unknown")))]
+pub fn preload_ort_runtime(fallback: impl AsRef<std::path::Path>) -> Result<bool> {
+    #[cfg(feature = "ort-dynamic")]
+    {
+        let builder = match std::env::var("ORT_DYLIB_PATH") {
+            Ok(configured) if !configured.is_empty() => ort::init_from(configured),
+            _ => ort::init_from(fallback),
+        };
+        builder
+            .map(|_| true)
+            .map_err(|error| inference_error("load the ONNX Runtime library", error))
+    }
+    #[cfg(not(feature = "ort-dynamic"))]
+    {
+        let _ = fallback;
+        Ok(false)
+    }
 }
 
 /// Return the retained ONNX Runtime environment shared by Sceptre's probes and models.

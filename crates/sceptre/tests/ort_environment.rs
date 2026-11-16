@@ -144,6 +144,27 @@ fn should_preserve_context_when_an_external_caller_initialized_an_environment() 
     );
 }
 
+#[cfg(all(
+    not(feature = "ort-dynamic"),
+    not(all(target_family = "wasm", target_os = "unknown"))
+))]
+#[test]
+fn should_skip_preloading_without_the_sceptre_dynamic_feature() {
+    isolated_with(
+        "should_skip_preloading_without_the_sceptre_dynamic_feature",
+        |command| {
+            command.env("ORT_DYLIB_PATH", "sceptre-test-missing-configured-runtime.dll");
+        },
+        || {
+            assert!(
+                !sceptre::preload_ort_runtime("sceptre-test-missing-fallback-runtime.dll")
+                    .expect("static runtime preloading is a no-op")
+            );
+            assert_usable_runtime();
+        },
+    );
+}
+
 #[cfg(all(feature = "ort-dynamic", not(all(target_family = "wasm", target_os = "unknown"))))]
 mod dynamic {
     use std::path::Path;
@@ -197,7 +218,7 @@ mod dynamic {
                     std::env::consts::DLL_PREFIX,
                     std::env::consts::DLL_SUFFIX
                 );
-                preload_ort_runtime(default).expect("preload the available ONNX Runtime");
+                assert!(preload_ort_runtime(default).expect("preload the available ONNX Runtime"));
                 let environment = ort_environment().expect("initialize the shared environment after preloading");
                 let _builder = ort::session::Session::builder(environment).expect("create native session options");
                 assert_usable_runtime();

@@ -49,7 +49,7 @@ pub use engine::{FallbackEngine, OcrEngine, ReadOptions, Reader, ReaderBuilder};
 pub use error::{OcrError, Result};
 #[cfg(feature = "ort")]
 pub use inference::ort_environment;
-#[cfg(all(feature = "ort-dynamic", not(all(target_family = "wasm", target_os = "unknown"))))]
+#[cfg(all(feature = "ort", not(all(target_family = "wasm", target_os = "unknown"))))]
 pub use inference::preload_ort_runtime;
 pub use inference::{OrtRuntimeInfo, RuntimeInfo, runtime_info, runtime_info_for};
 pub use models::provision::{
