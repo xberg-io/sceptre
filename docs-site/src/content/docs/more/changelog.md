@@ -10,6 +10,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Expose `preload_ort_runtime()` on native `ort-dynamic` builds. Embedders can supply a
+  fallback library path while honoring `ORT_DYLIB_PATH` and retaining the shared environment.
+
+### Changed
+
+- Minimum supported versions raised: Rust 1.99.
+
 ## [0.10.1] - 2026-11-01
 
 ### Fixed

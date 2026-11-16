@@ -16,6 +16,31 @@ use ort::value::Tensor as OrtTensor;
 use super::{BackendOptions, ModelBackend, Tensor, buffer, ort_ep};
 use crate::error::{OcrError, Result};
 
+/// Preload a native ONNX Runtime before initializing the shared environment.
+///
+/// A nonempty `ORT_DYLIB_PATH` takes precedence over `fallback`. ONNX Runtime's loader
+/// resolves the selected path using its usual rules, including paths relative to the
+/// executable. Call this before any ORT use to select a library for the process.
+/// The first library loaded by `ort` remains in use.
+///
+/// Available with the `ort-dynamic` feature. Initialize the shared environment with
+/// [`crate::ort_environment`] after preloading.
+///
+/// # Errors
+///
+/// Returns an inference error with the loader failure as its source if the selected
+/// library cannot be loaded. A failed override does not retry the fallback.
+#[cfg(all(feature = "ort-dynamic", not(all(target_family = "wasm", target_os = "unknown"))))]
+pub fn preload_ort_runtime(fallback: impl AsRef<std::path::Path>) -> Result<()> {
+    let builder = match std::env::var("ORT_DYLIB_PATH") {
+        Ok(configured) if !configured.is_empty() => ort::init_from(configured),
+        _ => ort::init_from(fallback),
+    };
+    builder
+        .map(drop)
+        .map_err(|error| inference_error("load the ONNX Runtime library", error))
+}
+
 /// Return the retained ONNX Runtime environment shared by Sceptre's probes and models.
 ///
 /// Applications using `ort` directly must create their sessions with this environment
@@ -152,7 +177,7 @@ fn array_from_output(dims: &[i64], data: &[f32]) -> Result<Tensor> {
 }
 
 /// Build an [`OcrError::Inference`] wrapping an `ort` error with operation context.
-fn inference_error(operation: &str, source: ort::Error) -> OcrError {
+fn inference_error(operation: &str, source: impl std::error::Error + Send + Sync + 'static) -> OcrError {
     OcrError::Inference {
         message: format!("ONNX Runtime backend failed to {operation}"),
         source: Some(Box::new(source)),
