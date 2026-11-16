@@ -99,17 +99,23 @@ impl OrtBackend {
         builder = builder
             .with_optimization_level(GraphOptimizationLevel::All)
             .map_err(|error| {
-                inference_error("set the ONNX Runtime graph optimization level", ort::Error::from(error))
+                inference_error(
+                    "set the ONNX Runtime graph optimization level",
+                    <ort::Error>::from(error),
+                )
             })?;
         // Memory-pattern pre-planning assumes stable tensor shapes; with dynamic-width ~keep
         // inputs it cannot amortize and only inflates the peak arena, so disable it. ~keep
         builder = builder.with_memory_pattern(false).map_err(|error| {
-            inference_error("disable ONNX Runtime memory-pattern planning", ort::Error::from(error))
+            inference_error(
+                "disable ONNX Runtime memory-pattern planning",
+                <ort::Error>::from(error),
+            )
         })?;
         if options.threads > 0 {
-            builder = builder
-                .with_intra_threads(options.threads)
-                .map_err(|error| inference_error("configure ONNX Runtime intra-op threads", ort::Error::from(error)))?;
+            builder = builder.with_intra_threads(options.threads).map_err(|error| {
+                inference_error("configure ONNX Runtime intra-op threads", <ort::Error>::from(error))
+            })?;
         }
         let session = builder
             .commit_from_memory(model_bytes)
