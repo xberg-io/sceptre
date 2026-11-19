@@ -103,15 +103,19 @@ This **supersedes ADR 0013's min-area-rect half only**; connected-component labe
   perfect line match; `english.png`'s only non-1.000 number (line precision, from an unrelated
   minor over-split) also reaches 1.000. No other image moved at all, and none regressed. This was
   a clean win, not a trade-off.
+
 * Good: also picks up the "missing closing edge" correctness fix for free, which can only shrink
   (never grow) a fitted box.
+
 * Good: `parity_french_jpg`'s long-standing documented split (see its doc comment in
   `tests/tier2_golden.rs`) is resolved; the sceptre-snapshot golden fixtures were regenerated
   (`cargo run -p sceptre-tools --features ort -- snapshot`) to reflect the corrected box/line
   output.
+
 * Neutral: `imageproc` stays a dependency (connected components, dilation input types, and
   `crop.rs`'s `geometric_transformations` still use it); only its `min_area_rect` is no longer
   called.
+
 * Neutral: the new module is ~200 lines of straightforward rotation arithmetic, unit-tested
   directly against known cases (including one built by differentially comparing against
   `imageproc::geometry::min_area_rect` on the same input, and one against a windows(2)-only
