@@ -5,7 +5,7 @@
   "contextFileName": "GEMINI.md",
   "mcpServers": {
     "sceptre": {
-      "command": "sceptre",
+      "command": "${extensionPath}/scripts/mcp-launch.sh",
       "args": [
         "mcp",
         "--lang",

@@ -4,7 +4,7 @@
     "sceptre": {
       "type": "local",
       "command": [
-        "sceptre",
+        "${PLUGIN_ROOT}/scripts/mcp-launch.sh",
         "mcp",
         "--lang",
         "english"

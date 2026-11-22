@@ -1,17 +1,17 @@
 {
   "schema_version": "v1",
-  "source_hash": "blake3:63b5ba5882dc1883e4c2471012ef7194ac7602ed74bbc1be6beb4c72801bc03f",
+  "source_hash": "blake3:dbc8eff35f218d3b89b89eea7c5168f6a333cc8636f9f5c2a80a3166a7293247",
   "outputs": {
     ".claude-plugin/plugin.json": {
-      "content_hash": "blake3:6e4f0292ceac20bb46c7d286b3ee1e5e2b033f30885515eac112223535f5d602",
+      "content_hash": "blake3:0cd143596e1ff3bb46be9b575fc01c961bb50584396027db16f34ca216451767",
       "mode": "0644"
     },
     ".codex-plugin/plugin.json": {
-      "content_hash": "blake3:5972af06514eab56fe01a08ad50dd144827975e662e87ee8ae771c105b42d524",
+      "content_hash": "blake3:f7647408db34b98154f3e7cee5a444f1612c4c60e3f872a21d386939962b3fde",
       "mode": "0644"
     },
     ".cursor-plugin/plugin.json": {
-      "content_hash": "blake3:e0a7791b76ba73847a83fb996eabe31e991dd9d55c24858219ac8e6c8409ac1c",
+      "content_hash": "blake3:3b991ef481d5ed6f780902571152d39480760ccb9acada22edf7930efdd2d310",
       "mode": "0644"
     },
     ".cursor-plugin/skills/sceptre-integrating-rust/SKILL.md": {
@@ -191,11 +191,11 @@
       "mode": "0644"
     },
     ".mcp.json": {
-      "content_hash": "blake3:3b1492076177aec9a222b6fdf7c3e10dbd56dcf63a00a24058503ca373273db4",
+      "content_hash": "blake3:7aa0e067cdb7bdebd37c3fd6c49c287b7a31de94922e5460b21f345eb021ca41",
       "mode": "0644"
     },
     ".opencode/ai-rulez-bundle.json": {
-      "content_hash": "blake3:0857902b733d3587214e6858a9d88a6aa726fa6033b1f43359af2438fe3b8d01",
+      "content_hash": "blake3:b9b49c4971525faf227ac26432aa8a96e09262b534d5842ddf95eb206f12da05",
       "mode": "0644"
     },
     ".opencode/ai-rulez-content.js": {
@@ -303,24 +303,28 @@
       "mode": "0644"
     },
     "gemini-extension.json": {
-      "content_hash": "blake3:9b4ac3d550f8f0ef9d8dd5538d424329afab139490d7e0657431b582b011fd1b",
+      "content_hash": "blake3:67457c0ace565a5346b78320db316cee2777fa2e0b4fdfe5af3c0c4ce49a51bd",
       "mode": "0644"
     },
     "kimi.plugin.json": {
-      "content_hash": "blake3:f8512c2b9f197ed05159abd399ce0df6e1459c83bfa5cc29f84489a38a88f345",
+      "content_hash": "blake3:dd4387080b92c61b1be415d201545a1b423318924b54437f1087957b6ab808fa",
       "mode": "0644"
     },
     "mcp.json": {
-      "content_hash": "blake3:fd46b818bc197e6c6d71378ad538a2e2fd0fc8c88e394c684313a60318e916d8",
+      "content_hash": "blake3:56ef2142591bc4adaa09993b1d1f0f242b2b48bc82459bb4a261cb4619ecf2d5",
       "mode": "0644"
     },
     "package.json": {
-      "content_hash": "blake3:cb5465f9158d774fd593b30b695b56b8789a8bda30d6ba2eb72722659d04c222",
+      "content_hash": "blake3:e0a095ea2c86d39b7f82eac6020bb8e392f129f49be9b14bb70d969559434382",
       "mode": "0644"
     },
     "plugin.json": {
-      "content_hash": "blake3:c3ad6925560af5c1b2b7bf673d0a12c9f0cee15c89e7680abd678cfb587f2405",
+      "content_hash": "blake3:6032d7a05d196ab3d080b7d773bbcbda866225f130dd50497ab70f1ae169ce32",
       "mode": "0644"
+    },
+    "scripts/mcp-launch.sh": {
+      "content_hash": "blake3:64faae8ded90ff8082ca7228733cb5fef28187e14a71c6ba3f495bb631dd8883",
+      "mode": "0755"
     },
     "skills/sceptre-integrating-rust/SKILL.md": {
       "content_hash": "blake3:8a2764e592fca4078d462d08b57a3bed76460dc415af41bc7ff745857663b731",
@@ -371,6 +375,9 @@
       "mode": "0644"
     }
   },
+  "includes": [
+    "scripts/mcp-launch.sh"
+  ],
   "managed": {
     "package.json": [
       "name",

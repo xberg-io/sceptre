@@ -20,7 +20,7 @@
   "skills": "./skills/",
   "mcpServers": {
     "sceptre": {
-      "command": "sceptre",
+      "command": "./scripts/mcp-launch.sh",
       "args": [
         "mcp",
         "--lang",

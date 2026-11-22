@@ -38,7 +38,8 @@
     ".pi/skills/sceptre/SKILL.md",
     ".pi/skills/sceptre/index.md",
     "README.md",
-    "assets/"
+    "assets/",
+    "scripts/"
   ],
   "homepage": "https://xberg.io",
   "keywords": [
