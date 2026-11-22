@@ -21,7 +21,7 @@
   "interface": {
     "displayName": "Sceptre",
     "shortDescription": "Local multilingual image OCR",
-    "longDescription": "Recognize text in local images with CRAFT detection and CRNN recognition. Includes image OCR, model management, tuning, Rust API and MCP skills. Install sceptre-cli with the mcp feature before registering the server.",
+    "longDescription": "Recognize text in local images with CRAFT detection and CRNN recognition. Includes image OCR, model management, tuning, Rust API and MCP skills. The plugin launches a pinned sceptre release through its MCP launcher.",
     "developerName": "Kreuzberg, Inc.",
     "category": "developer-tools",
     "capabilities": [
