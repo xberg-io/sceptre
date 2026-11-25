@@ -103,6 +103,10 @@ run = 'python3 scripts/verify_published_release.py --version "{{usage.version}}"
 description = "Test published runtime verification against checksum, protocol and OCR failure controls"
 run = "python3 scripts/tests/test_published_release.py"
 
+[tasks."cli-proxy:test"]
+description = "Test the npm CLI proxy launcher and the platform packaging"
+run = ["node --test cli-proxy/npm/test.mjs", "python3 -I scripts/tests/test_package_cli_npm.py"]
+
 [tasks."rust:fmt"]
 description = "Format all Rust code"
 run = "cargo fmt --all"

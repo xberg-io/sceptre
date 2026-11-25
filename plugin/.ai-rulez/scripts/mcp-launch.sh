@@ -2,9 +2,10 @@
 set -euo pipefail
 
 REPO="xberg-io/sceptre"
+NPM_PACKAGE="@xberg-io/sceptre-cli"
 # ~keep Rewritten by scripts/sync_plugin_version.py on every release. The plugin only accepts a
-# ~keep binary at or above this version, and downloads exactly this release, so a plugin update
-# ~keep cannot keep running an older sceptre that happens to be installed.
+# ~keep binary at or above this version, and fetches exactly this release (npm package or GitHub
+# ~keep archive), so a plugin update cannot keep running an older sceptre that happens to be installed.
 PINNED_VERSION="0.10.1"
 
 log() { printf 'sceptre-launch: %s\n' "$*" >&2; }
@@ -15,8 +16,8 @@ die() {
 
 LAUNCHER="${SCEPTRE_LAUNCHER:-auto}"
 case "$LAUNCHER" in
-auto | download) ;;
-*) die "invalid SCEPTRE_LAUNCHER='$LAUNCHER' (expected auto|download)" ;;
+auto | npx | download) ;;
+*) die "invalid SCEPTRE_LAUNCHER='$LAUNCHER' (expected auto|npx|download)" ;;
 esac
 
 want() { [ "$LAUNCHER" = "auto" ] || [ "$LAUNCHER" = "$1" ]; }
@@ -61,6 +62,16 @@ if have "$BINARY_NAME"; then
 		log "using sceptre on PATH ($PATH_BIN)"
 		exec "$PATH_BIN" "$@"
 	fi
+fi
+
+# The npm package carries the native binary in a per-platform optional dependency, so this tier
+# works wherever an npm registry (or mirror) is reachable and needs no curl or wget.
+# npm writes install progress to stderr only; the update notifier, fund and audit notices are off
+# so nothing but the server's own protocol reaches stdout. ~keep
+if want npx && have node && have npx; then
+	log "running ${NPM_PACKAGE}@${PINNED_VERSION} via npx ..."
+	export npm_config_update_notifier=false npm_config_fund=false npm_config_audit=false
+	exec npx --yes "${NPM_PACKAGE}@${PINNED_VERSION}" "$@"
 fi
 
 try_download() {
@@ -199,6 +210,7 @@ if want download; then
 fi
 
 die "could not locate or install sceptre. Install it manually with one of:
+  npm install -g ${NPM_PACKAGE}@${PINNED_VERSION}  (or run it with: npx --yes ${NPM_PACKAGE}@${PINNED_VERSION} mcp)
   cargo install sceptre-cli --features mcp
   or download a prebuilt archive from https://github.com/${REPO}/releases/tag/v${PINNED_VERSION}
 then ensure 'sceptre' is on PATH and retry."

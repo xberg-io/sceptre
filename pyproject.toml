@@ -49,5 +49,5 @@ pythonpath = ["python"]
 [tool.pyrefly]
 preset = "default"
 project-includes = ["python", "scripts"]
-search-path = ["python", "scripts"]
+search-path = ["python", "scripts", "scripts/release"]
 python-version = "3.11"

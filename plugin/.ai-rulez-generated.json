@@ -1,6 +1,6 @@
 {
   "schema_version": "v1",
-  "source_hash": "blake3:dbc8eff35f218d3b89b89eea7c5168f6a333cc8636f9f5c2a80a3166a7293247",
+  "source_hash": "blake3:ab8d9eb5c22607cf8670c532da294f55d2cbe41c795d9143ddd62bc64374dfbe",
   "outputs": {
     ".claude-plugin/plugin.json": {
       "content_hash": "blake3:0cd143596e1ff3bb46be9b575fc01c961bb50584396027db16f34ca216451767",
@@ -323,7 +323,7 @@
       "mode": "0644"
     },
     "scripts/mcp-launch.sh": {
-      "content_hash": "blake3:64faae8ded90ff8082ca7228733cb5fef28187e14a71c6ba3f495bb631dd8883",
+      "content_hash": "blake3:f937a887d1a5cef7acef67f1e56a9012f54cc31393afd2c9d822a69b1fb95df1",
       "mode": "0755"
     },
     "skills/sceptre-integrating-rust/SKILL.md": {

@@ -3,8 +3,9 @@
 # Contract tests for plugin/scripts/mcp-launch.sh.
 #
 # This launcher pins the release it ships with (PINNED_VERSION), has no brew tier (the tap carries
-# no sceptre formula) and no npx or uvx tier. Releases publish a versioned checksums file, so the
-# download path is covered end to end against a stubbed curl.
+# no sceptre formula) and tries the exactly pinned npm package through npx before downloading.
+# Releases publish a versioned checksums file, so the download path is covered end to end against a
+# stubbed curl.
 #
 # The suite tests strictly through the process boundary: it runs the script and asserts the
 # exit status, which launcher was exec'd, and that argv arrives intact. Internal names never
@@ -31,8 +32,10 @@ setup_file() {
 	PINNED_VERSION="$(sed -n 's/^PINNED_VERSION="\(.*\)"[[:space:]]*\(#.*\)\{0,1\}$/\1/p' "$SCRIPT" | head -n 1)"
 	LAUNCHER_VAR="$(sed -n 's/^LAUNCHER="\${\([A-Z_]*\):-auto}"$/\1/p' "$SCRIPT" | head -n 1)"
 
+	NPM_PACKAGE="$(sed -n 's/^NPM_PACKAGE="\(.*\)"$/\1/p' "$SCRIPT" | head -n 1)"
+
 	local name
-	for name in BINARY_NAME PINNED_VERSION LAUNCHER_VAR; do
+	for name in BINARY_NAME PINNED_VERSION LAUNCHER_VAR NPM_PACKAGE; do
 		[ -n "${!name}" ] || {
 			echo "could not read ${name} out of ${SCRIPT}; the suite would assert nothing" >&2
 			return 1
@@ -44,9 +47,9 @@ setup_file() {
 	# machine has no brew" and the probe would find the developer's real copy. The product binary
 	# is excluded for the same reason -- a developer with it installed would otherwise take the
 	# PATH branch in every test. ~keep
-	xberg_shadow_system_path_without curl wget "$BINARY_NAME"
+	xberg_shadow_system_path_without curl wget node npx "$BINARY_NAME"
 
-	export REPO_ROOT SCRIPT BINARY_NAME PINNED_VERSION LAUNCHER_VAR
+	export REPO_ROOT SCRIPT BINARY_NAME PINNED_VERSION LAUNCHER_VAR NPM_PACKAGE
 }
 
 setup() {
@@ -110,6 +113,16 @@ make_broken_cli() {
 
 cached_binary() { printf '%s/bin/%s' "$PLUGIN_ROOT" "$BINARY_NAME"; }
 
+# node and an npx that announces itself and echoes argv one line per argument, so a test can see
+# exactly which package spec and which forwarded arguments the launcher handed to npx.
+make_npx() {
+	xberg_stub node 'exit 0'
+	xberg_stub npx \
+		"printf 'NPX:ran\\n'" \
+		'for a in "$@"; do printf "NPX[%s]\n" "$a"; done' \
+		'exit 0'
+}
+
 # --- launcher selection -------------------------------------------------------------------------
 
 @test "mcp-launch should_reject_an_unrecognised_launcher_value" {
@@ -118,12 +131,12 @@ cached_binary() { printf '%s/bin/%s' "$PLUGIN_ROOT" "$BINARY_NAME"; }
 
 	xberg_assert_status 1
 	xberg_assert_output_contains "invalid ${LAUNCHER_VAR}='wget-please'"
-	xberg_assert_output_contains "auto|download"
+	xberg_assert_output_contains "auto|npx|download"
 }
 
 @test "mcp-launch should_accept_every_documented_launcher_value" {
 	local mode
-	for mode in auto download; do
+	for mode in auto npx download; do
 		LAUNCH_MODE="$mode"
 		launch
 		# Each of these still fails -- nothing is installed -- but it must fail at the end, not
@@ -141,7 +154,91 @@ cached_binary() { printf '%s/bin/%s' "$PLUGIN_ROOT" "$BINARY_NAME"; }
 
 	xberg_assert_status 1
 	xberg_assert_output_contains "could not locate or install"
+	xberg_assert_output_contains "npm install -g ${NPM_PACKAGE}@${PINNED_VERSION}"
 	xberg_assert_output_contains "cargo install sceptre-cli --features mcp"
+}
+
+# --- npx ----------------------------------------------------------------------------------------
+
+@test "mcp-launch should_run_the_exactly_pinned_npm_package_through_npx_and_forward_arguments" {
+	make_npx
+	launch mcp "a b" --flag
+
+	xberg_assert_status 0
+	xberg_assert_lines "sceptre-launch: running ${NPM_PACKAGE}@${PINNED_VERSION} via npx ..." \
+		"NPX:ran" "NPX[--yes]" "NPX[${NPM_PACKAGE}@${PINNED_VERSION}]" "NPX[mcp]" "NPX[a b]" "NPX[--flag]"
+}
+
+@test "mcp-launch should_prefer_the_binary_on_path_over_npx" {
+	make_npx
+	make_cli "$XBERG_STUB_BIN/$BINARY_NAME" ONPATH
+	launch
+
+	xberg_assert_status 0
+	[[ "$output" == *"ONPATH:ran"* ]]
+	[[ "$output" != *"NPX:ran"* ]]
+}
+
+@test "mcp-launch should_prefer_the_cached_binary_over_npx" {
+	make_npx
+	make_cli "$(cached_binary)" CACHED
+	launch
+
+	xberg_assert_status 0
+	[[ "$output" == *"CACHED:ran"* ]]
+	[[ "$output" != *"NPX:ran"* ]]
+}
+
+@test "mcp-launch should_use_npx_when_the_binary_on_path_is_older_than_the_pinned_version" {
+	VERSION_REPORTED="0.0.1"
+	make_cli "$XBERG_STUB_BIN/$BINARY_NAME" ONPATH
+	make_npx
+	launch
+
+	xberg_assert_status 0
+	[[ "$output" == *"NPX:ran"* ]]
+	[[ "$output" != *"ONPATH:ran"* ]]
+}
+
+@test "mcp-launch should_not_reach_download_when_npx_can_run" {
+	make_npx
+	xberg_stub_trace curl
+	xberg_stub_trace wget
+	launch
+
+	xberg_assert_status 0
+	[[ "$output" == *"NPX:ran"* ]]
+	xberg_assert_trace_empty
+}
+
+@test "mcp-launch should_skip_npx_when_node_is_missing" {
+	xberg_stub npx "printf 'NPX:ran\\n'"
+	launch
+
+	xberg_assert_status 1
+	[[ "$output" != *"NPX:ran"* ]]
+	xberg_assert_output_contains "could not locate or install"
+}
+
+@test "mcp-launch should_use_only_npx_when_npx_is_requested" {
+	LAUNCH_MODE="npx"
+	make_npx
+	xberg_stub_trace curl
+	launch
+
+	xberg_assert_status 0
+	[[ "$output" == *"NPX:ran"* ]]
+	xberg_assert_trace_empty
+}
+
+@test "mcp-launch should_not_fall_back_to_download_when_npx_is_requested_but_unavailable" {
+	LAUNCH_MODE="npx"
+	xberg_stub_trace curl
+	launch
+
+	xberg_assert_status 1
+	xberg_assert_output_contains "could not locate or install"
+	xberg_assert_trace_empty
 }
 
 # --- cached and PATH binaries -------------------------------------------------------------------

@@ -188,6 +188,9 @@ enabled = true
 "python/sceptre_rs_tools/golden.py" = ["T201"]
 "python/sceptre_rs_tools/publish.py" = ["T201"]
 "python/sceptre_rs_tools/rasterize.py" = ["T201"]
+# The release packager and the version sync are CLI entry points whose stdout is their report. ~keep
+"scripts/release/package_cli_npm.py" = ["T201"]
+"scripts/sync_plugin_version.py" = ["T201"]
 # The docs site is JS/CSS/MDX; comments there are idiomatic, not stray Rust/TOML cruft. ~keep
 "docs-site/**" = ["comment", "doc-comment"]
 
