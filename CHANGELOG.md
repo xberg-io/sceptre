@@ -7,9 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.2] - 2026-11-25
+
+### Added
+
+- The CLI is published to npm as `@xberg-io/sceptre-cli`, with the binary in per-platform packages
+  (linux x64 and arm64, macOS arm64, Windows x64) installed as optional dependencies, so `npx` works without
+  access to GitHub.
+- `server.json` and an MCP Registry publish job for the MCP server.
+
 ### Changed
 
+- The plugin MCP launcher runs a cached or PATH binary, then the exact pinned npm package, and downloads the
+  release archive only as a last resort.
 - Minimum supported versions raised: Rust 1.99.
+- Refresh Rust dependencies, including rmcp 3.11, toml 1.2 and tract-onnx 0.23.10.
+
+### Security
+
+- Update `url` to 2.5.9 (RUSTSEC-2026-0592, stack overflow on nested `blob:` URLs).
 
 ## [0.10.1] - 2026-11-01
 
