@@ -3758,7 +3758,7 @@ dependencies = [
 
 [[package]]
 name = "sceptre"
-version = "0.10.2"
+version = "0.10.3"
 dependencies = [
  "candle-core",
  "candle-nn",
@@ -3786,7 +3786,7 @@ dependencies = [
 
 [[package]]
 name = "sceptre-cli"
-version = "0.10.2"
+version = "0.10.3"
 dependencies = [
  "anstream",
  "anstyle",
@@ -3803,7 +3803,7 @@ dependencies = [
 
 [[package]]
 name = "sceptre-tools"
-version = "0.10.2"
+version = "0.10.3"
 dependencies = [
  "anyhow",
  "clap",
@@ -5680,18 +5680,18 @@ dependencies = [
 
 [[package]]
 name = "zerocopy"
-version = "0.8.65"
+version = "0.8.66"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "32bc8a75f879cd6fe53a6bedf3c28f0e1b914c77424fc2be9e2ec85d7d25aff5"
+checksum = "cba8a86aee14fc8cc6c208af60854b3d4ab7185a9a369a12c648faa2716ff42a"
 dependencies = [
  "zerocopy-derive",
 ]
 
 [[package]]
 name = "zerocopy-derive"
-version = "0.8.65"
+version = "0.8.66"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b8bfd2644ea1681f60cf95029ff18aa8ad1cc3f7b8fe37286f8e473bb29f816b"
+checksum = "f89bca3b96ceb3cfcb4572790402f977442270d252b9a8504ebc258760c55f94"
 dependencies = [
  "proc-macro2",
  "quote",

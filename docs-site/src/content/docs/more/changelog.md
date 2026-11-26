@@ -10,6 +10,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.3] - 2026-11-26
+
+0.10.2 was tagged but never published: its release stopped at the version gate. 0.10.3 ships the 0.10.2
+changes below.
+
+### Fixed
+
+- The `sceptre` workspace dependency pin follows the workspace version again, so the release version gate passes.
+
+### Changed
+
+- Refresh Rust and Python lock files (zerocopy 0.8.66).
+
 ## [0.10.2] - 2026-11-25
 
 ### Added
