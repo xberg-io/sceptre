@@ -7,12 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.4] - 2026-11-26
+
+0.10.2 and 0.10.3 were tagged but never published: 0.10.3's release binaries failed to build. 0.10.4 ships
+their changes.
+
 ### Added
 
 - Expose `preload_ort_runtime()` on native `ort` builds. With Sceptre's `ort-dynamic` feature,
   it loads the caller-selected path and returns `true`. The preload call does not read
   `ORT_DYLIB_PATH`.
   Linked builds return `false` without loading a library.
+
+### Fixed
+
+- Remove the unused `toml` workspace dependency and the `homepage` keys that repeat `repository`; Cargo 1.100
+  warns about both and the release build denies warnings.
 
 ## [0.10.3] - 2026-11-26
 

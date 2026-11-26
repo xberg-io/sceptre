@@ -6,7 +6,7 @@ NPM_PACKAGE="@xberg-io/sceptre-cli"
 # ~keep Rewritten by scripts/sync_plugin_version.py on every release. The plugin only accepts a
 # ~keep binary at or above this version, and fetches exactly this release (npm package or GitHub
 # ~keep archive), so a plugin update cannot keep running an older sceptre that happens to be installed.
-PINNED_VERSION="0.10.3"
+PINNED_VERSION="0.10.4"
 
 log() { printf 'sceptre-launch: %s\n' "$*" >&2; }
 die() {

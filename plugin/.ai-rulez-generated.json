@@ -1,17 +1,17 @@
 {
   "schema_version": "v1",
-  "source_hash": "blake3:5de9ef6c6a57870da9193786daa3ecb94831a38f5645e813710495220ae2fd91",
+  "source_hash": "blake3:27bfec55619bdafc5a6f025fab323d6785ccaacc5110d10d21f9f1e8075c6691",
   "outputs": {
     ".claude-plugin/plugin.json": {
-      "content_hash": "blake3:6f024c4481a1f7009595b21376c6d123a48ca0889568617c111b027b89d15978",
+      "content_hash": "blake3:7980d926f2322af972c2a37dcb26f5a4eb9302f2d051acdf5a3c1b7360879510",
       "mode": "0644"
     },
     ".codex-plugin/plugin.json": {
-      "content_hash": "blake3:f23399bea3f774e5e270a059ca6eb8ec994c8495236fe1a9fc17f2ff418658d3",
+      "content_hash": "blake3:9a546875ed5805e526b4ff90db7189def5eb781b2c504a76fb158bb202af9842",
       "mode": "0644"
     },
     ".cursor-plugin/plugin.json": {
-      "content_hash": "blake3:a88645cb969519b1caeba8c3e3e089285b29f11811704e6fa77c01299e95f335",
+      "content_hash": "blake3:803507dc96cb2519ca9e2c6c589e0911988368da791b5cafcb66af0d7e913a1a",
       "mode": "0644"
     },
     ".cursor-plugin/skills/sceptre-integrating-rust/SKILL.md": {
@@ -63,15 +63,15 @@
       "mode": "0644"
     },
     ".factory-plugin/plugin.json": {
-      "content_hash": "blake3:aa2c65ec98c36fd91cdc3bbbff6c06901a44b8f559e73db0e61d288849dd5b7d",
+      "content_hash": "blake3:724b85cb2728be61e891be2ffbf2d33375ef3e0fe957c3be20a4e5af07266946",
       "mode": "0644"
     },
     ".hermes/package/pyproject.toml": {
-      "content_hash": "blake3:994d8aa1c53e39bae3647db416d0dd0d66d7dddc702a28691d359b73bef9b5d7",
+      "content_hash": "blake3:a0cc2e48ffbfe64bf9961260c3a286155c3f36e06bba5fc73a98400b19084e2e",
       "mode": "0644"
     },
     ".hermes/package/src/sceptre_hermes_plugin/__init__.py": {
-      "content_hash": "blake3:a5aeec77ed5cd9b1652eec0b5fa3e93a2a3856210f68505d2ef4ebb57c5a2105",
+      "content_hash": "blake3:69ad8df48ffbe984cc7652758c21fe4870ef3486ca21c91ba15a6f15a033c5ec",
       "mode": "0644"
     },
     ".hermes/package/src/sceptre_hermes_plugin/hermes.py": {
@@ -79,7 +79,7 @@
       "mode": "0644"
     },
     ".hermes/package/src/sceptre_hermes_plugin/plugin.yaml": {
-      "content_hash": "blake3:58bb14d6745f80e840e1c9e62ed9efea0cbf6bc83ca7d6cd665b757a82a976e6",
+      "content_hash": "blake3:c1b6a67cb2aaba3d9f91e755cac0b87db8f980132d3e15cddd50334faa897aff",
       "mode": "0644"
     },
     ".hermes/package/src/sceptre_hermes_plugin/skills/sceptre-integrating-rust/SKILL.md": {
@@ -131,7 +131,7 @@
       "mode": "0644"
     },
     ".hermes/plugins/sceptre/__init__.py": {
-      "content_hash": "blake3:a5aeec77ed5cd9b1652eec0b5fa3e93a2a3856210f68505d2ef4ebb57c5a2105",
+      "content_hash": "blake3:69ad8df48ffbe984cc7652758c21fe4870ef3486ca21c91ba15a6f15a033c5ec",
       "mode": "0644"
     },
     ".hermes/plugins/sceptre/hermes.py": {
@@ -139,7 +139,7 @@
       "mode": "0644"
     },
     ".hermes/plugins/sceptre/plugin.yaml": {
-      "content_hash": "blake3:58bb14d6745f80e840e1c9e62ed9efea0cbf6bc83ca7d6cd665b757a82a976e6",
+      "content_hash": "blake3:c1b6a67cb2aaba3d9f91e755cac0b87db8f980132d3e15cddd50334faa897aff",
       "mode": "0644"
     },
     ".hermes/plugins/sceptre/skills/sceptre-integrating-rust/SKILL.md": {
@@ -303,11 +303,11 @@
       "mode": "0644"
     },
     "gemini-extension.json": {
-      "content_hash": "blake3:948679b12e6b25ddb07c4377b0e53e7a554cff746ebd1551af6f560e5c4ae01e",
+      "content_hash": "blake3:eb3f849ad919503deeb6a36241b22391c5f0765de552903aa1b379255b179608",
       "mode": "0644"
     },
     "kimi.plugin.json": {
-      "content_hash": "blake3:fe9dfa5388c5fdeeca3de15c2b23702499c409cdd24c041f5c2d106f94b5b118",
+      "content_hash": "blake3:a8bcc998634c77860d3c8fdd827b5951444eea78957d268d86d4297ab6422afc",
       "mode": "0644"
     },
     "mcp.json": {
@@ -315,15 +315,15 @@
       "mode": "0644"
     },
     "package.json": {
-      "content_hash": "blake3:be4590fe1e28fe479957c9f7290a2b01366c08e2eb6a663f2be8a5473b567b73",
+      "content_hash": "blake3:c9c8023e2f15c6625174d1080a12fa61d3351066860b395bee34bd4eb30a6a55",
       "mode": "0644"
     },
     "plugin.json": {
-      "content_hash": "blake3:ac1274d95ae1b6eb2aeb9f25baeb87e1e27ba87186e8391c352444e049bdfa30",
+      "content_hash": "blake3:19d9b3bc6de44f7941a6d04612b55f661797bc58ccecaf40ce0857d68ca06eea",
       "mode": "0644"
     },
     "scripts/mcp-launch.sh": {
-      "content_hash": "blake3:28cf5b9777b573565b5ec3e7b5e678c5fedf5f86604efd281dc1e219d3da4886",
+      "content_hash": "blake3:cd7dbb5d47ae803b23cb28fb50bc0ae5c5e13cf04046da0056dbc1b87b2eaae6",
       "mode": "0755"
     },
     "skills/sceptre-integrating-rust/SKILL.md": {

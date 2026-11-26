@@ -6,7 +6,7 @@ name: sceptre-managing-models
 <!--
 AI-RULEZ :: GENERATED FILE — DO NOT EDIT
 Content-Hash: blake3:e9904a95a0c02e2df027f29da22800e7b25cd70ed0f529936f9cea53e34509fb
-Source-Hash: blake3:5de9ef6c6a57870da9193786daa3ecb94831a38f5645e813710495220ae2fd91
+Source-Hash: blake3:27bfec55619bdafc5a6f025fab323d6785ccaacc5110d10d21f9f1e8075c6691
 Schema-Version: v1
 -->
 
