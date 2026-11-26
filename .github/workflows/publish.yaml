@@ -461,7 +461,6 @@ jobs:
       # ~keep The platform packages wrap the release archives; every archive is checked against
       # the release checksums before it is packaged. Targets the release does not build are skipped.
       - name: Build the platform packages
-        if: ${{ steps.root.outputs.exists != 'true' }}
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -478,7 +477,6 @@ jobs:
       # ~keep Platform packages first and the root last: a partial failure never leaves a root whose
       # optionalDependencies are unpublished, and a rerun skips what is already on npm.
       - name: Publish the platform packages
-        if: ${{ steps.root.outputs.exists != 'true' }}
         shell: bash
         env:
           NODE_AUTH_TOKEN: ""
@@ -501,7 +499,6 @@ jobs:
           cp cli-npm-packages/root/package.json cli-proxy/npm/package.json
 
       - name: Wait for the platform packages
-        if: ${{ steps.root.outputs.exists != 'true' }}
         shell: bash
         env:
           VERSION: ${{ needs.meta.outputs.version }}
