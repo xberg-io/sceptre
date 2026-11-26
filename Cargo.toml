@@ -10,7 +10,6 @@ rust-version = "1.99"
 authors = ["Na'aman Hirschfeld <naaman@xberg.io>", "Tobias Perlstein <tobias@xberg.io>"]
 license = "MIT"
 repository = "https://github.com/xberg-io/sceptre"
-homepage = "https://github.com/xberg-io/sceptre"
 
 [workspace.lints.rust]
 unsafe_code = "deny"
@@ -66,7 +65,6 @@ serde_json = "1.0"
 sha2 = "0.11"
 thiserror = "2.0"
 tokio = { version = "1.54", features = ["rt-multi-thread", "macros", "io-std", "sync"] }
-toml = "1.2"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 # The tract-onnx frontend is CPU-only and WASM-safe; the top-level tract facade bundles GPU backends. ~keep
