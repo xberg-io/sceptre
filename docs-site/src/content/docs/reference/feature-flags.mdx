@@ -70,8 +70,9 @@ the backend in — the run fails at model load with "not compiled in".
 
 On native `ort-dynamic` builds, Rust embedders can call `sceptre::preload_ort_runtime(path)`
 before their first ORT call, then use `sceptre::ort_environment()` to get the shared environment.
-A nonempty `ORT_DYLIB_PATH` takes precedence over the supplied path. A load failure for that
-configured path is returned to the caller.
+The preload loads the supplied path and does not read `ORT_DYLIB_PATH`; a load failure is returned
+to the caller. The first library loaded in the process stays in use, so a later call with a different
+path returns `true` without loading it.
 
 ## Targets with no prebuilt ONNX Runtime
 
