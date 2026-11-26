@@ -17,9 +17,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `ORT_DYLIB_PATH`.
   Linked builds return `false` without loading a library.
 
+## [0.10.3] - 2026-11-26
+
+0.10.2 was tagged but never published: its release stopped at the version gate. 0.10.3 ships the 0.10.2
+changes below.
+
+### Fixed
+
+- The `sceptre` workspace dependency pin follows the workspace version again, so the release version gate passes.
+
 ### Changed
 
+- Refresh Rust and Python lock files (zerocopy 0.8.66).
+
+## [0.10.2] - 2026-11-25
+
+### Added
+
+- The CLI is published to npm as `@xberg-io/sceptre-cli`, with the binary in per-platform packages
+  (linux x64 and arm64, macOS arm64, Windows x64) installed as optional dependencies, so `npx` works without
+  access to GitHub.
+- `server.json` and an MCP Registry publish job for the MCP server.
+
+### Changed
+
+- The plugin MCP launcher runs a cached or PATH binary, then the exact pinned npm package, and downloads the
+  release archive only as a last resort.
 - Minimum supported versions raised: Rust 1.99.
+- Refresh Rust dependencies, including rmcp 3.11, toml 1.2 and tract-onnx 0.23.10.
+
+### Security
+
+- Update `url` to 2.5.9 (RUSTSEC-2026-0592, stack overflow on nested `blob:` URLs).
 
 ## [0.10.1] - 2026-11-01
 

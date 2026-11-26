@@ -1,0 +1,34 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.xberg-io/sceptre",
+  "title": "Sceptre",
+  "description": "Local OCR with CRAFT detection and multilingual CRNN recognition via local CLI.",
+  "version": "0.10.3",
+  "websiteUrl": "https://xberg.io",
+  "repository": {
+    "url": "https://github.com/xberg-io/sceptre",
+    "source": "github",
+    "id": "1318621602"
+  },
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@xberg-io/sceptre-cli",
+      "version": "0.10.3",
+      "transport": {
+        "type": "stdio"
+      },
+      "packageArguments": [
+        {
+          "type": "positional",
+          "value": "mcp"
+        },
+        {
+          "type": "named",
+          "name": "--lang",
+          "value": "english"
+        }
+      ]
+    }
+  ]
+}

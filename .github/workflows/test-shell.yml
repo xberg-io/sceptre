@@ -2,7 +2,15 @@ name: Shell contracts
 on:
   push:
     branches: [main]
-    paths: ["scripts/**", "tests/**", "mise.toml", ".github/workflows/test-shell.yml"]
+    paths:
+      [
+        "scripts/**",
+        "tests/**",
+        "plugin/scripts/**",
+        "plugin/.ai-rulez/scripts/**",
+        "mise.toml",
+        ".github/workflows/test-shell.yml",
+      ]
   workflow_dispatch:
 permissions:
   contents: read

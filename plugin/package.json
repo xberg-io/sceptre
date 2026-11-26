@@ -38,7 +38,8 @@
     ".pi/skills/sceptre/SKILL.md",
     ".pi/skills/sceptre/index.md",
     "README.md",
-    "assets/"
+    "assets/",
+    "scripts/"
   ],
   "homepage": "https://xberg.io",
   "keywords": [
@@ -67,5 +68,5 @@
     "url": "https://github.com/xberg-io/sceptre"
   },
   "type": "module",
-  "version": "0.10.1"
+  "version": "0.10.3"
 }

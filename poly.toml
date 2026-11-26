@@ -1,8 +1,4 @@
-[defaults]
-line_length = 120
-line_ending = "lf"
-final_newline = true
-trim_trailing_whitespace = true
+required_version = ">=0.36.0"
 
 [discovery]
 exclude = [
@@ -16,11 +12,6 @@ exclude = [
   "/plugin/plugin.json",
   "/plugin/mcp.json",
   "/plugin/.pi/**",
-  "/plugin/.github/**",
-  "/.github/plugin/**",
-  "/.cursor-plugin/marketplace.json",
-  "/.ai-rulez/.generated-manifest.json",
-  "/plugin/.ai-rulez/.generated-manifest.json",
   "/plugin/.claude-plugin/**",
   "/plugin/.codex-plugin/**",
   "/plugin/.cursor-plugin/**",
@@ -37,19 +28,12 @@ exclude = [
   "/.agents/plugins/marketplace.json",
   "/.ai-rulez-generated.json",
   "**/*.lock",
-  "**/Cargo.lock",
   "**/*.onnx",
   # Brand/asset SVGs are hand-tuned; poly must not reflow them. ~keep
   "**/*.svg",
-  "target/**",
   "dist/**",
-  "node_modules/**",
-  "vendor/**",
   "**/assets/**",
   "**/tests/data/**",
-  "docs-site/dist/**",
-  "docs-site/node_modules/**",
-  "docs-site/.astro/**",
   # test_documents is a git submodule (a separate shared corpus repo) whose files are
   # deliberately malformed extraction fixtures. poly must never rewrite them. ~keep
   "test_documents/**",
@@ -60,25 +44,26 @@ exclude = [
   "/adrs/**",
 ]
 
-[lint.markdown.rumdl]
+[engines.rumdl.lang.markdown.lint]
 disable = ["MD025", "MD012", "MD013", "MD024", "MD033", "MD036", "MD041", "MD046", "MD051", "MD076"]
 
+[engines.rumdl.lang.markdown.format]
 # MD025 stays enabled for lint but disabled for fmt: rumdl's autofix for a second
 # level-1 heading demotes every heading that follows it, which silently reparents a
 # whole CHANGELOG under [Unreleased] and breaks release-note extraction. ~keep
-[fmt.markdown.rumdl]
 disable = ["MD012", "MD013", "MD024", "MD033", "MD036", "MD041", "MD046", "MD051", "MD076", "MD025"]
 
-[tools.actionlint]
+[engines.shfmt.format]
+enabled = true
+use_tabs = true
+
+[engines.typos]
+# typos is opt-in in poly v2; this keeps the v1 default (on). ~keep
 enabled = true
 
-[lint.uncomment]
+[engines.uncomment]
 enabled = true
 code_only = false
-remove_todos = false
-remove_fixme = false
-remove_docs = false
-use_default_ignores = true
 preserve_patterns = [
   # mise reads file-task metadata from #MISE and #USAGE comments. ~keep
   "MISE ",
@@ -113,7 +98,12 @@ preserve_patterns = [
   "limitations under the license",
 ]
 
-[per-file-ignores]
+[tools.actionlint]
+enabled = true
+
+[per_file_ignores]
+# astro:content is an Astro virtual module typed by generated .astro/ files, which are not committed. ~keep
+"docs-site/src/content.config.ts" = ["TS2307"]
 # Quality metrics do not apply to test code. A test function's length is its assertion
 # count and a table-driven test's arity mirrors its cases; splitting either to satisfy a
 # production-code maintainability metric makes the test harder to read, not easier. Only
@@ -132,11 +122,6 @@ preserve_patterns = [
 "**/*.test.mjs" = ["cyclomatic-complexity", "function-too-long", "nesting-too-deep", "too-many-parameters"]
 "**/*.spec.ts" = ["cyclomatic-complexity", "function-too-long", "nesting-too-deep", "too-many-parameters"]
 "**/*.spec.js" = ["cyclomatic-complexity", "function-too-long", "nesting-too-deep", "too-many-parameters"]
-"**/*_test.go" = ["cyclomatic-complexity", "function-too-long", "nesting-too-deep", "too-many-parameters"]
-"**/*Test.java" = ["cyclomatic-complexity", "function-too-long", "nesting-too-deep", "too-many-parameters"]
-"**/*Tests.cs" = ["cyclomatic-complexity", "function-too-long", "nesting-too-deep", "too-many-parameters"]
-"**/*_test.dart" = ["cyclomatic-complexity", "function-too-long", "nesting-too-deep", "too-many-parameters"]
-"**/*_spec.rb" = ["cyclomatic-complexity", "function-too-long", "nesting-too-deep", "too-many-parameters"]
 # Stylistic rules disabled repo-wide. Each is a formatting or idiom preference with no
 # correctness or security consequence, and each fires in volumes no one can hand-maintain
 # (`require-unicode-regexp` alone was 724 across the polyrepo, `no-inline-comments` 200).
@@ -179,7 +164,6 @@ preserve_patterns = [
   "unicorn/require-module-specifiers",
 ]
 "basemind.toml" = ["comment", "doc-comment"]
-"**/*.generated.*" = ["comment", "doc-comment"]
 # Python uses `#` comments idiomatically; the uncomment hook targets Rust/TOML. ~keep
 "python/**" = ["comment", "doc-comment"]
 # T201 (`print` found): every module below is an argparse CLI entry point run as
@@ -204,6 +188,9 @@ preserve_patterns = [
 "python/sceptre_rs_tools/golden.py" = ["T201"]
 "python/sceptre_rs_tools/publish.py" = ["T201"]
 "python/sceptre_rs_tools/rasterize.py" = ["T201"]
+# The release packager and the version sync are CLI entry points whose stdout is their report. ~keep
+"scripts/release/package_cli_npm.py" = ["T201"]
+"scripts/sync_plugin_version.py" = ["T201"]
 # The docs site is JS/CSS/MDX; comments there are idiomatic, not stray Rust/TOML cruft. ~keep
 "docs-site/**" = ["comment", "doc-comment"]
 
@@ -211,59 +198,11 @@ preserve_patterns = [
 stages = ["pre-commit"]
 
 [hooks.builtin]
-lint = { exclude = [
-  "/tests/lib/xberg-bats/**",
-  "**/*.lock",
-  "**/*.onnx",
-  "**/*.svg",
-  "target/**",
-  "**/assets/**",
-  "**/tests/data/**",
-  "docs-site/dist/**",
-  "docs-site/node_modules/**",
-  "docs-site/.astro/**",
-  # test_documents is a git submodule (a separate shared corpus repo) whose files are
-  # deliberately malformed extraction fixtures. poly must never rewrite them. ~keep
-  "test_documents/**",
-  "**/pnpm-lock.yaml",
-  "/.ai-rulez/.generated-manifest.json",
-  "/adrs/**",
-] }
-fmt = { exclude = [
-  "/tests/lib/xberg-bats/**",
-  "**/*.lock",
-  "**/*.onnx",
-  "**/*.svg",
-  "target/**",
-  "**/assets/**",
-  "**/tests/data/**",
-  "docs-site/dist/**",
-  "docs-site/node_modules/**",
-  "docs-site/.astro/**",
-  # test_documents is a git submodule (a separate shared corpus repo) whose files are
-  # deliberately malformed extraction fixtures. poly must never rewrite them. ~keep
-  "test_documents/**",
-  "**/pnpm-lock.yaml",
-  "/.ai-rulez/.generated-manifest.json",
-  "/adrs/**",
-] }
+# lint, fmt and file_safety inherit [discovery] exclude. ~keep
+lint = true
+fmt = true
 commit = { stages = ["commit-msg"] }
-file_safety = { exclude = [
-  "**/*.lock",
-  "**/*.onnx",
-  "**/*.svg",
-  "target/**",
-  "**/assets/**",
-  "**/tests/data/**",
-  "docs-site/dist/**",
-  "docs-site/node_modules/**",
-  "docs-site/.astro/**",
-  # test_documents is a git submodule (a separate shared corpus repo) whose files are
-  # deliberately malformed extraction fixtures. poly must never rewrite them. ~keep
-  "test_documents/**",
-  "**/pnpm-lock.yaml",
-  "/.ai-rulez/.generated-manifest.json",
-] }
+file_safety = true
 cargo = true
 
 [hooks.pre-commit.commands.pyrefly]
@@ -282,6 +221,26 @@ id = "adrlint"
 git = "https://github.com/Goldziher/adrlint.git"
 revision = "v0"
 hooks = ["adrlint-lint", "adrlint-format-check", "adrlint-lock-check"]
-[fmt.shell.shfmt]
+
+[engines.skif]
 enabled = true
-use_tabs = true
+dir = "docs-site"
+
+[engines.tsrs]
+enabled = true
+dir = "docs-site"
+
+[engines.harper]
+enabled = true
+# Off: rules that contradict the org's sentence-case headings and no-Oxford-comma style, or misread technical prose
+# (denylist, MB, stdin). ~keep
+ignore = [
+  "UseTitleCase",
+  "OxfordComma",
+  "SplitWords",
+  "OrthographicConsistency",
+  "ExpandMemoryShorthands",
+  "ExpandStandardInputAndOutput",
+  "ExpandConfiguration",
+  "ExpandMinimum",
+]

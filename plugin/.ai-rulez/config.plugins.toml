@@ -1,6 +1,6 @@
 [plugin]
 name = "sceptre"
-version = "0.10.1"
+version = "0.10.3"
 opencode_dependency_enabled = false
 runtimes = [
   "claude",
@@ -22,6 +22,8 @@ repository = "https://github.com/xberg-io/sceptre"
 license = "MIT"
 keywords = ["ocr", "images", "text-recognition", "mcp"]
 
+include = ["scripts/**"]
+
 [plugin.author]
 name = "Kreuzberg, Inc."
 email = "contact@xberg.io"
@@ -29,7 +31,7 @@ url = "https://xberg.io"
 
 [[plugin.mcp]]
 name = "sceptre"
-command = "sceptre"
+command = "${PLUGIN_ROOT}/scripts/mcp-launch.sh"
 args = ["mcp", "--lang", "english"]
 
 [plugin.codex]
@@ -48,7 +50,7 @@ package_json = "merge"
 [plugin.interface]
 display_name = "Sceptre"
 short_description = "Local multilingual image OCR"
-long_description = "Recognize text in local images with CRAFT detection and CRNN recognition. Includes image OCR, model management, tuning, Rust API and MCP skills. Install sceptre-cli with the mcp feature before registering the server."
+long_description = "Recognize text in local images with CRAFT detection and CRNN recognition. Includes image OCR, model management, tuning, Rust API and MCP skills. The plugin launches a pinned sceptre release through its MCP launcher."
 developer_name = "Kreuzberg, Inc."
 category = "developer-tools"
 capabilities = ["Read"]

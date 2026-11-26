@@ -1,0 +1,36 @@
+{
+  "name": "@xberg-io/sceptre-cli",
+  "version": "0.10.3",
+  "mcpName": "io.github.xberg-io/sceptre",
+  "description": "CLI proxy for sceptre — runs the native sceptre binary shipped in a per-platform package, downloading it from GitHub releases only as a fallback.",
+  "license": "MIT",
+  "author": {
+    "name": "Na'aman Hirschfeld",
+    "email": "naaman@xberg.io"
+  },
+  "contributors": [
+    {
+      "name": "Tobias Perelstein",
+      "email": "tobias@xberg.io"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xberg-io/sceptre.git",
+    "directory": "cli-proxy/npm"
+  },
+  "bin": {
+    "sceptre": "bin/sceptre.js"
+  },
+  "files": [
+    "bin/",
+    "install.js"
+  ],
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

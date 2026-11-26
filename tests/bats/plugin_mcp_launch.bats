@@ -1,0 +1,468 @@
+#!/usr/bin/env bats
+#
+# Contract tests for plugin/scripts/mcp-launch.sh.
+#
+# This launcher pins the release it ships with (PINNED_VERSION), has no brew tier (the tap carries
+# no sceptre formula) and tries the exactly pinned npm package through npx before downloading.
+# Releases publish a versioned checksums file, so the download path is covered end to end against a
+# stubbed curl.
+#
+# The suite tests strictly through the process boundary: it runs the script and asserts the
+# exit status, which launcher was exec'd, and that argv arrives intact. Internal names never
+# appear, which is what lets one file cover five divergent implementations. Every parameter it
+# needs is read out of the script in setup_file, so it names no product.
+#
+# The script exec()s, so the launcher it chooses BECOMES the process -- a stub that prints a
+# marker is therefore direct evidence of the branch taken, not an inference from log text. ~keep
+
+setup_file() {
+	bats_load_library xberg-bats
+
+	REPO_ROOT="$(cd "$BATS_TEST_DIRNAME/../.." && pwd -P)"
+	SCRIPT="$REPO_ROOT/plugin/scripts/mcp-launch.sh"
+	[ -f "$SCRIPT" ] || {
+		echo "no plugin/scripts/mcp-launch.sh under $REPO_ROOT" >&2
+		return 1
+	}
+
+	# Read the per-product parameters out of the script itself. Deriving them is what keeps
+	# this file identical across repos; an empty derivation would silently turn most assertions
+	# below into comparisons between two empty strings, so each one is checked. ~keep
+	BINARY_NAME="$(sed -n 's/^BINARY_NAME="\(.*\)"$/\1/p' "$SCRIPT" | head -n 1)"
+	PINNED_VERSION="$(sed -n 's/^PINNED_VERSION="\(.*\)"[[:space:]]*\(#.*\)\{0,1\}$/\1/p' "$SCRIPT" | head -n 1)"
+	LAUNCHER_VAR="$(sed -n 's/^LAUNCHER="\${\([A-Z_]*\):-auto}"$/\1/p' "$SCRIPT" | head -n 1)"
+
+	NPM_PACKAGE="$(sed -n 's/^NPM_PACKAGE="\(.*\)"$/\1/p' "$SCRIPT" | head -n 1)"
+
+	local name
+	for name in BINARY_NAME PINNED_VERSION LAUNCHER_VAR NPM_PACKAGE; do
+		[ -n "${!name}" ] || {
+			echo "could not read ${name} out of ${SCRIPT}; the suite would assert nothing" >&2
+			return 1
+		}
+	done
+
+	# The launchers must be genuinely absent, not merely shadowed by a stub: the script decides
+	# what to do by probing `command -v brew`, so a prepended stub directory cannot express "this
+	# machine has no brew" and the probe would find the developer's real copy. The product binary
+	# is excluded for the same reason -- a developer with it installed would otherwise take the
+	# PATH branch in every test. ~keep
+	xberg_shadow_system_path_without curl wget node npx "$BINARY_NAME"
+
+	export REPO_ROOT SCRIPT BINARY_NAME PINNED_VERSION LAUNCHER_VAR NPM_PACKAGE
+}
+
+setup() {
+	bats_load_library xberg-bats
+	xberg_setup_isolated
+
+	PLUGIN_ROOT="$XBERG_WORK/plugin"
+	mkdir -p "$PLUGIN_ROOT"
+	LAUNCH_MODE="auto"
+}
+
+# Run the script in a clean environment with the isolated PATH.
+#
+# `env -i` rather than merely overriding PATH: the launcher reads CLAUDE_PLUGIN_ROOT and its own
+# mode variable, and a developer who happens to export either would otherwise change the result
+# of the suite on their machine only.
+# XBERG_TRACE is forwarded explicitly. `env -i` strips it otherwise, and a trace stub whose
+# output file is unset fails silently and writes nothing -- which makes xberg_assert_trace_empty
+# pass whether or not the command was called. That is a test that cannot fail, so the variable is
+# part of the contract of this helper rather than something a caller remembers. ~keep
+launch() {
+	run env -i \
+		PATH="$(xberg_isolated_path)" \
+		HOME="$XBERG_WORK/home" \
+		XBERG_TRACE="$XBERG_TRACE" \
+		CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" \
+		"${LAUNCHER_VAR}=${LAUNCH_MODE}" \
+		"$SCRIPT" "$@"
+}
+
+# An executable that reports a version, announces itself, and echoes argv one line per argument.
+#
+# The unconditional `<marker>:ran` line answers "which binary was exec'd" even when the script is
+# launched with no arguments; the per-argument lines answer "what argv arrived". Keeping them
+# separate matters because joining argv with "$*" cannot tell `a b` from `"a b"`, which is
+# exactly the pass-through bug this suite needs to be able to see. ~keep
+make_cli() {
+	local target="$1" marker="${2:-CLI}"
+	mkdir -p "$(dirname "$target")"
+	printf '%s\n' \
+		'#!/usr/bin/env bash' \
+		"if [ \"\$1\" = \"--version\" ]; then printf '%s\\n' \"${VERSION_REPORTED:-$PINNED_VERSION}\"; exit 0; fi" \
+		"printf '${marker}:ran\\n'" \
+		"for a in \"\$@\"; do printf '${marker}[%s]\\n' \"\$a\"; done" \
+		'exit 0' >"$target"
+	chmod +x "$target"
+}
+
+# An executable that refuses to report a version, which is how the script decides a binary it
+# found is not usable.
+make_broken_cli() {
+	local target="$1"
+	mkdir -p "$(dirname "$target")"
+	printf '%s\n' \
+		'#!/usr/bin/env bash' \
+		'if [ "$1" = "--version" ]; then exit 1; fi' \
+		'printf "BROKEN:ran\n"' \
+		'exit 0' >"$target"
+	chmod +x "$target"
+}
+
+cached_binary() { printf '%s/bin/%s' "$PLUGIN_ROOT" "$BINARY_NAME"; }
+
+# node and an npx that announces itself and echoes argv one line per argument, so a test can see
+# exactly which package spec and which forwarded arguments the launcher handed to npx.
+make_npx() {
+	xberg_stub node 'exit 0'
+	xberg_stub npx \
+		"printf 'NPX:ran\\n'" \
+		'for a in "$@"; do printf "NPX[%s]\n" "$a"; done' \
+		'exit 0'
+}
+
+# --- launcher selection -------------------------------------------------------------------------
+
+@test "mcp-launch should_reject_an_unrecognised_launcher_value" {
+	LAUNCH_MODE="wget-please"
+	launch
+
+	xberg_assert_status 1
+	xberg_assert_output_contains "invalid ${LAUNCHER_VAR}='wget-please'"
+	xberg_assert_output_contains "auto|npx|download"
+}
+
+@test "mcp-launch should_accept_every_documented_launcher_value" {
+	local mode
+	for mode in auto npx download; do
+		LAUNCH_MODE="$mode"
+		launch
+		# Each of these still fails -- nothing is installed -- but it must fail at the end, not
+		# at the argument check. Asserting the absence of the validation error is what separates
+		# "the mode is accepted" from "the mode happens to fail the same way". ~keep
+		[[ "$output" != *"invalid ${LAUNCHER_VAR}"* ]] || {
+			echo "mode '$mode' was rejected as invalid" >&2
+			return 1
+		}
+	done
+}
+
+@test "mcp-launch should_report_installation_instructions_when_no_strategy_can_provide_a_binary" {
+	launch
+
+	xberg_assert_status 1
+	xberg_assert_output_contains "could not locate or install"
+	xberg_assert_output_contains "npm install -g ${NPM_PACKAGE}@${PINNED_VERSION}"
+	xberg_assert_output_contains "cargo install sceptre-cli --features mcp"
+}
+
+# --- npx ----------------------------------------------------------------------------------------
+
+@test "mcp-launch should_run_the_exactly_pinned_npm_package_through_npx_and_forward_arguments" {
+	make_npx
+	launch mcp "a b" --flag
+
+	xberg_assert_status 0
+	xberg_assert_lines "sceptre-launch: running ${NPM_PACKAGE}@${PINNED_VERSION} via npx ..." \
+		"NPX:ran" "NPX[--yes]" "NPX[${NPM_PACKAGE}@${PINNED_VERSION}]" "NPX[mcp]" "NPX[a b]" "NPX[--flag]"
+}
+
+@test "mcp-launch should_prefer_the_binary_on_path_over_npx" {
+	make_npx
+	make_cli "$XBERG_STUB_BIN/$BINARY_NAME" ONPATH
+	launch
+
+	xberg_assert_status 0
+	[[ "$output" == *"ONPATH:ran"* ]]
+	[[ "$output" != *"NPX:ran"* ]]
+}
+
+@test "mcp-launch should_prefer_the_cached_binary_over_npx" {
+	make_npx
+	make_cli "$(cached_binary)" CACHED
+	launch
+
+	xberg_assert_status 0
+	[[ "$output" == *"CACHED:ran"* ]]
+	[[ "$output" != *"NPX:ran"* ]]
+}
+
+@test "mcp-launch should_use_npx_when_the_binary_on_path_is_older_than_the_pinned_version" {
+	VERSION_REPORTED="0.0.1"
+	make_cli "$XBERG_STUB_BIN/$BINARY_NAME" ONPATH
+	make_npx
+	launch
+
+	xberg_assert_status 0
+	[[ "$output" == *"NPX:ran"* ]]
+	[[ "$output" != *"ONPATH:ran"* ]]
+}
+
+@test "mcp-launch should_not_reach_download_when_npx_can_run" {
+	make_npx
+	xberg_stub_trace curl
+	xberg_stub_trace wget
+	launch
+
+	xberg_assert_status 0
+	[[ "$output" == *"NPX:ran"* ]]
+	xberg_assert_trace_empty
+}
+
+@test "mcp-launch should_skip_npx_when_node_is_missing" {
+	xberg_stub npx "printf 'NPX:ran\\n'"
+	launch
+
+	xberg_assert_status 1
+	[[ "$output" != *"NPX:ran"* ]]
+	xberg_assert_output_contains "could not locate or install"
+}
+
+@test "mcp-launch should_use_only_npx_when_npx_is_requested" {
+	LAUNCH_MODE="npx"
+	make_npx
+	xberg_stub_trace curl
+	launch
+
+	xberg_assert_status 0
+	[[ "$output" == *"NPX:ran"* ]]
+	xberg_assert_trace_empty
+}
+
+@test "mcp-launch should_not_fall_back_to_download_when_npx_is_requested_but_unavailable" {
+	LAUNCH_MODE="npx"
+	xberg_stub_trace curl
+	launch
+
+	xberg_assert_status 1
+	xberg_assert_output_contains "could not locate or install"
+	xberg_assert_trace_empty
+}
+
+# --- cached and PATH binaries -------------------------------------------------------------------
+
+@test "mcp-launch should_exec_the_cached_binary_when_it_reports_a_version" {
+	make_cli "$(cached_binary)" CACHED
+	launch
+
+	xberg_assert_status 0
+	[[ "$output" == *"CACHED:ran"* ]]
+}
+
+@test "mcp-launch should_pass_arguments_through_to_the_cached_binary_verbatim" {
+	make_cli "$(cached_binary)" CACHED
+	launch --config "a b" --flag
+
+	xberg_assert_status 0
+	# One line per argument: "a b" must survive as a single argument, not become two.
+	xberg_assert_output_contains "CACHED[--config]"
+	xberg_assert_output_contains "CACHED[a b]"
+	xberg_assert_output_contains "CACHED[--flag]"
+}
+
+@test "mcp-launch should_ignore_the_cached_binary_when_it_cannot_report_a_version" {
+	make_broken_cli "$(cached_binary)"
+	launch
+
+	xberg_assert_status 1
+	[[ "$output" != *"BROKEN:ran"* ]]
+}
+
+@test "mcp-launch should_exec_the_binary_on_path_when_there_is_no_cached_binary" {
+	make_cli "$XBERG_STUB_BIN/$BINARY_NAME" ONPATH
+	launch
+
+	xberg_assert_status 0
+	[[ "$output" == *"ONPATH:ran"* ]]
+}
+
+@test "mcp-launch should_ignore_a_path_binary_that_cannot_report_a_version" {
+	make_broken_cli "$XBERG_STUB_BIN/$BINARY_NAME"
+	launch
+
+	xberg_assert_status 1
+	[[ "$output" != *"BROKEN:ran"* ]]
+}
+
+@test "mcp-launch should_prefer_the_cached_binary_over_the_one_on_path" {
+	make_cli "$(cached_binary)" CACHED
+	make_cli "$XBERG_STUB_BIN/$BINARY_NAME" ONPATH
+	launch
+
+	xberg_assert_status 0
+	[[ "$output" == *"CACHED:ran"* ]]
+	[[ "$output" != *"ONPATH:ran"* ]]
+}
+
+# --- version gate -------------------------------------------------------------------------------
+
+@test "mcp-launch should_ignore_a_cached_binary_older_than_the_pinned_version" {
+	VERSION_REPORTED="0.0.1"
+	make_cli "$(cached_binary)" CACHED
+	launch
+
+	xberg_assert_status 1
+	[[ "$output" != *"CACHED:ran"* ]]
+	xberg_assert_output_contains "older than the pinned ${PINNED_VERSION}"
+}
+
+@test "mcp-launch should_ignore_a_path_binary_older_than_the_pinned_version" {
+	VERSION_REPORTED="0.0.1"
+	make_cli "$XBERG_STUB_BIN/$BINARY_NAME" ONPATH
+	launch
+
+	xberg_assert_status 1
+	[[ "$output" != *"ONPATH:ran"* ]]
+}
+
+@test "mcp-launch should_ignore_a_prerelease_of_the_pinned_version" {
+	VERSION_REPORTED="${PINNED_VERSION}-rc.1"
+	make_cli "$(cached_binary)" CACHED
+	launch
+
+	xberg_assert_status 1
+	[[ "$output" != *"CACHED:ran"* ]]
+}
+
+@test "mcp-launch should_exec_a_binary_newer_than_the_pinned_version" {
+	VERSION_REPORTED="999.0.0"
+	make_cli "$(cached_binary)" CACHED
+	launch
+
+	xberg_assert_status 0
+	[[ "$output" == *"CACHED:ran"* ]]
+}
+
+# --- download -----------------------------------------------------------------------------------
+
+@test "mcp-launch should_fall_through_when_the_platform_has_no_prebuilt_archive" {
+	LAUNCH_MODE="download"
+	xberg_stub uname \
+		'case "$1" in' \
+		'  -m) printf "sparc64\n" ;;' \
+		'  *) printf "Plan9\n" ;;' \
+		'esac'
+	launch
+
+	xberg_assert_status 1
+	xberg_assert_output_contains "falling through"
+}
+
+@test "mcp-launch should_fall_through_when_no_downloader_is_available" {
+	LAUNCH_MODE="download"
+	# curl and wget are both missing from the mirrored system path, which is the state this
+	# branch exists for.
+	launch
+
+	xberg_assert_status 1
+	xberg_assert_output_contains "falling through"
+}
+
+# Everything below drives the real download branch against a stubbed curl that serves files from
+# $XBERG_WORK/served and answers 404 for anything else, and a uname stub that pins the platform to
+# Linux x86_64 so the asset name does not depend on the machine running the suite. ~keep
+
+serve_release() {
+	local reported="${1:-$PINNED_VERSION}" staging="$XBERG_WORK/staging"
+	SERVED="$XBERG_WORK/served"
+	ASSET="sceptre-x86_64-unknown-linux-gnu.tar.gz"
+	SUMS="sceptre_${PINNED_VERSION}_checksums.txt"
+	mkdir -p "$SERVED" "$staging"
+	printf '%s\n' \
+		'#!/usr/bin/env bash' \
+		"if [ \"\$1\" = \"--version\" ]; then echo 'sceptre ${reported}'; exit 0; fi" \
+		'printf "DOWNLOADED[%s]\n" "$@"' >"$staging/$BINARY_NAME"
+	chmod +x "$staging/$BINARY_NAME"
+	tar -czf "$SERVED/$ASSET" -C "$staging" .
+	xberg_stub uname \
+		'case "$1" in' \
+		'  -m) printf "x86_64\n" ;;' \
+		'  *) printf "Linux\n" ;;' \
+		'esac'
+	xberg_stub sleep 'exit 0'
+	xberg_stub curl \
+		'dest=""; url=""' \
+		'while [ "$#" -gt 0 ]; do' \
+		'  case "$1" in -o) dest="$2"; shift 2 ;; -*) shift ;; *) url="$1"; shift ;; esac' \
+		'done' \
+		"printf '%s\\n' \"\$url\" >>\"$XBERG_WORK/curl.urls\"" \
+		"[ -f \"$SERVED/\${url##*/}\" ] || exit 22" \
+		"cp \"$SERVED/\${url##*/}\" \"\$dest\""
+}
+
+sha256_of() {
+	if command -v sha256sum >/dev/null 2>&1; then
+		sha256sum "$1" | awk '{print $1}'
+	else
+		shasum -a 256 "$1" | awk '{print $1}'
+	fi
+}
+
+write_sums() { printf '%s  %s\n' "$1" "$2" >"$SERVED/$SUMS"; }
+
+@test "mcp-launch should_download_exactly_the_pinned_release_and_exec_it_after_verifying_the_checksum" {
+	LAUNCH_MODE="download"
+	serve_release
+	write_sums "$(sha256_of "$SERVED/$ASSET")" "$ASSET"
+	launch mcp --lang english
+
+	xberg_assert_status 0
+	xberg_assert_output_contains "checksum verified for $ASSET"
+	xberg_assert_output_contains "DOWNLOADED[mcp]"
+	xberg_assert_output_contains "DOWNLOADED[english]"
+	[ -x "$(cached_binary)" ]
+	grep -qxF "https://github.com/xberg-io/sceptre/releases/download/v${PINNED_VERSION}/${ASSET}" "$XBERG_WORK/curl.urls"
+	grep -qxF "https://github.com/xberg-io/sceptre/releases/download/v${PINNED_VERSION}/${SUMS}" "$XBERG_WORK/curl.urls"
+}
+
+@test "mcp-launch should_refuse_an_archive_whose_checksum_does_not_match" {
+	LAUNCH_MODE="download"
+	serve_release
+	write_sums "$(printf '0%.0s' $(seq 64))" "$ASSET"
+	launch
+
+	xberg_assert_status 1
+	xberg_assert_output_contains "checksum mismatch for $ASSET"
+	[[ "$output" != *"DOWNLOADED"* ]]
+	[ ! -e "$(cached_binary)" ]
+}
+
+@test "mcp-launch should_refuse_to_execute_when_the_checksums_file_is_unavailable" {
+	LAUNCH_MODE="download"
+	serve_release
+	launch
+
+	xberg_assert_status 1
+	xberg_assert_output_contains "refusing to execute an unverified binary"
+	[ ! -e "$(cached_binary)" ]
+}
+
+@test "mcp-launch should_refuse_to_execute_when_the_checksums_file_has_no_entry_for_the_archive" {
+	LAUNCH_MODE="download"
+	serve_release
+	write_sums "$(sha256_of "$SERVED/$ASSET")" "some-other-asset.tar.gz"
+	launch
+
+	xberg_assert_status 1
+	xberg_assert_output_contains "no checksum entry for $ASSET"
+	[ ! -e "$(cached_binary)" ]
+}
+
+# --- plugin root resolution ---------------------------------------------------------------------
+
+@test "mcp-launch should_resolve_the_plugin_root_from_its_own_location_when_the_variable_is_unset" {
+	# Without CLAUDE_PLUGIN_ROOT the script derives the plugin directory from BASH_SOURCE, so the
+	# cached binary it looks for is the one in the repo's own plugin/bin. Asserting the derived
+	# path directly would require writing into the working tree; asserting that it does NOT use
+	# the temp root is the same claim without the side effect. ~keep
+	make_cli "$(cached_binary)" CACHED
+	run env -i \
+		PATH="$(xberg_isolated_path)" \
+		HOME="$XBERG_WORK/home" \
+		"${LAUNCHER_VAR}=auto" \
+		"$SCRIPT"
+
+	[[ "$output" != *"CACHED:ran"* ]]
+}

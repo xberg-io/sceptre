@@ -7,12 +7,12 @@ lockfile_platforms = ["linux-x64", "linux-arm64", "macos-arm64", "windows-x64"]
 [tools]
 bats = "1.14.0"
 python = "3.13.18"
-uv = "0.13.6"
-node = "26.13.0"
-pnpm = "12.16.1"
-"github:Goldziher/poly" = "0.32.1"
-"github:Goldziher/adrlint" = "0.4.1"
-cargo-deny = "0.20.2"
+uv = "0.13.9"
+node = "26.13.1"
+pnpm = "12.21.0"
+"github:Goldziher/poly" = "0.36.1"
+"github:Goldziher/adrlint" = "0.5.2"
+cargo-deny = "0.22.0"
 actionlint = "1.7.12"
 lychee = "0.24.2"
 
@@ -102,6 +102,10 @@ run = 'python3 scripts/verify_published_release.py --version "{{usage.version}}"
 [tasks."release:verify:test"]
 description = "Test published runtime verification against checksum, protocol and OCR failure controls"
 run = "python3 scripts/tests/test_published_release.py"
+
+[tasks."cli-proxy:test"]
+description = "Test the npm CLI proxy launcher and the platform packaging"
+run = ["node --test cli-proxy/npm/test.mjs", "python3 -I scripts/tests/test_package_cli_npm.py"]
 
 [tasks."rust:fmt"]
 description = "Format all Rust code"
