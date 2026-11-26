@@ -32,6 +32,8 @@ mod tract_backend;
 
 #[cfg(feature = "ort")]
 pub use ort_backend::environment as ort_environment;
+#[cfg(all(feature = "ort", not(all(target_family = "wasm", target_os = "unknown"))))]
+pub use ort_backend::preload_ort_runtime;
 pub use runtime::{OrtRuntimeInfo, RuntimeInfo, runtime_info, runtime_info_for};
 
 /// A dynamically-shaped `f32` tensor exchanged with a backend.

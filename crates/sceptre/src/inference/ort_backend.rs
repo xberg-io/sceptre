@@ -16,6 +16,38 @@ use ort::value::Tensor as OrtTensor;
 use super::{BackendOptions, ModelBackend, Tensor, buffer, ort_ep};
 use crate::error::{OcrError, Result};
 
+/// Preload a native ONNX Runtime before initializing the shared environment.
+///
+/// With Sceptre's `ort-dynamic` feature, this passes `selected_path` to the loader
+/// without reading `ORT_DYLIB_PATH`. The loader resolves relative paths using its usual
+/// rules, including paths relative to the executable. Call this before any ORT use to
+/// select a library for the process. The first library loaded by `ort` remains in use.
+///
+/// Returns `true` when dynamic selection succeeds or a runtime was already selected.
+/// Returns `false` without inspecting the path when Sceptre's `ort-dynamic` feature
+/// is disabled. Consumers that enable the upstream `ort/load-dynamic` feature directly
+/// must also enable Sceptre's `ort-dynamic` feature to use this preloader.
+/// Initialize the shared environment with [`crate::ort_environment`] afterward.
+///
+/// # Errors
+///
+/// Returns an inference error with the loader failure as its source if the selected
+/// library cannot be loaded.
+#[cfg(not(all(target_family = "wasm", target_os = "unknown")))]
+pub fn preload_ort_runtime(selected_path: impl AsRef<std::path::Path>) -> Result<bool> {
+    #[cfg(feature = "ort-dynamic")]
+    {
+        ort::init_from(selected_path)
+            .map(|_| true)
+            .map_err(|error| inference_error("load the ONNX Runtime library", error))
+    }
+    #[cfg(not(feature = "ort-dynamic"))]
+    {
+        let _ = selected_path;
+        Ok(false)
+    }
+}
+
 /// Return the retained ONNX Runtime environment shared by Sceptre's probes and models.
 ///
 /// Applications using `ort` directly must create their sessions with this environment
@@ -74,17 +106,23 @@ impl OrtBackend {
         builder = builder
             .with_optimization_level(GraphOptimizationLevel::All)
             .map_err(|error| {
-                inference_error("set the ONNX Runtime graph optimization level", ort::Error::from(error))
+                inference_error(
+                    "set the ONNX Runtime graph optimization level",
+                    <ort::Error>::from(error),
+                )
             })?;
         // Memory-pattern pre-planning assumes stable tensor shapes; with dynamic-width ~keep
         // inputs it cannot amortize and only inflates the peak arena, so disable it. ~keep
         builder = builder.with_memory_pattern(false).map_err(|error| {
-            inference_error("disable ONNX Runtime memory-pattern planning", ort::Error::from(error))
+            inference_error(
+                "disable ONNX Runtime memory-pattern planning",
+                <ort::Error>::from(error),
+            )
         })?;
         if options.threads > 0 {
-            builder = builder
-                .with_intra_threads(options.threads)
-                .map_err(|error| inference_error("configure ONNX Runtime intra-op threads", ort::Error::from(error)))?;
+            builder = builder.with_intra_threads(options.threads).map_err(|error| {
+                inference_error("configure ONNX Runtime intra-op threads", <ort::Error>::from(error))
+            })?;
         }
         let session = builder
             .commit_from_memory(model_bytes)
@@ -152,7 +190,7 @@ fn array_from_output(dims: &[i64], data: &[f32]) -> Result<Tensor> {
 }
 
 /// Build an [`OcrError::Inference`] wrapping an `ort` error with operation context.
-fn inference_error(operation: &str, source: ort::Error) -> OcrError {
+fn inference_error(operation: &str, source: impl std::error::Error + Send + Sync + 'static) -> OcrError {
     OcrError::Inference {
         message: format!("ONNX Runtime backend failed to {operation}"),
         source: Some(Box::new(source)),
