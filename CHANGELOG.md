@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.5] - 2026-11-27
+
 ### Changed
 
 - Bump `rmcp` to 3.12 and disable its default `chrono` feature (RUSTSEC-2026-0543). `chrono` remains in the tree via `hf-hub` under `download`.

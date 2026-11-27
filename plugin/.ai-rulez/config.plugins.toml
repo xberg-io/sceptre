@@ -1,6 +1,6 @@
 [plugin]
 name = "sceptre"
-version = "0.10.4"
+version = "0.10.5"
 opencode_dependency_enabled = false
 runtimes = [
   "claude",
