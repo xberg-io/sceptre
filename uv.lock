@@ -1458,7 +1458,7 @@ dependencies = [
     { name = "scipy", version = "1.17.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
     { name = "scipy", version = "1.18.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "tifffile", version = "2026.3.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
-    { name = "tifffile", version = "2026.11.16", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+    { name = "tifffile", version = "2026.11.26", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/a1/b4/2528bb43c67d48053a7a649a9666432dc307d66ba02e3a6d5c40f46655df/scikit_image-0.26.0.tar.gz", hash = "sha256:f5f970ab04efad85c24714321fcc91613fcb64ef2a892a13167df2f3e59199fa", size = 22729739, upload-time = "2025-12-20T17:12:21.824Z" }
 wheels = [
@@ -1775,7 +1775,7 @@ wheels = [
 
 [[package]]
 name = "tifffile"
-version = "2026.11.16"
+version = "2026.11.26"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
     "python_full_version >= '3.14'",
@@ -1785,9 +1785,9 @@ resolution-markers = [
 dependencies = [
     { name = "numpy", version = "2.5.5", source = { registry = "https://pypi.org/simple" } },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d6/e1/f09384869bcf78bae3a794a86d8a90753fb2a6f4646c07ec941ff629cd33/tifffile-2026.11.16.tar.gz", hash = "sha256:d9c246d464f1c3ca9ab62c5225b3ff45578f33629029dbbd9f62f4e901702726", size = 462802, upload-time = "2026-11-17T03:35:19.648Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d1/d7/d1f14418e759dca772b49c3fbc9319d686cb1bdb26b2326896600ecd4a7d/tifffile-2026.11.26.tar.gz", hash = "sha256:1ae33db235b269809a1e18e123fbaf19aca8adfbc624b92ab10e83d15b0f12a0", size = 462559, upload-time = "2026-11-27T02:01:19.779Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/cf/3a/483491be6f7eb070d1c22b1182bbbc0243e85bf5903fafe3f80b6aeb3dba/tifffile-2026.11.16-py3-none-any.whl", hash = "sha256:d2103c2537f185868f0a880eceba590b316aa1981bd76d91028e5f2eb0e1a6e6", size = 279737, upload-time = "2026-11-17T03:35:18.375Z" },
+    { url = "https://files.pythonhosted.org/packages/5a/56/f8e1db6bc942ab6457a13c7ea8975d183b683fb9939dcc5cc59e39ad2c48/tifffile-2026.11.26-py3-none-any.whl", hash = "sha256:5a8abf8e792a94f43e5c318931fbc2fd61fb9469ca095cdc94a396f45d51cca5", size = 281496, upload-time = "2026-11-27T02:01:18.427Z" },
 ]
 
 [[package]]
